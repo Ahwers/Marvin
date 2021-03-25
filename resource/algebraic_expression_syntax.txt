@@ -1,0 +1,11 @@
+plus->+
+add->+
+squared->^2
+cubed->^3
+to the power of->^
+minus->-
+negative->-
+equals->=
+open bracket->(
+close bracket->)
+divided by->/
