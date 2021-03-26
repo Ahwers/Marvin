@@ -9,12 +9,14 @@ import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 
+// TODO: If we go centralised, we could add a javascriptToRun field to the MarvinResponse/CommandExecutionOutcome class that clients can then run on their own brower managers.
+//		 But it's probably best to be stateless and always return something that can work without relying on a previously sent resource. 
 @IntegratesApplication("Graphical Calculator")
 public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	@Override
 	protected Application instantiateApplication() {
-		return new BrowserBasedDesmosGraphicalCalculator();
+		return new LocalGraphicalCalculatorApplication();
 	}
 
 	@CommandMatch("^plot (?<expression>.+)$")

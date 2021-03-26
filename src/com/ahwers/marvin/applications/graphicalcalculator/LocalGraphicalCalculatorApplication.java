@@ -13,28 +13,31 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import com.ahwers.marvin.applications.Application;
 
 // TODO: Should create a GraphicalCalculator interface and move the selenium guts to a BrowserApplication super class or something.
-public class BrowserBasedDesmosGraphicalCalculator extends Application implements GraphicalCalculator {
+public class LocalGraphicalCalculatorApplication extends Application implements GraphicalCalculator {
 	
+	// TODO: Store graph state so that it can be recovered between browerDriver instances.
+	// TODO: Handle the case where the browser is closed then this object is given another command.
+	// TODO: Instantiate graph with last known state through URL parameters https://html-online.com/articles/get-url-parameters-javascript/
 	private WebDriver browserDriver;
 	
 	private List<String> activeExpressions = new ArrayList<>();
 	
 	public static void main(String args[]) {
-		BrowserBasedDesmosGraphicalCalculator calc = new BrowserBasedDesmosGraphicalCalculator();
+		LocalGraphicalCalculatorApplication calc = new LocalGraphicalCalculatorApplication();
 	}
 	
-	public BrowserBasedDesmosGraphicalCalculator() {
+	public LocalGraphicalCalculatorApplication() {
 		System.setProperty("webdriver.gecko.driver", "C:\\WebDriver\\bin\\geckodriver.exe");
 		
 		this.browserDriver = new FirefoxDriver();
 		
 		String CALCULATOR_APP_PATH = getClass().getResource("/graphical_calculator.html").toString();
-		browserDriver.get(CALCULATOR_APP_PATH);
-}
+		browserDriver.get(CALCULATOR_APP_PATH + "?initialExpression=y=x");
+	}
 
 	@Override
 	public void plotNewExpression(String expression) {
-		expression = AlgebraicExpressionProcessor.getInstance().processExpressionIntoAlgebraicExpressionForApplication(expression, ApplicationProvider.DESMOS);
+		expression = AlgebraicExpressionProcessor.getInstance().processExpressionIntoAlgebraicExpression(expression);
 		activeExpressions.add(expression);
 		
 		JavascriptExecutor js = (JavascriptExecutor) this.browserDriver;

@@ -16,6 +16,7 @@ public class CommandProcessor {
 		return command;
 	}
 	
+	// TODO: This will remove decimal places from numbers
 	private static String stripPunctuationFromCommand(String command) {
 		String punctuationMarks = ",.?'";
 		

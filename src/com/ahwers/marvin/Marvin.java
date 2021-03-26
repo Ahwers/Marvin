@@ -58,6 +58,7 @@ public class Marvin {
 		}
 		else if (possibleActions.size() > 1) {
 			// TODO: Implement decision algorithm, and user selection functionality if a confident decision cannot be made.
+			// TODO: User selection functionality will need to developed by individual client applications if i go the route of packaging Marvin libraries and using them. Android could create a dialog box, desktop could create a swing thing. Will need to annotate those classes with @CommandSelector or something and have this method search for that class so we can inject it.
 		}
 		
 		CommandExecutionOutcome outcome = new CommandExecutionOutcome(CommandStatus.INVALID);

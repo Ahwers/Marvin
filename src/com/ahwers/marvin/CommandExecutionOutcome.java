@@ -1,5 +1,6 @@
 package com.ahwers.marvin;
 
+// TODO: If we go centralised Marvin server, change this class's name to MarvinResponse
 public class CommandExecutionOutcome {
 	
 	private String responseMessage;

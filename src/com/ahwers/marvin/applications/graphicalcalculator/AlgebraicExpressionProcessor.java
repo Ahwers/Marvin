@@ -68,7 +68,7 @@ public class AlgebraicExpressionProcessor {
 	 *	3.a. The longest word sequences are checked first (eg. "to the power of" should become "^2", even if one of the words is wrong; eg. "to the power off".
 	 *	
 	 */
-	public String processExpressionIntoAlgebraicExpressionForApplication(String expression, ApplicationProvider provider) {
+	public String processExpressionIntoAlgebraicExpression(String expression) {
 		// 1. Lowercase entire expression
 		expression = expression.toLowerCase();
 		
