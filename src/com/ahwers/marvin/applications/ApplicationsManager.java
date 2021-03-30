@@ -15,7 +15,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import com.ahwers.marvin.CommandExecutionOutcome;
+import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.CommandStatus;
 
 // TODO: This will need to be a singleton when we implement concurrency for command executions due to the useful state it holds.
@@ -93,7 +93,7 @@ public class ApplicationsManager {
 		return matchingActions;
 	}
 	
-	public CommandExecutionOutcome executeApplicationAction(ApplicationAction applicationAction) {
+	public MarvinResponse executeApplicationAction(ApplicationAction applicationAction) {
 		String applicationName = applicationAction.getApplicationName();
 		String actionName = applicationAction.getActionName();
 		Map<String, String> actionArguments = applicationAction.getArguments();
@@ -101,16 +101,16 @@ public class ApplicationsManager {
 		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
 		actionApplicationAdaptor.setActionArguments(applicationAction.getArguments());
 
-		CommandExecutionOutcome outcome = null;
+		MarvinResponse outcome = null;
 		try {
-			outcome = (CommandExecutionOutcome) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
+			outcome = (MarvinResponse) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
 				| SecurityException e) {
-			outcome = new CommandExecutionOutcome(CommandStatus.FAILED, "This function's implementation is erroneous, see logs for cause.");
+			outcome = new MarvinResponse(CommandStatus.FAILED, "This function's implementation is erroneous, see logs for cause.");
 			outcome.setFailException(e);
 		}
 		catch (InvocationTargetException e) {
-			outcome = new CommandExecutionOutcome(CommandStatus.FAILED, "I can't, I, I simply can't. See logs for cause.");
+			outcome = new MarvinResponse(CommandStatus.FAILED, "I can't, I, I simply can't. See logs for cause.");
 			outcome.setFailException(e);
 		}
 		

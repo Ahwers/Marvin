@@ -1,57 +1,108 @@
 package com.ahwers.marvin.applications.graphicalcalculator;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-import com.ahwers.marvin.CommandExecutionOutcome;
+import com.ahwers.marvin.MarvinResponse;
+import com.ahwers.marvin.Resource;
+import com.ahwers.marvin.ResourceTemplate;
+import com.ahwers.marvin.ResourceType;
 import com.ahwers.marvin.CommandStatus;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 
-// TODO: If we go centralised, we could add a javascriptToRun field to the MarvinResponse/CommandExecutionOutcome class that clients can then run on their own brower managers.
-//		 But it's probably best to be stateless and always return something that can work without relying on a previously sent resource. 
+// TODO: Maybe this should just absorb GraphicalCalculator.
+//		 Furthermore, can we get rid of application stuff from this whole class but still allow classes that would like Application style classes to exist to still use them?
 @IntegratesApplication("Graphical Calculator")
 public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
+	private AlgebraicExpressionProcessor expressionProcessor;
+	
+	public GraphicalCalculatorApplicationAdaptor() {
+		this.expressionProcessor = AlgebraicExpressionProcessor.getInstance();
+	}
+	
 	@Override
 	protected Application instantiateApplication() {
-		return new LocalGraphicalCalculatorApplication();
+		return new GraphicalCalculatorState();
 	}
-
+	
 	@CommandMatch("^plot (?<expression>.+)$")
-	public CommandExecutionOutcome plotNewAlgebraicExpression(Map<String, String> arguments) {
-		String expression = arguments.get("expression");
+	public MarvinResponse addNewAlgebraicExpression(Map<String, String> arguments) {
+		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		
-		GraphicalCalculator graphicalCalculator = (GraphicalCalculator) getApplication();
-		graphicalCalculator.plotNewExpression(expression);
+		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
+		int newExpressionId = graphicalCalculator.addNewExpression(processedExpression);
 		
-		return new CommandExecutionOutcome(CommandStatus.SUCCESS);
+		MarvinResponse response = new MarvinResponse(CommandStatus.SUCCESS);
+		
+		// TODO: Pop "Graphical Calculator" in a final private variable
+		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.HTML, getHtmlResourceForCalculatorState(), "Graphical Calculator"));
+		
+		// TODO: Doesn't work
+		String javascriptTransmformationScript = "calculator.setExpression({ id: '" + newExpressionId + "', latex: '" + processedExpression + "' });";
+		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.JAVASCRIPT_UPDATE_SCRIPT, javascriptTransmformationScript, "Graphical Calculator"));
+		
+		return response;
+	}
+	
+	private String getHtmlResourceForCalculatorState() {
+		ResourceTemplate calculatorTemplate = new ResourceTemplate("/graphical_calculator.html");
+		Map<String, String> templateData = new HashMap<>();
+		templateData.put("CALCULATOR_SET_UP_SCRIPT", getCalculatorSetUpScriptForCalculatorState());
+		return calculatorTemplate.mergeDataWithResourceTemplate(templateData);
+	}
+	
+	private String getCalculatorSetUpScriptForCalculatorState() {
+		GraphicalCalculatorState state = (GraphicalCalculatorState) getApplication();
+		
+		int stateId = state.getStateId();
+		Map<Integer, String> expressions = state.getExpressions();
+		int focusX = state.getFocusX();
+		int focusY = state.getFocusY();
+		
+		String script = "var stateId = " + stateId + ";\n"
+				      + "var focusX = " + focusX + ";\n"
+				      + "var focusY = " + focusY + ";\n";
+		for (Integer expressionId : expressions.keySet()) {
+			script += "calculator.setExpression({ id: '" + expressionId + "', latex: '" + expressions.get(expressionId) +"' });\n";
+		}
+		
+		return script;
 	}
 	
 	// TODO: Should I make it so that ^ and $ are not required for any matches? Yes. Actually nah, let's stay flexible until we see that the flexibility is not required.
 	@CommandMatch("^remove (?:graph|expression) (?<graphIndex>.+)$")
-	public CommandExecutionOutcome removeAlgebraicExpression(Map<String, String> arguments) {
+	public MarvinResponse removeAlgebraicExpression(Map<String, String> arguments) {
 		String expressionIndex = arguments.get("graphIndex");
 		
-		GraphicalCalculator graphicalCalculator = (GraphicalCalculator) getApplication();
+		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
 		
-		CommandExecutionOutcome outcome = new CommandExecutionOutcome(CommandStatus.FAILED);
+		MarvinResponse response = new MarvinResponse();
 		try {
-			// TODO: Why does this keep asking for Exception to be handled????
 			graphicalCalculator.removeExpression(Integer.valueOf(expressionIndex));
 		} catch (NumberFormatException e) {
-			outcome.setResponseMessage("\"Graphical Calculator\" graphs are indexed by integers.");
-			outcome.setFailException(e);
+			response.setResponseMessage("\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
+			response.setFailException(e);
+			response.setCommandStatus(CommandStatus.FAILED);
 		} catch (IndexOutOfBoundsException e) {
-			outcome.setResponseMessage("Graph " + expressionIndex + "doesn't exist.");
-			outcome.setFailException(e);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			response.setResponseMessage("Graph " + expressionIndex + "doesn't exist.");
+			response.setFailException(e);
+			response.setCommandStatus(CommandStatus.FAILED);
 		}
 		
-		return new CommandExecutionOutcome(CommandStatus.SUCCESS);
+		if (response.getCommandStatus() == null) {
+			response.setCommandStatus(CommandStatus.SUCCESS);
+		}
+		
+		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.HTML, getHtmlResourceForCalculatorState(), "Graphical Calculator"));
+		
+		// TODO: JavaScript transfmormation resource
+		
+		return response;
 	}
 	
 }

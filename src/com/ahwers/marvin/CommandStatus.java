@@ -5,5 +5,6 @@ public enum CommandStatus {
 	INVALID,
 	SUCCESS,
 	FAILED,
+	UNMATCHED,
 
 }

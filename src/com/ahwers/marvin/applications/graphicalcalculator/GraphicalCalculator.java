@@ -2,7 +2,7 @@ package com.ahwers.marvin.applications.graphicalcalculator;
 
 public interface GraphicalCalculator {
 	
-	public void plotNewExpression(String expression);
+	public int addNewExpression(String expression);
 	
 	public void removeExpression(int expressionIndex) throws Exception;
 	

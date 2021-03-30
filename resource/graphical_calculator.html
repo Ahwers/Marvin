@@ -12,11 +12,7 @@
     <script>
         var elt = document.getElementById('calculator');
         var calculator = Desmos.GraphingCalculator(elt);
-        
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        var initialExpression = urlParams.get('initialExpression');
-        calculator.setExpression({ id: 10, latex: initialExpression });
+        [CALCULATOR_SET_UP_SCRIPT]
     </script>
 </BODY>
 

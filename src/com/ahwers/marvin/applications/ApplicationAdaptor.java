@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ahwers.marvin.CommandExecutionOutcome;
+import com.ahwers.marvin.MarvinResponse;
 
 public abstract class ApplicationAdaptor {
 	
