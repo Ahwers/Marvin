@@ -51,7 +51,7 @@ public class MarvinClient {
 	}
 	
 	public void runCommand(String command) {
-		MarvinResponse marvinResponse = marvin.runCommand(command);
+		MarvinResponse marvinResponse = marvin.command(command);
 //		processResponse(marvinResponse);
 		handleResponse(marvinResponse);
 	}

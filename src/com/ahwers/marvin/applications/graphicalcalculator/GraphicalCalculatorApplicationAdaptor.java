@@ -2,7 +2,6 @@ package com.ahwers.marvin.applications.graphicalcalculator;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;

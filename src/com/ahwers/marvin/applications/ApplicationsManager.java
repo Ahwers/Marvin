@@ -71,7 +71,7 @@ public class ApplicationsManager {
 		}
 	}
 	
-	public List<ApplicationAction> getApplicationActionsToConsumeCommand(String command) {
+	public List<ApplicationAction> getApplicationActionsThatDirectlyMatchCommand(String command) {
 		List<ApplicationAction> matchingActions = new ArrayList<>();
 		
 		for (ApplicationAction possibleAppAction : this.applicationActions.keySet()) {
@@ -91,6 +91,11 @@ public class ApplicationsManager {
 		}
 		
 		return matchingActions;
+	}
+	
+	public List<ApplicationAction> getApplicationActionsThatPhoneticallyMatchCommand(String command) {
+		// TODO: Implement
+		return new ArrayList<>();
 	}
 	
 	public MarvinResponse executeApplicationAction(ApplicationAction applicationAction) {

@@ -7,45 +7,22 @@ import com.ahwers.marvin.applications.ApplicationsManager;
 
 public class Marvin {
 	
-	private ApplicationsManager applicationsManager = new ApplicationsManager();
+	private MarvinResponseFactory responseFactory;
 	
-	public MarvinResponse runCommand(String originalCommand) {
-		String command = CommandProcessor.processCommand(originalCommand);
-		System.out.println("Command: \"" + command + "\""); // TOOD: Log command recieved
+	public Marvin() {
+		this.responseFactory = MarvinResponseFactory.getResponseFactoryForApplicationManager(new ApplicationsManager());
+	}
+	
+	public MarvinResponse command(String originalCommand) {
+		String command = formatCommand(originalCommand);
 		
-		List<ApplicationAction> possibleActions = applicationsManager.getApplicationActionsToConsumeCommand(command);
+		// TODO: Log command recieved and formatted
 		
-		ApplicationAction actionToInvoke = null;
-		if (possibleActions.size() == 1) {
-			actionToInvoke = possibleActions.get(0);
-		}
-		else if (possibleActions.size() > 1) {
-			// TODO: Implement decision algorithm, and user selection functionality if a confident decision cannot be made.
-			// TODO: User selection functionality will need to developed by individual client applications if i go the route of packaging Marvin libraries and using them. Android could create a dialog box, desktop could create a swing thing. Will need to annotate those classes with @CommandSelector or something and have this method search for that class so we can inject it.
-		}
-		
-		MarvinResponse response = new MarvinResponse(CommandStatus.INVALID);
-		if (actionToInvoke != null) {
-			response = applicationsManager.executeApplicationAction(actionToInvoke);
-		}
-		
-		// Set up default responses
-		if (response.getResponseMessage() == null) {
-			CommandStatus commandStatus = response.getCommandStatus();
-			if (commandStatus == CommandStatus.INVALID) {
-				response.setResponseMessage("Sorry, I have not been programmed to process that command.");
-			}
-			else if (commandStatus == CommandStatus.FAILED) {
-				response.setResponseMessage("Something failed, see my logs for it's cause.");
-			}
-			else if (commandStatus == CommandStatus.UNMATCHED) {
-				response.setResponseMessage("Please be more specific.");
-				// TODO: Then the client can display a list of possible commands to choose from.
-			}
-		}
-		
-		return response;
+		return responseFactory.getResponseForCommand(command);
 	}
 
+	private String formatCommand(String originalCommand) {
+		return CommandFormatter.formatCommand(originalCommand);
+	}
 	
 }

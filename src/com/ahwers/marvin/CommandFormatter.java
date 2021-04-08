@@ -3,9 +3,9 @@ package com.ahwers.marvin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandProcessor {
+public class CommandFormatter {
 	
-	public static String processCommand(String targetCommand) {
+	public static String formatCommand(String targetCommand) {
 		String command = targetCommand;
 		
 		command = stripPunctuationFromCommand(command);
