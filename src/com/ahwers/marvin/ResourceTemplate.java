@@ -21,7 +21,7 @@ public class ResourceTemplate {
 		try {
 			resourceScanner = new Scanner(new File(resourceFilePath));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// TODO: Log resource not found
 			e.printStackTrace();
 		}
 		while (resourceScanner.hasNext()) {

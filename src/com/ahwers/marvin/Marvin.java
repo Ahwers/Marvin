@@ -7,22 +7,29 @@ import com.ahwers.marvin.applications.ApplicationsManager;
 
 public class Marvin {
 	
+	// TODO: Could implement response routing or something, so like issuing a command from my phone but getting the response sent to my desktop. This class could catch the "to my desktop" string or something and route the response that way.
+	
+	private CommandFormatter commandFormatter;
 	private MarvinResponseFactory responseFactory;
 	
 	public Marvin() {
+		this.commandFormatter = new CommandFormatter();
 		this.responseFactory = MarvinResponseFactory.getResponseFactoryForApplicationManager(new ApplicationsManager());
 	}
 	
-	public MarvinResponse command(String originalCommand) {
-		String command = formatCommand(originalCommand);
+	public MarvinResponse processCommand(String originalCommand) {
+		String command = commandFormatter.formatCommand(originalCommand);
+		System.out.println(command);
 		
 		// TODO: Log command recieved and formatted
 		
 		return responseFactory.getResponseForCommand(command);
 	}
-
-	private String formatCommand(String originalCommand) {
-		return CommandFormatter.formatCommand(originalCommand);
+	
+	public MarvinResponse processAction(ApplicationAction action) {
+		// TODO: Log action recieved
+		
+		return responseFactory.getResponseForAppAction(action);
 	}
 	
 }

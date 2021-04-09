@@ -79,8 +79,7 @@ public class ApplicationsManager {
 			
 			Pattern pattern = Pattern.compile(actionMatchRegex, Pattern.CASE_INSENSITIVE);
 		    FuzzyMatcher matcher = new FuzzyMatcher(pattern.matcher(command));
-		    // TODO: Implement soundex comparison based fuzzy match
-		    if (matcher.find()) {// || matcher.fuzzyFind()) {
+		    if (matcher.find()) {
 		    	Map<String, String> arguments = new HashMap<>();
 		    	for (int i = 1; i < matcher.groupCount() + 1; i++) {
 		    		arguments.put(matcher.groupName(i), matcher.group(i));
@@ -111,11 +110,11 @@ public class ApplicationsManager {
 			outcome = (MarvinResponse) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
 				| SecurityException e) {
-			outcome = new MarvinResponse(CommandStatus.FAILED, "This function's implementation is erroneous, see logs for cause.");
+			outcome = new MarvinResponse(CommandStatus.FAILED, "This action's implementation is erroneous, see logs for cause.");
 			outcome.setFailException(e);
 		}
 		catch (InvocationTargetException e) {
-			outcome = new MarvinResponse(CommandStatus.FAILED, "I can't, I, I simply can't. See logs for cause.");
+			outcome = new MarvinResponse(CommandStatus.FAILED, e.getMessage()); // TODO: Applications should add as many error handling exceptions as they can (and provide) messages so that Marvin can read their messages out explaining why the command action failed.
 			outcome.setFailException(e);
 		}
 		

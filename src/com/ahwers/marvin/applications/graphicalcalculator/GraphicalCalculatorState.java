@@ -13,7 +13,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import com.ahwers.marvin.applications.Application;
 
 // TODO: Make concurrent singleton
-public class GraphicalCalculatorState extends Application implements GraphicalCalculator {
+public class GraphicalCalculatorState extends Application {
 	
 	private int stateId = 0;
 	private Map<Integer, String> expressions = new HashMap<>();
@@ -36,7 +36,6 @@ public class GraphicalCalculatorState extends Application implements GraphicalCa
 		return this.focusY;
 	}
 	
-	@Override
 	public int addNewExpression(String expression) {
 		int expressionId = (expressions.size() + 1);
 		expressions.put(expressionId, expression);
@@ -45,43 +44,36 @@ public class GraphicalCalculatorState extends Application implements GraphicalCa
 		return expressionId;
 	}
 
-	@Override
 	public void removeExpression(int expressionIndex) throws IndexOutOfBoundsException {
 		expressions.remove(expressionIndex);
 		this.stateId++;
 	}
 
-	@Override
 	public void removeAllExpressions() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void replaceExpressionWith(int expressionIndex, String expression) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void replaceInExpression(int expressionIndex, String target, String newValue) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void hideExpression(int expressionIndex) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void focusOnOrigin() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void focusOnExpression(int expressionIndex) {
 		// TODO Auto-generated method stub
 		

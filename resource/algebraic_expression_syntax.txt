@@ -9,3 +9,4 @@ equals->=
 open bracket->(
 close bracket->)
 divided by->/
+point->.

@@ -19,13 +19,16 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 
 public class MarvinClient {
 	
+	// TODO: Write test suites, but put them with the core Marvin code
 	public static void main(String args[]) throws InterruptedException, ExecutionException, IOException {
 		MarvinClient marvinClient = new MarvinClient();
 		
+//		marvinClient.runVoiceCommand();
+		
 //		marvinClient.runCommand("can you plot wye equals ex squared at 3 ex sad 5 please");
 		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
-		Thread.sleep(2000);
-		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
+//		Thread.sleep(2000);
+//		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
 //		marvinClient.runCommand("what's 5 plus 6");
 //		marvinClient.runCommand("does 2 plus 2 equal 5");
 		
@@ -51,7 +54,7 @@ public class MarvinClient {
 	}
 	
 	public void runCommand(String command) {
-		MarvinResponse marvinResponse = marvin.command(command);
+		MarvinResponse marvinResponse = marvin.processCommand(command);
 //		processResponse(marvinResponse);
 		handleResponse(marvinResponse);
 	}

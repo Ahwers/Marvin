@@ -22,6 +22,10 @@ public class MarvinResponseFactory {
 		this.appManager = appManager;
 	}
 	
+	public MarvinResponse getResponseForAppAction(ApplicationAction action) {
+		return appManager.executeApplicationAction(action);
+	}
+	
 	public MarvinResponse getResponseForCommand(String command) {
 		this.command = command;
 		this.directCommandActionMatches = appManager.getApplicationActionsThatDirectlyMatchCommand(command);
@@ -38,14 +42,9 @@ public class MarvinResponseFactory {
 			response = buildActionSelectionResponse(phoneticCommandActionMatches);
 		}
 		else {
-			response = buildUnmatchedActionResponse();
+			response = buildInvalidCommandResponse();
 		}
-		
-		// Set up default response messages
-		if (response.getResponseMessage() == null) {
-			addDefaultMessageToResponse(response);
-		}
-		
+
 		return response;
 	}
 	
@@ -63,25 +62,11 @@ public class MarvinResponseFactory {
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
 		// TODO: Implement
-		return null;
+		return new MarvinResponse(CommandStatus.UNMATCHED, "Please be more specific.");
 	}
 	
-	private MarvinResponse buildUnmatchedActionResponse() {
-		// TODO: Implement
-		return null;
-	}
-	
-	private void addDefaultMessageToResponse(MarvinResponse response) {
-		CommandStatus commandStatus = response.getCommandStatus();
-		if (commandStatus == CommandStatus.INVALID) {
-			response.setResponseMessage("Sorry, I have not been programmed to process that command.");
-		}
-		else if (commandStatus == CommandStatus.FAILED) {
-			response.setResponseMessage("Something failed, see my logs for it's cause.");
-		}
-		else if (commandStatus == CommandStatus.UNMATCHED) {
-			response.setResponseMessage("Please be more specific.");
-		}
+	private MarvinResponse buildInvalidCommandResponse() {
+		return new MarvinResponse(CommandStatus.INVALID, "Sorry, I have not been programmed to process that command.");
 	}
 	
 }

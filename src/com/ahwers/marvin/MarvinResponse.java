@@ -19,10 +19,8 @@ public class MarvinResponse {
 		this.status = status;
 	}
 	
-	public MarvinResponse() {
-		
-	}
-
+	public MarvinResponse() {}
+	
 	public void addResource(Resource newResource) {
 		responseResources.add(newResource);
 	}

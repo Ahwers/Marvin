@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// TODO: Todo's mentioned in AlgebraicExpression and then delete it
 // TODO: "Minus" doesn't work properly, two minus signs get picked up by azure
 public class AlgebraicExpressionProcessor {
 	
@@ -33,6 +32,7 @@ public class AlgebraicExpressionProcessor {
 		try {
 			populateTokenWordToSymbolMap();
 		} catch (FileNotFoundException e) {
+			// TODO: Population error
 			e.printStackTrace();
 		}
 	}
