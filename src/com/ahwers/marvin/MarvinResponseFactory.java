@@ -61,8 +61,26 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
-		// TODO: Implement
-		return new MarvinResponse(CommandStatus.UNMATCHED, "Please be more specific.");
+		MarvinResponse response = new MarvinResponse(CommandStatus.UNMATCHED, "Please be more specific.");
+		
+		String selectionContent = "";
+		for (ApplicationAction action : actionOptions) {
+			selectionContent += (stringifyApplicationAction(action) + "\n");
+		}
+		response.addResource(new Resource(ResourceType.COMMAND_OPTION_LIST, selectionContent));
+		
+		return response;
+	}
+	
+	private String stringifyApplicationAction(ApplicationAction action) {
+		String stringifiedAction = "";
+		
+		stringifiedAction += (action.getApplicationName() + ":" + action.getActionName());
+		for (String argumentKey : action.getArguments().keySet()) {
+			stringifiedAction += ("&" + argumentKey + "==" + action.getArguments().get(argumentKey));
+		}
+		
+		return stringifiedAction;
 	}
 	
 	private MarvinResponse buildInvalidCommandResponse() {

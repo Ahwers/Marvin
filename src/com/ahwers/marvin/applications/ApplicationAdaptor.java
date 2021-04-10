@@ -33,4 +33,9 @@ public abstract class ApplicationAdaptor {
 		return this.actionArguments.get(argumentName);
 	}
 	
+	public String getApplicationName() {
+		IntegratesApplication integrationAnnotation = getClass().getDeclaredAnnotation(IntegratesApplication.class);
+		return integrationAnnotation.value();
+	}
+	
 }

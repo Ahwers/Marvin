@@ -18,7 +18,7 @@ import org.reflections.util.FilterBuilder;
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.CommandStatus;
 
-// TODO: This will need to be a singleton when we implement concurrency for command executions due to the useful state it holds.
+// TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
 public class ApplicationsManager {
 
 	private final String MARVIN_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin";

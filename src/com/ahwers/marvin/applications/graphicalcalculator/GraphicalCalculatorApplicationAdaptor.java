@@ -38,12 +38,13 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		
 		MarvinResponse response = new MarvinResponse(CommandStatus.SUCCESS);
 		
-		// TODO: Pop "Graphical Calculator" in a final private variable
-		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.HTML, getHtmlResourceForCalculatorState(), "Graphical Calculator"));
+		// TODO: Create an abstract "buildActionResponse" method in ApplicationAdaptor that adaptors implement to accept [ResourceType type] and [String content] and instantiate a Resource instance with the application name and it's current state id.
+		//		 Will remove repeated code in the form of "new Resource(graphicalCalculator.getStateId(), getApplicationName(), "
+		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.HTML, getHtmlResourceForCalculatorState()));
 		
 		// TODO: Doesn't work
 		String javascriptTransmformationScript = "calculator.setExpression({ id: '" + newExpressionId + "', latex: '" + processedExpression + "' });";
-		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.JAVASCRIPT_UPDATE_SCRIPT, javascriptTransmformationScript, "Graphical Calculator"));
+		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.JAVASCRIPT_UPDATE_SCRIPT, javascriptTransmformationScript));
 		
 		return response;
 	}
@@ -97,7 +98,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 			response.setCommandStatus(CommandStatus.SUCCESS);
 		}
 		
-		response.addResource(new Resource(graphicalCalculator.getStateId(), ResourceType.HTML, getHtmlResourceForCalculatorState(), "Graphical Calculator"));
+		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.HTML, getHtmlResourceForCalculatorState()));
 		
 		// TODO: JavaScript transfmormation resource
 		

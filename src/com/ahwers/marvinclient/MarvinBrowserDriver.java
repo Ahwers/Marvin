@@ -12,6 +12,8 @@ import com.ahwers.marvin.ResourceType;
 
 public class MarvinBrowserDriver {
 	
+	// TODO: What if the user closes the browser? Can we watch for this and restart the driver on next marvin response?
+	
 	private static MarvinBrowserDriver instance;
 	public static MarvinBrowserDriver getBrowserDriver() {
 		if (instance == null) {
