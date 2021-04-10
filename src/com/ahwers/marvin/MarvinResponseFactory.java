@@ -1,10 +1,16 @@
 package com.ahwers.marvin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
+import com.ahwers.marvin.applications.FuzzyMatcher;
 
 public class MarvinResponseFactory {
 	
@@ -22,7 +28,8 @@ public class MarvinResponseFactory {
 		this.appManager = appManager;
 	}
 	
-	public MarvinResponse getResponseForAppAction(ApplicationAction action) {
+	public MarvinResponse getResponseForAppAction(String stringifiedAppAction) {
+		ApplicationAction action = constructApplicationActionFromString(stringifiedAppAction);
 		return appManager.executeApplicationAction(action);
 	}
 	
@@ -76,11 +83,40 @@ public class MarvinResponseFactory {
 		String stringifiedAction = "";
 		
 		stringifiedAction += (action.getApplicationName() + ":" + action.getActionName());
+		int argumentCount = 0;
 		for (String argumentKey : action.getArguments().keySet()) {
-			stringifiedAction += ("&" + argumentKey + "==" + action.getArguments().get(argumentKey));
+			String delimiter = (argumentCount > 0 ? "&" : "?");
+			stringifiedAction += (delimiter + argumentKey + "==" + action.getArguments().get(argumentKey));
+			argumentCount++;
 		}
 		
 		return stringifiedAction;
+	}
+	
+	// TODO This is horrible.
+	private ApplicationAction constructApplicationActionFromString(String stringifiedAppAction) {
+		// appName:appAction&field==value&anotherField==value
+		
+		String[] actionParts = stringifiedAppAction.split("\\?");
+		
+		String actionMetadata = actionParts[0];
+		String[] metadataParts = actionMetadata.split(":");
+		String applicationName = metadataParts[0];
+		String actionName = metadataParts[1];
+		
+		Map<String, String> actionArguments = new HashMap<>();
+		if (actionParts.length > 1) {
+			String[] actionArgumentStrings = actionParts[1].split("&");
+			for (String argument : actionArgumentStrings) {
+				String[] argumentParts = argument.split("==");
+				actionArguments.put(argumentParts[0], argumentParts[1]);
+			}
+		}
+		
+		ApplicationAction appAction = new ApplicationAction(applicationName, actionName);
+		appAction.setArguments(actionArguments);
+		
+		return appAction;
 	}
 	
 	private MarvinResponse buildInvalidCommandResponse() {

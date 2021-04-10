@@ -2,7 +2,7 @@ package com.ahwers.marvinclient.responsehandlers;
 
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.ResourceType;
-import com.ahwers.marvinclient.MarvinBrowserDriver;
+import com.ahwers.marvinclient.BrowserDriver;
 
 // TODO: I think that the response handler will be the same no matter the status???
 //		 If so, pop this logic in the abstract super class and leave the children until we know for a fact that they will not need unique logic.

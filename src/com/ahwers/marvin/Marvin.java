@@ -26,10 +26,10 @@ public class Marvin {
 		return responseFactory.getResponseForCommand(command);
 	}
 	
-	public MarvinResponse processAction(ApplicationAction action) {
+	public MarvinResponse processAction(String stringifiedAppAction) {
 		// TODO: Log action recieved
 		
-		return responseFactory.getResponseForAppAction(action);
+		return responseFactory.getResponseForAppAction(stringifiedAppAction);
 	}
 	
 }

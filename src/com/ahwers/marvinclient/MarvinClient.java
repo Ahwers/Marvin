@@ -3,6 +3,8 @@ package com.ahwers.marvinclient;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -11,6 +13,7 @@ import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;
+import com.ahwers.marvin.CommandStatus;
 import com.ahwers.marvin.Marvin;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
@@ -55,7 +58,6 @@ public class MarvinClient {
 	
 	public void runCommand(String command) {
 		MarvinResponse marvinResponse = marvin.processCommand(command);
-//		processResponse(marvinResponse);
 		handleResponse(marvinResponse);
 	}
 	
@@ -64,21 +66,46 @@ public class MarvinClient {
 			outputMessage(response.getResponseMessage());
 		}
 		
-		MarvinBrowserDriver browserDriver = MarvinBrowserDriver.getBrowserDriver();
-		browserDriver.openApplicationResource(response.getResources());
+		CommandStatus status = response.getCommandStatus();
+		if (status == CommandStatus.SUCCESS) {
+			try {
+				ResourceHandler.openResource(response.getResources());
+			} catch (InvalidResponseException e) {
+				outputMessage("I can not open this resource due to a faulty response, check my logs for more info.");
+				e.printStackTrace();
+			}
+		}
+		else if (status == CommandStatus.FAILED) {
+			System.out.println(response.getFailException().getMessage());
+		}
+		else if (status == CommandStatus.UNMATCHED) {
+			String actionToRun = getActionToRunFromUnmatchedResponse(response);
+			handleResponse(marvin.processAction(actionToRun));
+		}
+	}
+	
+	private String getActionToRunFromUnmatchedResponse(MarvinResponse response) {
+		Scanner actionOptionsScanner = new Scanner(response.getResources().get(0).getContent());
+		
+		List<String> actionOptions = new ArrayList<>();
+		
+		int i = 1;
+		while (actionOptionsScanner.hasNextLine()) {
+			String actionString = actionOptionsScanner.nextLine();
+			actionOptions.add(actionString);
+			System.out.println(i + " - " + actionString);
+			i++;
+		}
+		int targetAction = new Scanner(System.in).nextInt();
+		
+		return actionOptions.get(targetAction - 1);
 	}
 	
 	// TODO: There must be a better name for this method, it will be making Marvin talk.
 	private void outputMessage(String message) {
 		System.out.println(message);
 	}
-	
-	// TODO: Delete response component if it turns out they aren't required
-	public void processResponse(MarvinResponse response) {
-		ResponseHandler responseHandler = ResponseHandlerFactory.getHandlerForResponseStatus(response.getCommandStatus());
-		responseHandler.handleResponse(response);
-	}
-	
+
 	private String listenToCommand() throws InterruptedException, ExecutionException {
 		System.out.println("Listening...");
 		
