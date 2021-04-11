@@ -7,7 +7,7 @@ import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
 import com.ahwers.marvin.ResourceTemplate;
 import com.ahwers.marvin.ResourceType;
-import com.ahwers.marvin.CommandStatus;
+import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
@@ -36,7 +36,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
 		int newExpressionId = graphicalCalculator.addNewExpression(processedExpression);
 		
-		MarvinResponse response = new MarvinResponse(CommandStatus.SUCCESS);
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
 		
 		// TODO: Create an abstract "buildActionResponse" method in ApplicationAdaptor that adaptors implement to accept [ResourceType type] and [String content] and instantiate a Resource instance with the application name and it's current state id.
 		//		 Will remove repeated code in the form of "new Resource(graphicalCalculator.getStateId(), getApplicationName(), "
@@ -87,15 +87,15 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		} catch (NumberFormatException e) {
 			response.setResponseMessage("\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
 			response.setFailException(e);
-			response.setCommandStatus(CommandStatus.FAILED);
+			response.setCommandStatus(CommandOutcome.FAILED);
 		} catch (IndexOutOfBoundsException e) {
 			response.setResponseMessage("Graph " + expressionIndex + "doesn't exist.");
 			response.setFailException(e);
-			response.setCommandStatus(CommandStatus.FAILED);
+			response.setCommandStatus(CommandOutcome.FAILED);
 		}
 		
 		if (response.getCommandStatus() == null) {
-			response.setCommandStatus(CommandStatus.SUCCESS);
+			response.setCommandStatus(CommandOutcome.SUCCESS);
 		}
 		
 		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.HTML, getHtmlResourceForCalculatorState()));

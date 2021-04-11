@@ -13,7 +13,7 @@ import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;
-import com.ahwers.marvin.CommandStatus;
+import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.Marvin;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
@@ -28,8 +28,10 @@ public class MarvinClient {
 		
 //		marvinClient.runVoiceCommand();
 		
+		marvinClient.runCommand("test");
+		marvinClient.runCommand("what does 2 plus 2 equal");
 //		marvinClient.runCommand("can you plot wye equals ex squared at 3 ex sad 5 please");
-		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
+//		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
 //		Thread.sleep(2000);
 //		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
 //		marvinClient.runCommand("what's 5 plus 6");
@@ -66,8 +68,8 @@ public class MarvinClient {
 			outputMessage(response.getResponseMessage());
 		}
 		
-		CommandStatus status = response.getCommandStatus();
-		if (status == CommandStatus.SUCCESS) {
+		CommandOutcome status = response.getCommandStatus();
+		if (status == CommandOutcome.SUCCESS) {
 			try {
 				ResourceHandler.openResource(response.getResources());
 			} catch (InvalidResponseException e) {
@@ -75,10 +77,10 @@ public class MarvinClient {
 				e.printStackTrace();
 			}
 		}
-		else if (status == CommandStatus.FAILED) {
+		else if (status == CommandOutcome.FAILED) {
 			System.out.println(response.getFailException().getMessage());
 		}
-		else if (status == CommandStatus.UNMATCHED) {
+		else if (status == CommandOutcome.UNMATCHED) {
 			String actionToRun = getActionToRunFromUnmatchedResponse(response);
 			handleResponse(marvin.processAction(actionToRun));
 		}

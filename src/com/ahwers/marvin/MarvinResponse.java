@@ -7,15 +7,15 @@ public class MarvinResponse {
 	
 	private String responseMessage;
 	private List<Resource> responseResources = new ArrayList<>();
-	private CommandStatus status;
+	private CommandOutcome status;
 	private Throwable failException;
 	
-	public MarvinResponse(CommandStatus status, String responseMessage) {
+	public MarvinResponse(CommandOutcome status, String responseMessage) {
 		this.status = status;
 		this.responseMessage = responseMessage;
 	}
 	
-	public MarvinResponse(CommandStatus status) {
+	public MarvinResponse(CommandOutcome status) {
 		this.status = status;
 	}
 	
@@ -33,11 +33,11 @@ public class MarvinResponse {
 		return this.responseResources;
 	}
 	
-	public CommandStatus getCommandStatus() {
+	public CommandOutcome getCommandStatus() {
 		return this.status;
 	}
 	
-	public void setCommandStatus(CommandStatus status) {
+	public void setCommandStatus(CommandOutcome status) {
 		this.status = status;
 	}
 	

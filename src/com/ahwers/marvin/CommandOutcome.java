@@ -1,6 +1,6 @@
 package com.ahwers.marvin;
 
-public enum CommandStatus {
+public enum CommandOutcome {
 	
 	INVALID,
 	SUCCESS,

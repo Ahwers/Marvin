@@ -68,7 +68,7 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
-		MarvinResponse response = new MarvinResponse(CommandStatus.UNMATCHED, "Please be more specific.");
+		MarvinResponse response = new MarvinResponse(CommandOutcome.UNMATCHED, "Please be more specific.");
 		
 		String selectionContent = "";
 		for (ApplicationAction action : actionOptions) {
@@ -120,7 +120,7 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildInvalidCommandResponse() {
-		return new MarvinResponse(CommandStatus.INVALID, "Sorry, I have not been programmed to process that command.");
+		return new MarvinResponse(CommandOutcome.INVALID, "Sorry, I have not been programmed to process that command.");
 	}
 	
 }
