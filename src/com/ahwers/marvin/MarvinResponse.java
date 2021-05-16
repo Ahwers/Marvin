@@ -5,14 +5,14 @@ import java.util.List;
 
 public class MarvinResponse {
 	
-	private String responseMessage;
-	private List<Resource> responseResources = new ArrayList<>();
+	private String message;
+	private Resource resource;
 	private CommandOutcome status;
 	private Throwable failException;
 	
 	public MarvinResponse(CommandOutcome status, String responseMessage) {
 		this.status = status;
-		this.responseMessage = responseMessage;
+		this.message = responseMessage;
 	}
 	
 	public MarvinResponse(CommandOutcome status) {
@@ -21,16 +21,12 @@ public class MarvinResponse {
 	
 	public MarvinResponse() {}
 	
-	public void addResource(Resource newResource) {
-		responseResources.add(newResource);
+	public void setResource(Resource resource) {
+		this.resource = resource;
 	}
 	
-	public Resource getResource(int resourceIndex) {
-		return this.responseResources.get(resourceIndex);
-	}
-	
-	public List<Resource> getResources() {
-		return this.responseResources;
+	public Resource getResource() {
+		return this.resource;
 	}
 	
 	public CommandOutcome getCommandStatus() {
@@ -42,11 +38,11 @@ public class MarvinResponse {
 	}
 	
 	public String getResponseMessage() {
-		return this.responseMessage;
+		return this.message;
 	}
 	
 	public void setResponseMessage(String responseMessage) {
-		this.responseMessage = responseMessage;
+		this.message = responseMessage;
 	}
 
 	public void setFailException(Throwable failException) {

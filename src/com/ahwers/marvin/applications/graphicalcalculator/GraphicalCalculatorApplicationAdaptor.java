@@ -6,7 +6,7 @@ import java.util.Map;
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
 import com.ahwers.marvin.ResourceTemplate;
-import com.ahwers.marvin.ResourceType;
+import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
@@ -34,39 +34,52 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		
 		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
-		int newExpressionId = graphicalCalculator.addNewExpression(processedExpression);
 		
 		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		int newExpressionId = graphicalCalculator.addNewExpressionAndGetId(processedExpression);
 		
-		// TODO: Create an abstract "buildActionResponse" method in ApplicationAdaptor that adaptors implement to accept [ResourceType type] and [String content] and instantiate a Resource instance with the application name and it's current state id.
-		//		 Will remove repeated code in the form of "new Resource(graphicalCalculator.getStateId(), getApplicationName(), "
-		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.HTML, getHtmlResourceForCalculatorState()));
+		Resource graphicalCalculatorResource = buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations();
 		
-		// TODO: Doesn't work
-		String javascriptTransmformationScript = "calculator.setExpression({ id: '" + newExpressionId + "', latex: '" + processedExpression + "' });";
-		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.JAVASCRIPT_UPDATE_SCRIPT, javascriptTransmformationScript));
+		String htmlStateUpdateScript = "calculator.setExpression({ id: '" + newExpressionId + "', latex: '" + processedExpression + "' });";
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, htmlStateUpdateScript);
+		
+		response.setResource(graphicalCalculatorResource);
 		
 		return response;
 	}
 	
-	private String getHtmlResourceForCalculatorState() {
+	private Resource buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations() {
+		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
+		
+		int currentStateId = graphicalCalculator.getCurrentStateId();
+		int previousStateId = graphicalCalculator.getPreviousStateId();
+		
+		Resource graphicalCalculatorResource = new Resource(getApplicationName(), currentStateId, previousStateId);
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, getHtmlRepresentationForCalculatorState());
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, getCalculatorSetUpScript());
+		
+		return graphicalCalculatorResource;
+	}
+	
+	private String getHtmlRepresentationForCalculatorState() {
 		ResourceTemplate calculatorTemplate = new ResourceTemplate("/graphical_calculator.html");
 		Map<String, String> templateData = new HashMap<>();
-		templateData.put("CALCULATOR_SET_UP_SCRIPT", getCalculatorSetUpScriptForCalculatorState());
+		templateData.put("CALCULATOR_SET_UP_SCRIPT", getCalculatorSetUpScript());
 		return calculatorTemplate.mergeDataWithResourceTemplate(templateData);
 	}
 	
-	private String getCalculatorSetUpScriptForCalculatorState() {
+	private String getCalculatorSetUpScript() {
 		GraphicalCalculatorState state = (GraphicalCalculatorState) getApplication();
 		
-		int stateId = state.getStateId();
+		int stateId = state.getCurrentStateId();
 		Map<Integer, String> expressions = state.getExpressions();
 		int focusX = state.getFocusX();
 		int focusY = state.getFocusY();
 		
 		String script = "var stateId = " + stateId + ";\n"
 				      + "var focusX = " + focusX + ";\n"
-				      + "var focusY = " + focusY + ";\n";
+				      + "var focusY = " + focusY + ";\n"
+				      + "calculator.setBlank();\n";
 		for (Integer expressionId : expressions.keySet()) {
 			script += "calculator.setExpression({ id: '" + expressionId + "', latex: '" + expressions.get(expressionId) +"' });\n";
 		}
@@ -81,27 +94,22 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		
 		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
 		
-		MarvinResponse response = new MarvinResponse();
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
 		try {
 			graphicalCalculator.removeExpression(Integer.valueOf(expressionIndex));
 		} catch (NumberFormatException e) {
-			response.setResponseMessage("\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
+			response = new MarvinResponse(CommandOutcome.FAILED, "\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
 			response.setFailException(e);
-			response.setCommandStatus(CommandOutcome.FAILED);
 		} catch (IndexOutOfBoundsException e) {
-			response.setResponseMessage("Graph " + expressionIndex + "doesn't exist.");
+			response = new MarvinResponse(CommandOutcome.FAILED, "Graph " + expressionIndex + "doesn't exist.");
 			response.setFailException(e);
-			response.setCommandStatus(CommandOutcome.FAILED);
 		}
 		
-		if (response.getCommandStatus() == null) {
-			response.setCommandStatus(CommandOutcome.SUCCESS);
-		}
+		Resource graphicalCalculatorResource = buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations();
+		// TODO: JavaScript transformation resource
 		
-		response.addResource(new Resource(graphicalCalculator.getStateId(), getApplicationName(), ResourceType.HTML, getHtmlResourceForCalculatorState()));
-		
-		// TODO: JavaScript transfmormation resource
-		
+		response.setResource(graphicalCalculatorResource);
+
 		return response;
 	}
 	

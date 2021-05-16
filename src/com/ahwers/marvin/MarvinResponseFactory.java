@@ -74,7 +74,7 @@ public class MarvinResponseFactory {
 		for (ApplicationAction action : actionOptions) {
 			selectionContent += (stringifyApplicationAction(action) + "\n");
 		}
-		response.addResource(new Resource(ResourceType.COMMAND_OPTION_LIST, selectionContent));
+		response.setResource(new Resource(ResourceRepresentationType.COMMAND_OPTION_LIST, selectionContent));
 		
 		return response;
 	}

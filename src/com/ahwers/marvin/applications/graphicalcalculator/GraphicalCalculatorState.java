@@ -15,13 +15,17 @@ import com.ahwers.marvin.applications.Application;
 // TODO: Make concurrent singleton
 public class GraphicalCalculatorState extends Application {
 	
-	private int stateId = 0;
+	private int currentStateId = 0;
 	private Map<Integer, String> expressions = new HashMap<>();
 	private int focusX = 0;
 	private int focusY = 0;
 	
-	public int getStateId() {
-		return this.stateId;
+	public int getCurrentStateId() {
+		return this.currentStateId;
+	}
+	
+	public int getPreviousStateId() {
+		return (this.currentStateId - 1);
 	}
 	
 	public Map<Integer, String> getExpressions() {
@@ -36,17 +40,17 @@ public class GraphicalCalculatorState extends Application {
 		return this.focusY;
 	}
 	
-	public int addNewExpression(String expression) {
+	public int addNewExpressionAndGetId(String expression) {
 		int expressionId = (expressions.size() + 1);
 		expressions.put(expressionId, expression);
-		this.stateId++;
+		this.currentStateId++;
 		
 		return expressionId;
 	}
 
 	public void removeExpression(int expressionIndex) throws IndexOutOfBoundsException {
 		expressions.remove(expressionIndex);
-		this.stateId++;
+		this.currentStateId++;
 	}
 
 	public void removeAllExpressions() {

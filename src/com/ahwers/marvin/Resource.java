@@ -1,48 +1,40 @@
 package com.ahwers.marvin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Resource {
 	
-	private int stateId;
 	private String applicationName;
-	private ResourceType type;
-	private String content;
+	private int currentStateId;
+	private int previousStateId;
+	private Map<ResourceRepresentationType, String> resourceRepresentations = new HashMap<>();
 	
-	public Resource(int stateId, String applicationName, ResourceType type, String content) {
-		this.stateId = stateId;
+	public Resource(String applicationName, int currentStateId, int previousStateId) {
 		this.applicationName = applicationName;
-		this.type = type;
-		this.content = content;
+		this.currentStateId = currentStateId;
+		this.previousStateId = previousStateId;
 	}
 	
-	public Resource(ResourceType type, String content) {
-		this.stateId = 1;
+	public Resource(ResourceRepresentationType type, String content) {
 		this.applicationName = "Marvin";
-		
-		this.type = type;
-		this.content = content;
+		resourceRepresentations.put(type, content);
 	}
 	
+	public void addRepresentation(ResourceRepresentationType type, String content) {
+		resourceRepresentations.put(type, content);
+	}
+	
+	public String getRepresentation(ResourceRepresentationType type) {
+		return resourceRepresentations.get(type);
+	}
 	
 	public String getApplicationName() {
 		return this.applicationName;
 	}
 	
 	public int getStateId() {
-		return this.stateId;
+		return this.currentStateId;
 	}
-	
-	public ResourceType getType() {
-		return this.type;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-	
-	public String getContent() {
-		return this.content;
-	}
-	
-
 	
 }

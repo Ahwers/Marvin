@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceType;
+import com.ahwers.marvin.ResourceRepresentationType;
 
 public class BrowserDriver {
 	
@@ -34,20 +34,19 @@ public class BrowserDriver {
 		this.browserDriver = new FirefoxDriver();
 	}
 	
-	public void loadResource(Resource resource) {
+	public void loadRepresentationTypeFromResource(ResourceRepresentationType type, Resource resource) {
 		activeApplicationName = resource.getApplicationName();
 		activeApplicationStateId = resource.getStateId();
 		
-		ResourceType type = resource.getType();
-		if (type == ResourceType.HTML) {
-			browserDriver.get("data:text/html;charset=utf-8," + resource.getContent());
+		if (type == ResourceRepresentationType.HTML) {
+			browserDriver.get("data:text/html;charset=utf-8," + resource.getRepresentation(type));
 		}
-		else if (type == ResourceType.JAVASCRIPT_UPDATE_SCRIPT) {
+		else if (type == ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT) {
 			JavascriptExecutor js = (JavascriptExecutor) this.browserDriver;
-			js.executeScript(resource.getContent());
+			js.executeScript(resource.getRepresentation(type));
 		}
 	}
-
+	
 	public String getHostedApplicationName() {
 		return this.activeApplicationName;
 	}

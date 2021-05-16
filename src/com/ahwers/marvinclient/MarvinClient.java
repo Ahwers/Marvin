@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
+import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;
 import com.ahwers.marvin.CommandOutcome;
@@ -23,15 +24,16 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 public class MarvinClient {
 	
 	// TODO: Write test suites, but put them with the core Marvin code
+	// TODO: Should also write an integration test that makes sure that all application adaptors are set up correctly; method signatures of action methods are correct.
 	public static void main(String args[]) throws InterruptedException, ExecutionException, IOException {
 		MarvinClient marvinClient = new MarvinClient();
 		
 //		marvinClient.runVoiceCommand();
 		
-		marvinClient.runCommand("test");
-		marvinClient.runCommand("what does 2 plus 2 equal");
+//		marvinClient.runCommand("test");
+//		marvinClient.runCommand("what does 2 plus 2 equal");
 //		marvinClient.runCommand("can you plot wye equals ex squared at 3 ex sad 5 please");
-//		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
+		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
 //		Thread.sleep(2000);
 //		marvinClient.runCommand("can you plot y = x ^ 2 + (3x + 5)/x please");
 //		marvinClient.runCommand("what's 5 plus 6");
@@ -71,7 +73,7 @@ public class MarvinClient {
 		CommandOutcome status = response.getCommandStatus();
 		if (status == CommandOutcome.SUCCESS) {
 			try {
-				ResourceHandler.openResource(response.getResources());
+				ResourceHandler.openResource(response.getResource());
 			} catch (InvalidResponseException e) {
 				outputMessage("I can not open this resource due to a faulty response, check my logs for more info.");
 				e.printStackTrace();
@@ -87,7 +89,7 @@ public class MarvinClient {
 	}
 	
 	private String getActionToRunFromUnmatchedResponse(MarvinResponse response) {
-		Scanner actionOptionsScanner = new Scanner(response.getResources().get(0).getContent());
+		Scanner actionOptionsScanner = new Scanner(response.getResource().getRepresentation(ResourceRepresentationType.COMMAND_OPTION_LIST));
 		
 		List<String> actionOptions = new ArrayList<>();
 		

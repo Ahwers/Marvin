@@ -3,66 +3,41 @@ package com.ahwers.marvinclient;
 import java.util.List;
 
 import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceType;
+import com.ahwers.marvin.ResourceRepresentationType;
 
 public class ResourceHandler {
 	
-	public static void openResource(List<Resource> resources) throws InvalidResponseException {
-		ResourceHandler handler = new ResourceHandler(resources);
+	public static void openResource(Resource resource) throws InvalidResponseException {
+		ResourceHandler handler = new ResourceHandler(resource);
 		handler.openResource();
 	}
 	
-	private List<Resource> resources;
+	private Resource resource;
 	
-	private ResourceHandler(List<Resource> resources) {
-		this.resources = resources;
+	private ResourceHandler(Resource resource) {
+		this.resource = resource;
 	}
 	
 	private void openResource() throws InvalidResponseException {
-		if (resourceIsWebpage()) {
+		if (resourceHasHTML()) {
 			openBrowserResource();
 		}
 	}
 	
-	private boolean resourceIsWebpage() {
-		boolean resourceIsWebpage = false;
+	private boolean resourceHasHTML() {
+		boolean resourceHasHTML = false;
 		
-		for (Resource resourceObject : resources) {
-			if ((resourceObject.getType() == ResourceType.HTML) || (resourceObject.getType() == ResourceType.JAVASCRIPT_UPDATE_SCRIPT)) {
-				resourceIsWebpage = true;
-			}
+		String htmlRepresentation = this.resource.getRepresentation(ResourceRepresentationType.HTML);
+		if (htmlRepresentation != null) {
+			resourceHasHTML = true;
 		}
 		
-		return resourceIsWebpage;
+		return resourceHasHTML;
 	}
 	
 	private void openBrowserResource() throws InvalidResponseException {
-		Resource resourceToLoad = null;
-		if (browserIsCurrentlyHostingResourceApplication() && browerApplicationStateIsOneBelowResource()) {
-			resourceToLoad = getResourceOfType(ResourceType.JAVASCRIPT_UPDATE_SCRIPT);
-		}
-		else {
-			resourceToLoad = getResourceOfType(ResourceType.HTML);
-		}
-		
 		BrowserDriver browserDriver = BrowserDriver.getBrowserDriver();
-		browserDriver.loadResource(resourceToLoad);
-	}
-	
-	private Resource getResourceOfType(ResourceType targetType) throws InvalidResponseException {
-		Resource targetResource = null;
-		for (Resource resourceObject : resources) {
-			if (resourceObject.getType() == targetType) {
-				if (targetResource == null) {
-					targetResource = resourceObject;
-				}
-				else {
-					throw new InvalidResponseException("Multiple resources of the type '"+ targetType.toString() + "' were provided.");
-				}
-			}
-		}
-		
-		return targetResource;
+		browserDriver.loadRepresentationTypeFromResource(ResourceRepresentationType.HTML, this.resource);
 	}
 	
 	private boolean browserIsCurrentlyHostingResourceApplication() throws InvalidResponseException {
@@ -71,12 +46,7 @@ public class ResourceHandler {
 	}
 	
 	private String getResourceApplicationName() throws InvalidResponseException {
-		String appName = resources.get(0).getApplicationName();
-		for (Resource resourceObject : resources) {
-			if (!resourceObject.getApplicationName().equals(appName)) {
-				throw new InvalidResponseException("Resources for multiple applications have been passed here.");
-			}
-		}
+		String appName = resource.getApplicationName();
 		
 		return appName;
 	}
@@ -87,12 +57,7 @@ public class ResourceHandler {
 	}
 	
 	private int getResourceStateId() throws InvalidResponseException {
-		int appStateId = resources.get(0).getStateId();
-		for (Resource resourceObject : resources) {
-			if (resourceObject.getStateId() != appStateId) {
-				throw new InvalidResponseException("Resources for multiple application states have been passed here.");
-			}
-		}
+		int appStateId = resource.getStateId();
 		
 		return appStateId;
 	}
