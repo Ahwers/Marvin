@@ -62,7 +62,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	}
 	
 	private String getHtmlRepresentationForCalculatorState() {
-		ResourceTemplate calculatorTemplate = new ResourceTemplate("/graphical_calculator.html");
+		ResourceTemplate calculatorTemplate = new ResourceTemplate("graphical_calculator");
 		Map<String, String> templateData = new HashMap<>();
 		templateData.put("CALCULATOR_SET_UP_SCRIPT", getCalculatorSetUpScript());
 		return calculatorTemplate.mergeDataWithResourceTemplate(templateData);

@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
 import com.ahwers.marvin.ResourceRepresentationType;
+import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;
 import com.ahwers.marvin.CommandOutcome;
@@ -113,7 +114,7 @@ public class MarvinClient {
 	private String listenToCommand() throws InterruptedException, ExecutionException {
 		System.out.println("Listening...");
 		
-		String azureKeyFilePath = getClass().getResource("/azure_key.txt").getPath();
+		String azureKeyFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("azure_key");
 		Scanner azureKeyScanner;
 		String azureKey = "";
 		try {

@@ -5,18 +5,20 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+
 public class ResourceTemplate {
 	
 	private String content;
 	
-	public ResourceTemplate(String resourcePath) {
-		this.content = getContentFromResourceFile(resourcePath);
+	public ResourceTemplate(String resourceKey) {
+		this.content = getContentFromResourceFile(resourceKey);
 	}
 	
-	private String getContentFromResourceFile(String resourcePath) {
+	private String getContentFromResourceFile(String resourceKey) {
 		String resourceContent = "";
 		
-		String resourceFilePath = getClass().getResource(resourcePath).getPath().toString();
+		String resourceFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey(resourceKey);
 		Scanner resourceScanner = null;
 		try {
 			resourceScanner = new Scanner(new File(resourceFilePath));

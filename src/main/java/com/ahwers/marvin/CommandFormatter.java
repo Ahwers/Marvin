@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+
 public class CommandFormatter {
 	
 	private List<String> politeOpeners;
@@ -54,12 +56,12 @@ public class CommandFormatter {
 	}
 	
 	private List<String> loadPoliteOpeners() throws FileNotFoundException {
-		String openerLookupFilePath = getClass().getResource("/command_opening_pleasentries").getPath();
+		String openerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("command_opening_pleasentries");
 		return loadLinesFromFile(openerLookupFilePath);
 	}
 	
 	private List<String> loadPoliteClosers() throws FileNotFoundException {
-		String closerLookupFilePath = getClass().getResource("/command_closing_pleasentries").getPath();
+		String closerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("/command_closing_pleasentries");
 		return loadLinesFromFile(closerLookupFilePath); 
 	}
 	

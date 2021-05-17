@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+
 // TODO: "Minus" doesn't work properly, two minus signs get picked up by azure
 public class AlgebraicExpressionProcessor {
 	
@@ -38,7 +40,7 @@ public class AlgebraicExpressionProcessor {
 	}
 	
 	private void populateTokenWordToSymbolMap() throws FileNotFoundException {
-		String lookupFilePath = getClass().getResource("/algebraic_expression_syntax.txt").getPath();
+		String lookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("algebraic_expression_syntax");
 		
 		Scanner fileScanner = new Scanner(new File(lookupFilePath));
 		

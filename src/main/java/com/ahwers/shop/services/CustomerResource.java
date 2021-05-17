@@ -55,7 +55,7 @@ public class CustomerResource {
    public StreamingOutput getCustomer(@PathParam("id") int id, @Context ServletContext servletContext) throws Exception {
 	  Customer customer = new Customer();
 //	  String base = servletContext.getRealPath("/WEB-INF/classes/resources/graphical_calculator.html");
-	  String base = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("graphical_calculator_html");
+	  String base = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("graphical_calculator");
 	  customer.setFirstName("works" + base);
       if (customer == null) {
          throw new WebApplicationException(Response.Status.NOT_FOUND);
