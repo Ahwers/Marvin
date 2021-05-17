@@ -16,6 +16,13 @@ public class Resource {
 		this.previousStateId = previousStateId;
 	}
 	
+	public Resource(String applicationName, int currentStateId, ResourceRepresentationType type, String content) {
+		this.applicationName = applicationName;
+		this.currentStateId = currentStateId;
+		this.previousStateId = previousStateId;
+		resourceRepresentations.put(type, content);
+	}
+	
 	public Resource(ResourceRepresentationType type, String content) {
 		this.applicationName = "Marvin";
 		resourceRepresentations.put(type, content);

@@ -18,7 +18,7 @@ public class MealRepository {
 	}
 
 	public Set<Meal> getAllBreakfasts() {
-		
+		return null;
 	}
 	
 }

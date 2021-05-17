@@ -39,7 +39,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 			updateShoppingListWithMealPlan(currentMealPlan);
 		}
 
-		response.setResource(new Resource(currentMealPlan.getId(), getApplicationName(), ResourceRepresentationType.HTML, generateHTMLResourceForMealPlan(currentMealPlan)));
+		response.setResource(new Resource(getApplicationName(), currentMealPlan.getId(), ResourceRepresentationType.HTML, generateHTMLResourceForMealPlan(currentMealPlan)));
 		
 		return response;
 	}
@@ -60,7 +60,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 		LocalDate nextMondaysDate = LocalDate.of(todaysDate.getYear(), todaysDate.getMonth().getValue(), (todaysDate.getDayOfMonth() + numberOfDaysUntilNextMonday));
 		
 		WeeklyMealPlan mealPlan = new WeeklyMealPlan(1, todaysDate, nextMondaysDate);
-		mealPlan.setDailyMealPlans(generateBalancedSetOfDailyMealPlans());
+//		mealPlan.setDailyMealPlans(generateBalancedSetOfDailyMealPlans());
 		
 		return mealPlan;
 	}
@@ -85,7 +85,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 			
 		}
 		
-		return mealPlanMeals;
+		return null;
 	}
 	
 	private String generateHTMLResourceForMealPlan(WeeklyMealPlan mealPlan) {
