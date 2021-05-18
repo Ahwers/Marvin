@@ -36,6 +36,10 @@ public class Resource {
 		return resourceRepresentations.get(type);
 	}
 	
+	public Map<ResourceRepresentationType, String> getResourceRepresentations() {
+		return this.resourceRepresentations;
+	}
+	
 	public String getApplicationName() {
 		return this.applicationName;
 	}

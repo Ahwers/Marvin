@@ -26,7 +26,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	@Override
 	protected Application instantiateApplication() {
-		return new GraphicalCalculatorState();
+		return new GraphicalCalculatorState(); // TODO: Should obtain a singleton instance in order to retain state
 	}
 	
 	@CommandMatch("^plot (?<expression>.+)$")
