@@ -13,8 +13,6 @@ import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 
-// TODO: Maybe this should just absorb GraphicalCalculator.
-//		 Furthermore, can we get rid of application stuff from this whole class but still allow classes that would like Application style classes to exist to still use them?
 @IntegratesApplication("Graphical Calculator")
 public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
@@ -26,65 +24,28 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	@Override
 	protected Application instantiateApplication() {
-		return new GraphicalCalculatorState(); // TODO: Should obtain a singleton instance in order to retain state
+		return DesmosGraphicalCalculator.getInstance();
+	}
+	
+	@CommandMatch("^open graphical calculator$")
+	public MarvinResponse openGraphicalCalculator(Map<String, String> arguments) {
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		response.setResource(buildGraphicalCalculatorResource());
+		
+		return response;
 	}
 	
 	@CommandMatch("^plot (?<expression>.+)$")
 	public MarvinResponse addNewAlgebraicExpression(Map<String, String> arguments) {
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		
-		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
-		
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+		graphicalCalculator.addNewExpression(processedExpression);
+			
 		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
-		int newExpressionId = graphicalCalculator.addNewExpressionAndGetId(processedExpression);
-		
-		Resource graphicalCalculatorResource = buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations();
-		
-		String htmlStateUpdateScript = "calculator.setExpression({ id: '" + newExpressionId + "', latex: '" + processedExpression + "' });";
-		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, htmlStateUpdateScript);
-		
-		response.setResource(graphicalCalculatorResource);
+		response.setResource(buildGraphicalCalculatorResource());
 		
 		return response;
-	}
-	
-	private Resource buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations() {
-		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
-		
-		int currentStateId = graphicalCalculator.getCurrentStateId();
-		int previousStateId = graphicalCalculator.getPreviousStateId();
-		
-		Resource graphicalCalculatorResource = new Resource(getApplicationName(), currentStateId, previousStateId);
-		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, getHtmlRepresentationForCalculatorState());
-		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, getCalculatorSetUpScript());
-		
-		return graphicalCalculatorResource;
-	}
-	
-	private String getHtmlRepresentationForCalculatorState() {
-		ResourceTemplate calculatorTemplate = new ResourceTemplate("graphical_calculator");
-		Map<String, String> templateData = new HashMap<>();
-		templateData.put("CALCULATOR_SET_UP_SCRIPT", getCalculatorSetUpScript());
-		return calculatorTemplate.mergeDataWithResourceTemplate(templateData);
-	}
-	
-	private String getCalculatorSetUpScript() {
-		GraphicalCalculatorState state = (GraphicalCalculatorState) getApplication();
-		
-		int stateId = state.getCurrentStateId();
-		Map<Integer, String> expressions = state.getExpressions();
-		int focusX = state.getFocusX();
-		int focusY = state.getFocusY();
-		
-		String script = "var stateId = " + stateId + ";\n"
-				      + "var focusX = " + focusX + ";\n"
-				      + "var focusY = " + focusY + ";\n"
-				      + "calculator.setBlank();\n";
-		for (Integer expressionId : expressions.keySet()) {
-			script += "calculator.setExpression({ id: '" + expressionId + "', latex: '" + expressions.get(expressionId) +"' });\n";
-		}
-		
-		return script;
 	}
 	
 	// TODO: Should I make it so that ^ and $ are not required for any matches? Yes. Actually nah, let's stay flexible until we see that the flexibility is not required.
@@ -92,7 +53,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	public MarvinResponse removeAlgebraicExpression(Map<String, String> arguments) {
 		String expressionIndex = arguments.get("graphIndex");
 		
-		GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
 		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
 		try {
@@ -105,12 +66,23 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 			response.setFailException(e);
 		}
 		
-		Resource graphicalCalculatorResource = buildGraphicalCalculatorResourceWithHtmlAndInstantiationRepresentations();
-		// TODO: JavaScript transformation resource
-		
-		response.setResource(graphicalCalculatorResource);
+		response.setResource(buildGraphicalCalculatorResource());
 
 		return response;
 	}
 	
+	private Resource buildGraphicalCalculatorResource() {
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+		
+		int previousStateId = graphicalCalculator.getPreviousStateId();
+		int currentStateId = graphicalCalculator.getCurrentStateId();
+
+		Resource graphicalCalculatorResource = new Resource(getApplicationName(), previousStateId, currentStateId);
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, graphicalCalculator.getHtmlRepresentation());
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, graphicalCalculator.getHtmlStateInstantiationScript());
+		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, graphicalCalculator.getHtmlStateUpdateScriptFromPreviousStateId());
+
+		return graphicalCalculatorResource;
+	}
+
 }
