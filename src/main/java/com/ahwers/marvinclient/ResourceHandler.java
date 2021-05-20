@@ -57,7 +57,7 @@ public class ResourceHandler {
 	}
 	
 	private int getResourceStateId() throws InvalidResponseException {
-		int appStateId = resource.getStateId();
+		int appStateId = resource.getCurrentStateId();
 		
 		return appStateId;
 	}

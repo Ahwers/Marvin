@@ -1,13 +1,11 @@
 package com.ahwers.marvin.applications.graphicalcalculator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvin.ResourceTemplate;
 import com.ahwers.marvin.applications.Application;
 
@@ -23,7 +21,7 @@ public class DesmosGraphicalCalculator extends Application {
 	}
 	
 	private int currentStateId = 1;
-	private Map<Integer, String> expressions = new HashMap<>();
+	private List<String> expressions = new LinkedList<>();
 	private int focusX = 0;
 	private int focusY = 0;
 	private String lastUpdateScript = "";
@@ -40,8 +38,11 @@ public class DesmosGraphicalCalculator extends Application {
 				      + "var focusX = " + focusX + ";\n"
 				      + "var focusY = " + focusY + ";\n"
 				      + "calculator.setBlank();\n";
-		for (Integer expressionId : this.expressions.keySet()) {
-			script += "calculator.setExpression({ id: '" + expressionId + "', latex: '" + this.expressions.get(expressionId) +"' });\n";
+		
+		int expressionId = 0;
+		for (String expression : expressions) {
+			script += "calculator.setExpression({ id: '" + expressionId + "', latex: '" + expression +"' });\n";
+			expressionId++;
 		}
 		
 		return script;
@@ -59,7 +60,7 @@ public class DesmosGraphicalCalculator extends Application {
 		return (this.currentStateId - 1);
 	}
 	
-	public Map<Integer, String> getExpressions() {
+	public List<String> getExpressions() {
 		return this.expressions;
 	}
 	
@@ -72,23 +73,24 @@ public class DesmosGraphicalCalculator extends Application {
 	}
 	
 	public void addNewExpression(String expression) {
-		int expressionId = (expressions.size() + 1);
-		expressions.put(expressionId, expression);
+		expressions.add(expression);
 		
 		this.currentStateId++;
-		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressionId + "', latex: '" + expression + "' });");
+		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressions.size() + "', latex: '" + expression + "' });");
 	}
 
 	public void removeExpression(int expressionIndex) throws IndexOutOfBoundsException {
-		expressions.remove(expressionIndex);
+		expressions.remove(expressionIndex - 1);
 		
 		this.currentStateId++;
 		this.lastUpdateScript = ("calculator.removeExpression({ id: '" + expressionIndex + "' });");
 	}
 
 	public void removeAllExpressions() {
-		// TODO Auto-generated method stub
+		expressions.clear();
 		
+		this.currentStateId++;
+		this.lastUpdateScript = "calculator.setBlank();";
 	}
 
 	public void replaceExpressionWith(int expressionIndex, String expression) {

@@ -1,11 +1,9 @@
 package com.ahwers.marvin.applications.graphicalcalculator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceTemplate;
 import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.applications.Application;
@@ -77,7 +75,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		int previousStateId = graphicalCalculator.getPreviousStateId();
 		int currentStateId = graphicalCalculator.getCurrentStateId();
 
-		Resource graphicalCalculatorResource = new Resource(getApplicationName(), previousStateId, currentStateId);
+		Resource graphicalCalculatorResource = new Resource(getApplicationName(), currentStateId, previousStateId);
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, graphicalCalculator.getHtmlRepresentation());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, graphicalCalculator.getHtmlStateInstantiationScript());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, graphicalCalculator.getHtmlStateUpdateScriptFromPreviousStateId());

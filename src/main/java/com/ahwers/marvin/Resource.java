@@ -44,8 +44,12 @@ public class Resource {
 		return this.applicationName;
 	}
 	
-	public int getStateId() {
+	public int getCurrentStateId() {
 		return this.currentStateId;
+	}
+	
+	public int getPreviousStateId() {
+		return this.previousStateId;
 	}
 	
 }

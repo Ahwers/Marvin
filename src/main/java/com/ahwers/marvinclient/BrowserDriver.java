@@ -36,7 +36,7 @@ public class BrowserDriver {
 	
 	public void loadRepresentationTypeFromResource(ResourceRepresentationType type, Resource resource) {
 		activeApplicationName = resource.getApplicationName();
-		activeApplicationStateId = resource.getStateId();
+		activeApplicationStateId = resource.getCurrentStateId();
 		
 		if (type == ResourceRepresentationType.HTML) {
 			browserDriver.get("data:text/html;charset=utf-8," + resource.getRepresentation(type));
