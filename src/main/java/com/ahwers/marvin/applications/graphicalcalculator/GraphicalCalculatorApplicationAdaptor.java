@@ -35,9 +35,9 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	@CommandMatch("^plot (?<expression>.+)$")
 	public MarvinResponse addNewAlgebraicExpression(Map<String, String> arguments) {
-		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
-		
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+		
+		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		graphicalCalculator.addNewExpression(processedExpression);
 			
 		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
@@ -64,6 +64,53 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 			response.setFailException(e);
 		}
 		
+		response.setResource(buildGraphicalCalculatorResource());
+
+		return response;
+	}
+
+	@CommandMatch("^remove all (?:expressions|graphs)$")
+	public MarvinResponse removeAllAlgebraicExpressions(Map<String, String> arguments) {
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+
+		graphicalCalculator.removeAllExpressions();
+
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		response.setResource(buildGraphicalCalculatorResource());
+
+		return response;
+	}
+
+	@CommandMatch("^replace (?:expression|graph) (?<graphIndex>.+?) with (?<newExpression>.+?)$")
+	public MarvinResponse replaceExpressionOfIndexWithNewExpression(Map<String, String> arguments) {
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+		
+		int graphIndex = Integer.valueOf(arguments.get("graphIndex"));
+		String newExpression = arguments.get("newExpression");
+		
+		String newAlgebraicExperession = this.expressionProcessor.processExpressionIntoAlgebraicExpression(newExpression);
+		graphicalCalculator.replaceExpressionWith(graphIndex, newAlgebraicExperession);
+		
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		response.setResource(buildGraphicalCalculatorResource());
+		
+		return response;
+	}
+
+	@CommandMatch("^replace (?<targetExpression>.+?) in (?:expression|graph) (?<graphIndex>.+?) with (?<replacementExpression>.+?)$")
+	public MarvinResponse replaceSubstringInAlgebraicExpressionWith(Map<String, String> arguments) {
+		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
+
+		int expressionIndex = Integer.valueOf(arguments.get("graphIndex"));
+		String targetExpression = arguments.get("targetExpression");
+		String replacementExpression = arguments.get("replacementExpression");
+
+		String targetAlgebraicExpression = this.expressionProcessor.processExpressionIntoAlgebraicExpression(targetExpression);
+		String replacementAlgebraicExpression = this.expressionProcessor.processExpressionIntoAlgebraicExpression(replacementExpression);
+
+		graphicalCalculator.replaceAllInExpression(expressionIndex, targetAlgebraicExpression, replacementAlgebraicExpression);
+
+		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 
 		return response;

@@ -25,7 +25,12 @@ public class DesmosGraphicalCalculator extends Application {
 	private int focusX = 0;
 	private int focusY = 0;
 	private String lastUpdateScript = "";
+
+	private DesmosGraphicalCalculator() {
+		expressions.add(""); // To make the expresions list base 1 and as such represetative of the expression keys shown in the app resource.
+	}
 	
+	// TODO: I feel like i want to separate the resource generation aspect from the state.
 	public String getHtmlRepresentation() {
 		ResourceTemplate calculatorTemplate = new ResourceTemplate("graphical_calculator");
 		Map<String, String> templateData = new HashMap<>();
@@ -60,27 +65,16 @@ public class DesmosGraphicalCalculator extends Application {
 		return (this.currentStateId - 1);
 	}
 	
-	public List<String> getExpressions() {
-		return this.expressions;
-	}
-	
-	public int getFocusX() {
-		return this.focusX;
-	}
-	
-	public int getFocusY() {
-		return this.focusY;
-	}
-	
 	public void addNewExpression(String expression) {
+		int expressionId = (expressions.size() + 1);
 		expressions.add(expression);
 		
 		this.currentStateId++;
-		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressions.size() + "', latex: '" + expression + "' });");
+		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressionId + "', latex: '" + expression + "' });");
 	}
 
 	public void removeExpression(int expressionIndex) throws IndexOutOfBoundsException {
-		expressions.remove(expressionIndex - 1);
+		expressions.remove(expressionIndex);
 		
 		this.currentStateId++;
 		this.lastUpdateScript = ("calculator.removeExpression({ id: '" + expressionIndex + "' });");
@@ -94,28 +88,51 @@ public class DesmosGraphicalCalculator extends Application {
 	}
 
 	public void replaceExpressionWith(int expressionIndex, String expression) {
-		// TODO Auto-generated method stub
-		
+		expressions.remove(expressionIndex);
+		expressions.add(expressionIndex, expression);
+
+		this.currentStateId++;
+		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressionIndex + "', latex: '" + expression + "'});");
 	}
 
-	public void replaceInExpression(int expressionIndex, String target, String newValue) {
-		// TODO Auto-generated method stub
-		
+	// TODO: The adaptor will need to process the target and newValue string with the AlgebraicExpressionProcessor and call this with them.
+	public void replaceAllInExpression(int expressionIndex, String target, String newValue) {
+		String currentExpression = expressions.get(expressionIndex);
+		String updatedExpression = currentExpression.replaceAll(target, newValue);
+
+		expressions.remove(expressionIndex);
+		expressions.add(expressionIndex, updatedExpression);
+
+		this.currentStateId++;
+		this.lastUpdateScript = ("calculator.setExpression({ id: '" + expressionIndex + "', latex: '" + updatedExpression + "'});");
+	}
+
+	public void replaceOnceInExpression(int expressionIndex, String target, String newValue, int occuranceToReplace) {
+		// TODO: Implement, will likely need to do it with a regex because String.replaceInstanceOf() doesn't exist.
 	}
 
 	public void hideExpression(int expressionIndex) {
-		// TODO Auto-generated method stub
-		
+		String expression = expressions.get(expressionIndex);
+
+		this.currentStateId++; // TODO: Does true need to be in brackets?
+		this.lastUpdateScript = ("calculator.setExpression({ hidden: true, id: '" + expressionIndex + "', latex: '" + expression + "'});");
 	}
 
-	public void focusOnOrigin() {
-		// TODO Auto-generated method stub
-		
+	public void showExpression(int expressionIndex) {
+		String expression = expressions.get(expressionIndex);
+
+		this.currentStateId++; // TODO: Does false need to be in brackets?
+		this.lastUpdateScript = ("calculator.setExpression({ hidden: false, id: '" + expressionIndex + "', latex: '" + expression + "'});");
 	}
 
-	public void focusOnExpression(int expressionIndex) {
-		// TODO Auto-generated method stub
-		
+	public void undo() {
+		this.currentStateId++;
+		this.lastUpdateScript = ("calculator.undo();");
+	}
+
+	public void redo() {
+		this.currentStateId++;
+		this.lastUpdateScript = ("calculator.redo();");
 	}
 
 }
