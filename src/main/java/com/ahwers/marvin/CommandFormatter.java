@@ -6,10 +6,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 
 public class CommandFormatter {
+	
+	public static void main(String[] args) {
+		CommandFormatter formatter = new CommandFormatter();
+		System.out.println(formatter.formatCommand("Remove expression one please Marvin."));
+	}
 	
 	private List<String> politeOpeners;
 	private List<String> politeClosers;
@@ -31,6 +38,7 @@ public class CommandFormatter {
 		
 		command = removeGrammaticalPunctuationFromCommand(command);
 		command = stripPleasentriesFromCommand(command);
+		command = numerifyAlphabeticNumbersInString(command);
 		command = command.toLowerCase();
 		
 		return command;
@@ -55,13 +63,43 @@ public class CommandFormatter {
 		return command;
 	}
 	
+	private String numerifyAlphabeticNumbersInString(String sentence) {
+		List<String> wordsInSentence = getWordsInSentence(sentence);
+		
+		for (String word : wordsInSentence) {
+			String numericNumber = convertAlphabeticNumberToNumeric(word);
+			if (numericNumber != null) {
+				sentence = sentence.replaceFirst(word, numericNumber);
+			}
+		}
+		
+		return sentence;
+	}
+	
+	private List<String> getWordsInSentence(String sentence) {
+		List<String> words = new ArrayList<>();
+		
+		Pattern wordPattern = Pattern.compile("([a-zA-z]+)");
+		Matcher matcher = wordPattern.matcher(sentence);
+		while (matcher.find()) {
+			words.add(matcher.group());
+		}
+		
+		return words;
+	}
+	
+//	TODO: Implement
+	private String convertAlphabeticNumberToNumeric(String alphabeticNumber) {
+		return null;
+	}
+	
 	private List<String> loadPoliteOpeners() throws FileNotFoundException {
 		String openerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("command_opening_pleasentries");
 		return loadLinesFromFile(openerLookupFilePath);
 	}
 	
 	private List<String> loadPoliteClosers() throws FileNotFoundException {
-		String closerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("/command_closing_pleasentries");
+		String closerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("command_closing_pleasentries");
 		return loadLinesFromFile(closerLookupFilePath); 
 	}
 	

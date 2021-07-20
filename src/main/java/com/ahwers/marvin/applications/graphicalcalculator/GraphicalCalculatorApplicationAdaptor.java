@@ -51,6 +51,8 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	public MarvinResponse removeAlgebraicExpression(Map<String, String> arguments) {
 		String expressionIndex = arguments.get("graphIndex");
 		
+		// TODO: If graphIndex is a word then this fails. Need to translate word numbers into their numerical representations.
+		
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
 		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);

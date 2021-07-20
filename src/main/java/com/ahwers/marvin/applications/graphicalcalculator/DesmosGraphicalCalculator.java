@@ -32,7 +32,7 @@ public class DesmosGraphicalCalculator extends Application {
 	
 	// TODO: I feel like i want to separate the resource generation aspect from the state.
 	public String getHtmlRepresentation() {
-		ResourceTemplate calculatorTemplate = new ResourceTemplate("graphical_calculator");
+		ResourceTemplate calculatorTemplate = new ResourceTemplate("graphical_calculator_html");
 		Map<String, String> templateData = new HashMap<>();
 		templateData.put("CALCULATOR_SET_UP_SCRIPT", getHtmlStateInstantiationScript());
 		return calculatorTemplate.mergeDataWithResourceTemplate(templateData);
