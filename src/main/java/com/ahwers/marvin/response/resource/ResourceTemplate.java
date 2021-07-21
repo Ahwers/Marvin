@@ -1,4 +1,4 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.response.resource;
 
 import java.io.File;
 import java.io.FileNotFoundException;

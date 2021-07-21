@@ -2,14 +2,14 @@ package com.ahwers.marvin.applications.graphicalcalculator;
 
 import java.util.Map;
 
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceRepresentationType;
-import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
+import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 @IntegratesApplication("Graphical Calculator")
 public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
@@ -27,7 +27,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	@CommandMatch("^open graphical calculator$")
 	public MarvinResponse openGraphicalCalculator(Map<String, String> arguments) {
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 		
 		return response;
@@ -40,7 +40,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		graphicalCalculator.addNewExpression(processedExpression);
 			
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 		
 		return response;
@@ -55,14 +55,14 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		try {
 			graphicalCalculator.removeExpression(Integer.valueOf(expressionIndex));
 		} catch (NumberFormatException e) {
-			response = new MarvinResponse(CommandOutcome.FAILED, "\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
+			response = new MarvinResponse(RequestOutcome.FAILED, "\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
 			response.setFailException(e);
 		} catch (IndexOutOfBoundsException e) {
-			response = new MarvinResponse(CommandOutcome.FAILED, "Graph " + expressionIndex + "doesn't exist.");
+			response = new MarvinResponse(RequestOutcome.FAILED, "Graph " + expressionIndex + "doesn't exist.");
 			response.setFailException(e);
 		}
 		
@@ -77,7 +77,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 
 		graphicalCalculator.removeAllExpressions();
 
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 
 		return response;
@@ -93,7 +93,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		String newAlgebraicExperession = this.expressionProcessor.processExpressionIntoAlgebraicExpression(newExpression);
 		graphicalCalculator.replaceExpressionWith(graphIndex, newAlgebraicExperession);
 		
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 		
 		return response;
@@ -112,7 +112,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 
 		graphicalCalculator.replaceAllInExpression(expressionIndex, targetAlgebraicExpression, replacementAlgebraicExpression);
 
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		response.setResource(buildGraphicalCalculatorResource());
 
 		return response;

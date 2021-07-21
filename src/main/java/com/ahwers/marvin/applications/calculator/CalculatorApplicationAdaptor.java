@@ -2,12 +2,12 @@ package com.ahwers.marvin.applications.calculator;
 
 import java.util.Map;
 
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
 
 @IntegratesApplication("Calculator")
 public class CalculatorApplicationAdaptor extends ApplicationAdaptor {
@@ -27,13 +27,13 @@ public class CalculatorApplicationAdaptor extends ApplicationAdaptor {
 		String second = arguments.get("second");
 		Integer answer = Integer.valueOf(first) + Integer.valueOf(second);
 		
-		return new MarvinResponse(CommandOutcome.SUCCESS, answer.toString());
+		return new MarvinResponse(RequestOutcome.SUCCESS, answer.toString());
 	}
 	
 	@CommandMatch("^test$")
 	@CommandMatch("^what does 2 plus 2 equal$")
 	public MarvinResponse rightthink(Map<String, String> arguments) {
-		return new MarvinResponse(CommandOutcome.SUCCESS, "5");
+		return new MarvinResponse(RequestOutcome.SUCCESS, "5");
 	}
 
 }

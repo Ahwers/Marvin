@@ -2,11 +2,11 @@ package com.ahwers.marvin.applications.languagetranslator;
 
 import java.util.Map;
 
-import com.ahwers.marvin.MarvinResponse;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
+import com.ahwers.marvin.response.MarvinResponse;
 
 @IntegratesApplication("Language Translator")
 public class LanguageTranslatorApplicationAdaptor extends ApplicationAdaptor {

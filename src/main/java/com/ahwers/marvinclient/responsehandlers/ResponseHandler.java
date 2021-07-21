@@ -1,6 +1,6 @@
 package com.ahwers.marvinclient.responsehandlers;
 
-import com.ahwers.marvin.MarvinResponse;
+import com.ahwers.marvin.response.MarvinResponse;
 
 public abstract class ResponseHandler {
 	

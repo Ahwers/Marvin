@@ -1,4 +1,4 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
 import com.ahwers.marvin.applications.FuzzyMatcher;
+import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class MarvinResponseFactory {
 	
@@ -68,7 +70,7 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
-		MarvinResponse response = new MarvinResponse(CommandOutcome.UNMATCHED, "Please be more specific.");
+		MarvinResponse response = new MarvinResponse(RequestOutcome.UNMATCHED, "Please be more specific.");
 		
 		String selectionContent = "";
 		for (ApplicationAction action : actionOptions) {
@@ -120,7 +122,7 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildInvalidCommandResponse() {
-		return new MarvinResponse(CommandOutcome.INVALID, "Sorry, I have not been programmed to process that command.");
+		return new MarvinResponse(RequestOutcome.INVALID, "Sorry, I have not been programmed to process that command.");
 	}
 	
 }

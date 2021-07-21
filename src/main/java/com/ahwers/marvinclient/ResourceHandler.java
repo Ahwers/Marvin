@@ -2,8 +2,8 @@ package com.ahwers.marvinclient;
 
 import java.util.List;
 
-import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceRepresentationType;
+import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class ResourceHandler {
 	

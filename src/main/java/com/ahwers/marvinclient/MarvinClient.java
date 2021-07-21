@@ -9,13 +9,13 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
+import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;
-import com.ahwers.marvin.CommandOutcome;
 import com.ahwers.marvin.Marvin;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
@@ -71,8 +71,8 @@ public class MarvinClient {
 			outputMessage(response.getResponseMessage());
 		}
 		
-		CommandOutcome status = response.getCommandStatus();
-		if (status == CommandOutcome.SUCCESS) {
+		RequestOutcome status = response.getCommandStatus();
+		if (status == RequestOutcome.SUCCESS) {
 			try {
 				ResourceHandler.openResource(response.getResource());
 			} catch (InvalidResponseException e) {
@@ -80,10 +80,10 @@ public class MarvinClient {
 				e.printStackTrace();
 			}
 		}
-		else if (status == CommandOutcome.FAILED) {
+		else if (status == RequestOutcome.FAILED) {
 			System.out.println(response.getFailException().getMessage());
 		}
-		else if (status == CommandOutcome.UNMATCHED) {
+		else if (status == RequestOutcome.UNMATCHED) {
 			String actionToRun = getActionToRunFromUnmatchedResponse(response);
 			handleResponse(marvin.processAction(actionToRun));
 		}

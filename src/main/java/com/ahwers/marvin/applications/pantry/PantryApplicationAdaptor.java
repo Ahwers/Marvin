@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ahwers.marvin.CommandOutcome;
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.Resource;
-import com.ahwers.marvin.ResourceRepresentationType;
 import com.ahwers.marvin.applications.Application;
 import com.ahwers.marvin.applications.ApplicationAdaptor;
 import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
+import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 // TODO: Better application name? Pantry is cool, but it's not obvious what it does based off of it's name.
 @IntegratesApplication("Pantry")
@@ -28,7 +28,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 	
 	@CommandMatch("^(?:Whats my meal plan this week|Generate a meal plan for this week)$")
 	public MarvinResponse getMealPlanForThisWeek(Map<String, String> arguments) {
-		MarvinResponse response = new MarvinResponse(CommandOutcome.SUCCESS);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		
 		MealPlanRepository mealPlanRepo = new MealPlanRepository();
 		WeeklyMealPlan currentMealPlan = mealPlanRepo.getCurrentMealPlan();

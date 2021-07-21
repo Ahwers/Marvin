@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
+import com.ahwers.marvin.command.CommandFormatter;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.MarvinResponseFactory;
 
 public class Marvin {
 	

@@ -15,8 +15,8 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.CommandOutcome;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
 
 // TODO: This entire class's code is (quite understandably) a mess.
 // TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
@@ -134,11 +134,11 @@ public class ApplicationsManager {
 			outcome = (MarvinResponse) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
 				| SecurityException e) {
-			outcome = new MarvinResponse(CommandOutcome.FAILED, "This action's implementation is erroneous, see logs for cause.");
+			outcome = new MarvinResponse(RequestOutcome.FAILED, "This action's implementation is erroneous, see logs for cause.");
 			outcome.setFailException(e);
 		}
 		catch (InvocationTargetException e) {
-			outcome = new MarvinResponse(CommandOutcome.FAILED, e.getMessage()); // TODO: Applications should add as many error handling exceptions as they can (and provide) messages so that Marvin can read their messages out explaining why the command action failed.
+			outcome = new MarvinResponse(RequestOutcome.FAILED, e.getMessage()); // TODO: Applications should add as many error handling exceptions as they can (and provide) messages so that Marvin can read their messages out explaining why the command action failed.
 			outcome.setFailException(e);
 		}
 		

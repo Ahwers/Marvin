@@ -1,7 +1,7 @@
 package com.ahwers.marvinclient.responsehandlers;
 
-import com.ahwers.marvin.MarvinResponse;
-import com.ahwers.marvin.ResourceRepresentationType;
+import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 import com.ahwers.marvinclient.BrowserDriver;
 
 // TODO: I think that the response handler will be the same no matter the status???

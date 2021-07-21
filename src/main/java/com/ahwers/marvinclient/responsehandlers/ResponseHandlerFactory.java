@@ -1,21 +1,21 @@
 package com.ahwers.marvinclient.responsehandlers;
 
-import com.ahwers.marvin.CommandOutcome;
+import com.ahwers.marvin.response.RequestOutcome;
 
 public class ResponseHandlerFactory {
 	
-	public static ResponseHandler getHandlerForResponseStatus(CommandOutcome responseStatus) {
+	public static ResponseHandler getHandlerForResponseStatus(RequestOutcome responseStatus) {
 		ResponseHandler handler = null;
-		if (responseStatus == CommandOutcome.SUCCESS) {
+		if (responseStatus == RequestOutcome.SUCCESS) {
 			handler = new SuccessResponseHandler();
 		}
-		else if (responseStatus == CommandOutcome.FAILED) {
+		else if (responseStatus == RequestOutcome.FAILED) {
 			handler = new FailedResponseHandler();
 		}
-		else if (responseStatus == CommandOutcome.UNMATCHED) {
+		else if (responseStatus == RequestOutcome.UNMATCHED) {
 			handler = new UnmatchedResponseHandler();
 		}
-		else if (responseStatus == CommandOutcome.INVALID) {
+		else if (responseStatus == RequestOutcome.INVALID) {
 			handler = new InvalidResponseHandler();
 		}
 		

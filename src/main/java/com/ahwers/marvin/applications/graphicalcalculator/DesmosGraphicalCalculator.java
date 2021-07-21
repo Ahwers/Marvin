@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.ahwers.marvin.ResourceTemplate;
 import com.ahwers.marvin.applications.Application;
+import com.ahwers.marvin.response.resource.ResourceTemplate;
 
 public class DesmosGraphicalCalculator extends Application {
 	

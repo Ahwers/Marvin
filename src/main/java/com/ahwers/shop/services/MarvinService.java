@@ -5,9 +5,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import com.ahwers.marvin.Command;
 import com.ahwers.marvin.Marvin;
-import com.ahwers.marvin.MarvinResponse;
+import com.ahwers.marvin.command.Command;
+import com.ahwers.marvin.response.MarvinResponse;
 
 @Path("/command")
 public class MarvinService {

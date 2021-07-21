@@ -1,21 +1,23 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.response;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ahwers.marvin.response.resource.Resource;
 
 public class MarvinResponse {
 	
 	private String message;
 	private Resource resource;
-	private CommandOutcome status;
+	private RequestOutcome status;
 	private Throwable failException;
 	
-	public MarvinResponse(CommandOutcome status, String responseMessage) {
+	public MarvinResponse(RequestOutcome status, String responseMessage) {
 		this.status = status;
 		this.message = responseMessage;
 	}
 	
-	public MarvinResponse(CommandOutcome status) {
+	public MarvinResponse(RequestOutcome status) {
 		this.status = status;
 	}
 	
@@ -29,11 +31,11 @@ public class MarvinResponse {
 		return this.resource;
 	}
 	
-	public CommandOutcome getCommandStatus() {
+	public RequestOutcome getCommandStatus() {
 		return this.status;
 	}
 	
-	public void setCommandStatus(CommandOutcome status) {
+	public void setCommandStatus(RequestOutcome status) {
 		this.status = status;
 	}
 	
