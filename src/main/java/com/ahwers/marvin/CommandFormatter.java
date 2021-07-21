@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +21,11 @@ public class CommandFormatter {
 	
 	private List<String> politeOpeners;
 	private List<String> politeClosers;
+	private Map<String, String> alphabeticToNumericNumbers;
 	
 	public CommandFormatter() {
+		this.alphabeticToNumericNumbers = loadAlphabeticToNumericNumbersMap();
+		
 		try {
 			this.politeOpeners = loadPoliteOpeners();
 			this.politeClosers = loadPoliteClosers();
@@ -88,9 +92,9 @@ public class CommandFormatter {
 		return words;
 	}
 	
-//	TODO: Implement
+//	TODO: Implement properly if longer numbers do not automatically become numeric through azure
 	private String convertAlphabeticNumberToNumeric(String alphabeticNumber) {
-		return null;
+		return this.alphabeticToNumericNumbers.get(alphabeticNumber.toLowerCase());
 	}
 	
 	private List<String> loadPoliteOpeners() throws FileNotFoundException {
@@ -112,4 +116,22 @@ public class CommandFormatter {
 		
 		return lines;
 	}
+	
+	private Map<String, String> loadAlphabeticToNumericNumbersMap() {
+		Map<String, String> alphabeticToNumericNumbers = new HashMap<>();
+		
+		alphabeticToNumericNumbers.put("zero", "0");
+		alphabeticToNumericNumbers.put("one", "1");
+		alphabeticToNumericNumbers.put("two", "2");
+		alphabeticToNumericNumbers.put("three", "3");
+		alphabeticToNumericNumbers.put("four", "4");
+		alphabeticToNumericNumbers.put("five", "5");
+		alphabeticToNumericNumbers.put("six", "6");
+		alphabeticToNumericNumbers.put("seven", "7");
+		alphabeticToNumericNumbers.put("eight", "8");
+		alphabeticToNumericNumbers.put("nine", "9");
+		
+		return alphabeticToNumericNumbers;
+	}
+	
 }
