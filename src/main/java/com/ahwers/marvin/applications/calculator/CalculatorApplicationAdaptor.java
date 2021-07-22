@@ -12,6 +12,8 @@ import com.ahwers.marvin.response.RequestOutcome;
 @IntegratesApplication("Calculator")
 public class CalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
+	// TODO: Instead make it accept general stuff like: "Calculate <ALGEBRAIC_EXPRESSION> for <VARIABLE_DEFINITION>" where expression could be "x^2+2x+3" and variable definition is "x=2"
+	
 	// TODO: Integrate wolfram alpha to implement commands such as "solve <equation> for x".
 	@Override
 	protected Application instantiateApplication() {
