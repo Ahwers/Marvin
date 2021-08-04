@@ -13,6 +13,7 @@ import com.ahwers.marvin.response.RequestOutcome;
 public class CalculatorApplicationAdaptor extends ApplicationAdaptor {
 	
 	// TODO: Instead make it accept general stuff like: "Calculate <ALGEBRAIC_EXPRESSION> for <VARIABLE_DEFINITION>" where expression could be "x^2+2x+3" and variable definition is "x=2"
+	// TODO: "Solve <EXPRESSION> for <VARIABLE>" Maybe just "Solve <EXPRESSION>" where <EXPRESSION> is "3x+1 for x" and let wolfram do the heavy lifting
 	
 	// TODO: Integrate wolfram alpha to implement commands such as "solve <equation> for x".
 	@Override

@@ -36,7 +36,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	@CommandMatch("^plot (?<expression>.+)$")
 	public MarvinResponse addNewAlgebraicExpression(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
-		
+	
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		graphicalCalculator.addNewExpression(processedExpression);
 			

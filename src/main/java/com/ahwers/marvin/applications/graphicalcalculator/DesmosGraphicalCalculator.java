@@ -82,6 +82,7 @@ public class DesmosGraphicalCalculator extends Application {
 
 	public void removeAllExpressions() {
 		expressions.clear();
+		expressions.add("");
 		
 		this.currentStateId++;
 		this.lastUpdateScript = "calculator.setBlank();";

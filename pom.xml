@@ -48,14 +48,17 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-servlet-initializer</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -64,29 +67,29 @@
         </dependency>
           	<dependency>
 		<groupId>org.seleniumhq.selenium</groupId>
- 		<artifactId>selenium-firefox-driver</artifactId>
- 		<version>3.141.59</version>
-  	</dependency>
-        	<dependency>
-		<groupId>com.microsoft.cognitiveservices.speech</groupId>
-		<artifactId>client-sdk</artifactId>
-		<version>1.12.1</version>
-	</dependency>
-	<dependency>
-		<groupId>org.reflections</groupId>
-		<artifactId>reflections</artifactId>
-		<version>0.9.9-RC1</version>
-	</dependency>
-	<dependency>
-	    <groupId>com.microsoft.azure</groupId>
-	    <artifactId>msal4j</artifactId>
-	    <version>1.9.1</version>
-	</dependency>
-	<dependency>
-	  <groupId>com.microsoft.graph</groupId>
-	  <artifactId>microsoft-graph</artifactId>
-	  <version>3.2.0</version>
-	</dependency>
+	 		<artifactId>selenium-firefox-driver</artifactId>
+	 		<version>3.141.59</version>
+	  	</dependency>
+        <dependency>
+			<groupId>com.microsoft.cognitiveservices.speech</groupId>
+			<artifactId>client-sdk</artifactId>
+			<version>1.12.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.9-RC1</version>
+		</dependency>
+		<dependency>
+	 	   <groupId>com.microsoft.azure</groupId>
+	 	   <artifactId>msal4j</artifactId>
+	 	   <version>1.9.1</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.microsoft.graph</groupId>
+		  <artifactId>microsoft-graph</artifactId>
+		  <version>3.2.0</version>
+		</dependency>
     </dependencies>
     <repositories>
         <repository>

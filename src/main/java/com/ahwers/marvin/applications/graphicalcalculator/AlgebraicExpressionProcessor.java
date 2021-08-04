@@ -15,6 +15,11 @@ import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 
 // TODO: Adapt most of this to be a wolfram-alpha communication class that AlgebraicExpressionProcessor just uses.
 public class AlgebraicExpressionProcessor {
+	
+	public static void main(String[] args) {
+		AlgebraicExpressionProcessor processor = AlgebraicExpressionProcessor.getInstance();
+		System.out.println(processor.processExpressionIntoAlgebraicExpression("y = 3x + 1"));
+	}
 
 	private static AlgebraicExpressionProcessor instance;
 	

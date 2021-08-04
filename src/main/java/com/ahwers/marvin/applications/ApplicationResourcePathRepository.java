@@ -26,7 +26,7 @@ public class ApplicationResourcePathRepository {
 	}
 	
 	private Map<String, String> resources = new HashMap<>();
-	
+
 	private ApplicationResourcePathRepository(ServletContext context) {
 		resources.put("graphical_calculator_html", context.getRealPath("/WEB-INF/classes/resources/graphical_calculator.html"));
 		resources.put("algebraic_expression_syntax", context.getRealPath("/WEB-INF/classes/resources/algebraic_expression_syntax.txt"));
@@ -35,7 +35,8 @@ public class ApplicationResourcePathRepository {
 		resources.put("command_opening_pleasentries", context.getRealPath("/WEB-INF/classes/resources/command_opening_pleasentries.txt"));
 		resources.put("wolfram_app_id", context.getRealPath("/WEB-INF/classes/resources/wolfram_app_id.txt"));
 	}
-	
+
+	// TODO: Get rid of this because we will always be testing on a deployed application
 	private ApplicationResourcePathRepository() {
 		resources.put("graphical_calculator_html", getClass().getClassLoader().getResource("./resources/graphical_calculator.html").getPath().toString());
 		resources.put("algebraic_expression_syntax", getClass().getClassLoader().getResource("./resources/algebraic_expression_syntax.txt").getPath().toString());
@@ -44,7 +45,10 @@ public class ApplicationResourcePathRepository {
 		resources.put("command_opening_pleasentries", getClass().getClassLoader().getResource("./resources/command_opening_pleasentries.txt").getPath().toString());
 		resources.put("wolfram_app_id", getClass().getClassLoader().getResource("./resources/wolfram_app_id.txt").getPath().toString());
 	}
-	
+
+	// TODO: Throw an exception if the resource doesn't exist!!!
+	// TODO: Refactor to just search for the resource using the string provided rather than populating a hash at instantiation
+	//		 Can make this just a normal static class and it won't need to be a singleton
 	public String getApplicationResourcePathForKey(String resourceKey) {
 		return resources.get(resourceKey);
 	}
