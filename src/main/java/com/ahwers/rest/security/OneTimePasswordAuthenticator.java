@@ -24,7 +24,8 @@ import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 @Priority(Priorities.AUTHENTICATION)
 public class OneTimePasswordAuthenticator implements ContainerRequestFilter {
 
-	private final boolean testing = false;
+	// TODO: Move this to the OTP class
+	private final boolean testing = true;
 	
 	private Map<String, String> userSecretMap;
 	

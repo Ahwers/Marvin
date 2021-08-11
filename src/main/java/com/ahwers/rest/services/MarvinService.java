@@ -12,10 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.ahwers.marvin.Marvin;
 import com.ahwers.marvin.command.Command;
 import com.ahwers.marvin.response.MarvinResponse;
+import com.ahwers.marvin.response.RequestOutcome;
 
 @Path("/command")
 public class MarvinService {
@@ -28,25 +30,50 @@ public class MarvinService {
 
 	@GET
 	@Produces("application/json")
-	// TODO: Implement a Response builder method that depends on the request status of the MarvinResponse
 	public Response command() {
 		MarvinResponse marvinResponse = marvin.processCommand("test test test");
-		
-		return Response.ok(marvinResponse).build();
+		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
+		return serviceResponse;
 	}
 	
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public MarvinResponse command(Command command) {
-		return marvin.processCommand(command.getCommand());
+	public Response command(Command command) {	
+		MarvinResponse marvinResponse = marvin.processCommand(command.getCommand());
+		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
+		return serviceResponse;
 	}
 	
 	@POST
 	@Consumes("text/plain")
 	@Produces("application/json")
-	public MarvinResponse command(String command) {
-		return marvin.processCommand(command);
+	public Response command(String command) {		
+		MarvinResponse marvinResponse = marvin.processCommand(command);
+		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
+		return serviceResponse;
 	}
 
+	private Response constructServiceResponseFromMarvinResponse(MarvinResponse marvinResponse) {
+		ResponseBuilder builder = null;
+		
+		RequestOutcome requestOutcome = marvinResponse.getCommandStatus();
+		if (requestOutcome.equals(RequestOutcome.SUCCESS)) {
+			builder = Response.ok();
+		}
+		else if (requestOutcome.equals(RequestOutcome.FAILED)) {
+			builder = Response.serverError();
+		}
+		else if (requestOutcome.equals(RequestOutcome.INVALID) || requestOutcome.equals(RequestOutcome.OUTDATED)) {
+			builder = Response.status(Response.Status.BAD_REQUEST);
+		}
+		else if (requestOutcome.equals(RequestOutcome.UNMATCHED)) {
+			builder = Response.status(Response.Status.CONFLICT);
+		}
+	
+		Response response = builder.entity(marvinResponse).build();
+		
+		return response;
+	}
+	
 }
