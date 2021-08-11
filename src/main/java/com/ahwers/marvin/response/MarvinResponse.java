@@ -6,6 +6,11 @@ import java.util.List;
 import com.ahwers.marvin.response.resource.MarvinResource;
 
 public class MarvinResponse {
+
+	// TODO: Remove as much stuff that JAX-RS already does from this (status)
+	//		 Maybe setting exception analysis documents as the resource for failed requests and not using anything else.
+	//		 Maybe just return resources (who have their own messages) and get rid of everything else
+	//		 Fail resources could take their message values from the exception message that caused them.
 	
 	private String message;
 	private MarvinResource resource;

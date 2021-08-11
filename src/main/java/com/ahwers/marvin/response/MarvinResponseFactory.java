@@ -1,5 +1,6 @@
 package com.ahwers.marvin.response;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,10 @@ public class MarvinResponseFactory {
 	
 	public MarvinResponse getResponseForAppAction(String stringifiedAppAction) {
 		ApplicationAction action = constructApplicationActionFromString(stringifiedAppAction);
-		return appManager.executeApplicationAction(action);
+//		MarvinResource resource = appManager.executeApplicationAction(action);
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
+//		response.setResource(resource);
+		return response;
 	}
 	
 	public MarvinResponse getResponseForCommand(String command) {
@@ -42,7 +46,7 @@ public class MarvinResponseFactory {
 		
 		MarvinResponse response = null;
 		if (oneActionMatchedDirectly()) {
-			response = appManager.executeApplicationAction(directCommandActionMatches.get(0));
+			response = buildActionExecutionResponse(directCommandActionMatches.get(0));
 		}
 		else if (multipleActionsMatchedDirectly()) {
 			response = buildActionSelectionResponse(directCommandActionMatches);
@@ -67,6 +71,28 @@ public class MarvinResponseFactory {
 	
 	private boolean oneOrMoreActionsMatchedPhonetically() {
 		return (phoneticCommandActionMatches.size() >= 1 ? true : false);
+	}
+
+	// TODO: Maybe to get rid of marvin status codes we map custom unchecked exceptions to create responses??
+	private MarvinResponse buildActionExecutionResponse(ApplicationAction action) {
+		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
+	
+		MarvinResource resource = null;
+		try {
+			resource = appManager.executeApplicationAction(action);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			response = new MarvinResponse(RequestOutcome.FAILED, "There's something wrong.");
+			response.setFailException(e);
+		} catch (ClassCastException e) {
+			response = new MarvinResponse(RequestOutcome.OUTDATED, ("The implementation of '" + action.getActionName() + "' needs updating because it is returning a MarvinResponse object."));
+			response.setFailException(e);
+		} catch (Exception e) {
+			response = new MarvinResponse(RequestOutcome.INVALID, "The invocation of this command was erroneous for some reason.");
+			response.setFailException(e);
+		}
+		response.setResource(resource);
+		
+		return response;
 	}
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
