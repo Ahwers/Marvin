@@ -34,6 +34,7 @@ public class ApplicationResourcePathRepository {
 		resources.put("command_closing_pleasentries", context.getRealPath("/WEB-INF/classes/resources/command_closing_pleasentries.txt"));
 		resources.put("command_opening_pleasentries", context.getRealPath("/WEB-INF/classes/resources/command_opening_pleasentries.txt"));
 		resources.put("wolfram_app_id", context.getRealPath("/WEB-INF/classes/resources/wolfram_app_id.txt"));
+		resources.put("login", context.getRealPath("/WEB-INF/classes/resources/login.txt"));
 	}
 
 	// TODO: Get rid of this because we will always be testing on a deployed application
@@ -44,6 +45,7 @@ public class ApplicationResourcePathRepository {
 		resources.put("command_closing_pleasentries", getClass().getClassLoader().getResource("./resources/command_closing_pleasentries.txt").getPath().toString());
 		resources.put("command_opening_pleasentries", getClass().getClassLoader().getResource("./resources/command_opening_pleasentries.txt").getPath().toString());
 		resources.put("wolfram_app_id", getClass().getClassLoader().getResource("./resources/wolfram_app_id.txt").getPath().toString());
+		resources.put("login", getClass().getClassLoader().getResource("./resources/login.txt").getPath().toString());
 	}
 
 	// TODO: Throw an exception if the resource doesn't exist!!!

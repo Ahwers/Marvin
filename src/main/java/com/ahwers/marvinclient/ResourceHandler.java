@@ -2,19 +2,19 @@ package com.ahwers.marvinclient;
 
 import java.util.List;
 
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class ResourceHandler {
 	
-	public static void openResource(Resource resource) throws InvalidResponseException {
+	public static void openResource(MarvinResource resource) throws InvalidResponseException {
 		ResourceHandler handler = new ResourceHandler(resource);
 		handler.openResource();
 	}
 	
-	private Resource resource;
+	private MarvinResource resource;
 	
-	private ResourceHandler(Resource resource) {
+	private ResourceHandler(MarvinResource resource) {
 		this.resource = resource;
 	}
 	

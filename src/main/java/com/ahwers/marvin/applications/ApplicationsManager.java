@@ -1,5 +1,6 @@
 package com.ahwers.marvin.applications;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import org.reflections.util.FilterBuilder;
 
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
+import com.ahwers.marvin.response.resource.MarvinResource;
 
 // TODO: This entire class's code is (quite understandably) a mess.
 // TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
@@ -129,18 +131,19 @@ public class ApplicationsManager {
 		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
 		actionApplicationAdaptor.setActionArguments(applicationAction.getArguments());
 
-		MarvinResponse outcome = null;
+		MarvinResponse outcome = new MarvinResponse(RequestOutcome.SUCCESS, "worked");
+		
+		MarvinResource commandResource = null;
 		try {
-			outcome = (MarvinResponse) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
-		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
-				| SecurityException e) {
-			outcome = new MarvinResponse(RequestOutcome.FAILED, "This action's implementation is erroneous, see logs for cause.");
+			commandResource = (MarvinResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			outcome = new MarvinResponse(RequestOutcome.FAILED, "There's something wrong.");
+			outcome.setFailException(e);
+		} catch (ClassCastException e) {
+			outcome = new MarvinResponse(RequestOutcome.OUTDATED, ("The implementation of '" + applicationAction.getActionName() + "' needs updating because it is returning a MarvinResponse object."));
 			outcome.setFailException(e);
 		}
-		catch (InvocationTargetException e) {
-			outcome = new MarvinResponse(RequestOutcome.FAILED, e.getMessage()); // TODO: Applications should add as many error handling exceptions as they can (and provide) messages so that Marvin can read their messages out explaining why the command action failed.
-			outcome.setFailException(e);
-		}
+		outcome.setResource(commandResource);
 		
 		return outcome;
 	}

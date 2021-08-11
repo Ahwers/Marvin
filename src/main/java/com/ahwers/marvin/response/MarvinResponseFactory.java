@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
 import com.ahwers.marvin.applications.FuzzyMatcher;
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class MarvinResponseFactory {
@@ -51,7 +51,7 @@ public class MarvinResponseFactory {
 			response = buildActionSelectionResponse(phoneticCommandActionMatches);
 		}
 		else {
-			response = buildInvalidCommandResponse();
+			response = buildUnmatchedCommandResponse();
 		}
 
 		return response;
@@ -76,7 +76,7 @@ public class MarvinResponseFactory {
 		for (ApplicationAction action : actionOptions) {
 			selectionContent += (stringifyApplicationAction(action) + "\n");
 		}
-		response.setResource(new Resource(ResourceRepresentationType.COMMAND_OPTION_LIST, selectionContent));
+		response.setResource(new MarvinResource(ResourceRepresentationType.COMMAND_OPTION_LIST, selectionContent));
 		
 		return response;
 	}
@@ -95,7 +95,8 @@ public class MarvinResponseFactory {
 		return stringifiedAction;
 	}
 	
-	// TODO This is horrible.
+	// TODO: This is horrible.
+	// 		 Could i refactor it to use an URI class or something instead? 
 	private ApplicationAction constructApplicationActionFromString(String stringifiedAppAction) {
 		// appName:appAction&field==value&anotherField==value
 		
@@ -121,8 +122,8 @@ public class MarvinResponseFactory {
 		return appAction;
 	}
 	
-	private MarvinResponse buildInvalidCommandResponse() {
-		return new MarvinResponse(RequestOutcome.INVALID, "Sorry, I have not been programmed to process that command.");
+	private MarvinResponse buildUnmatchedCommandResponse() {
+		return new MarvinResponse(RequestOutcome.UNMATCHED, "Sorry, I have not been programmed to process that command.");
 	}
 	
 }

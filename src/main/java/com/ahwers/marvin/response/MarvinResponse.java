@@ -3,12 +3,12 @@ package com.ahwers.marvin.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 
 public class MarvinResponse {
 	
 	private String message;
-	private Resource resource;
+	private MarvinResource resource;
 	private RequestOutcome status;
 	private Throwable failException;
 	
@@ -23,11 +23,11 @@ public class MarvinResponse {
 	
 	public MarvinResponse() {}
 	
-	public void setResource(Resource resource) {
+	public void setResource(MarvinResource resource) {
 		this.resource = resource;
 	}
 	
-	public Resource getResource() {
+	public MarvinResource getResource() {
 		return this.resource;
 	}
 	

@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandler;
 import com.ahwers.marvinclient.responsehandlers.ResponseHandlerFactory;

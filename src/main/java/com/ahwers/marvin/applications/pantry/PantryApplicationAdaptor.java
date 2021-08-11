@@ -13,7 +13,7 @@ import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 // TODO: Better application name? Pantry is cool, but it's not obvious what it does based off of it's name.
@@ -39,7 +39,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 			updateShoppingListWithMealPlan(currentMealPlan);
 		}
 
-		response.setResource(new Resource(getApplicationName(), currentMealPlan.getId(), ResourceRepresentationType.HTML, generateHTMLResourceForMealPlan(currentMealPlan)));
+		response.setResource(new MarvinResource(getApplicationName(), currentMealPlan.getId(), ResourceRepresentationType.HTML, generateHTMLResourceForMealPlan(currentMealPlan)));
 		
 		return response;
 	}

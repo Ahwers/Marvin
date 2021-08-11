@@ -1,5 +1,6 @@
 package com.ahwers.marvin.applications.graphicalcalculator;
 
+import java.io.IOException;
 import java.util.Map;
 
 import com.ahwers.marvin.applications.Application;
@@ -8,7 +9,7 @@ import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 @IntegratesApplication("Graphical Calculator")
@@ -24,63 +25,46 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	protected Application instantiateApplication() {
 		return DesmosGraphicalCalculator.getInstance();
 	}
-	
-	@CommandMatch("^open graphical calculator$")
-	public MarvinResponse openGraphicalCalculator(Map<String, String> arguments) {
-		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
-		response.setResource(buildGraphicalCalculatorResource());
-		
-		return response;
+
+	@CommandMatch("open graphical calculator")
+	public MarvinResource openGraphicalCalculator(Map<String, String> arguments) {
+		return buildGraphicalCalculatorResource();
 	}
 	
-	@CommandMatch("^plot (?<expression>.+)$")
-	public MarvinResponse addNewAlgebraicExpression(Map<String, String> arguments) {
+	@CommandMatch("plot (?<expression>.+)")
+	public MarvinResource addNewAlgebraicExpression(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 	
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
 		graphicalCalculator.addNewExpression(processedExpression);
 			
-		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
-		response.setResource(buildGraphicalCalculatorResource());
-		
-		return response;
+		return buildGraphicalCalculatorResource();
 	}
 	
-	// TODO: Should I make it so that ^ and $ are not required for any matches? Yes. Actually nah, let's stay flexible until we see that the flexibility is not required.
-	@CommandMatch("^remove (?:graph|expression) (?<graphIndex>.+)$")
-	public MarvinResponse removeAlgebraicExpression(Map<String, String> arguments) {
-		String expressionIndex = arguments.get("graphIndex");
-		
-		// TODO: If graphIndex is a word then this fails. Need to translate word numbers into their numerical representations.
-		
+	@CommandMatch("remove (?:graph|expression) (?<graphIndex>.+)")
+	public MarvinResource removeAlgebraicExpression(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
-		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
+		String expressionIndex = arguments.get("graphIndex");
+		
 		try {
 			graphicalCalculator.removeExpression(Integer.valueOf(expressionIndex));
 		} catch (NumberFormatException e) {
-			response = new MarvinResponse(RequestOutcome.FAILED, "\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
-			response.setFailException(e);
+			throw new NumberFormatException("\"Graphical Calculator\" graphs are indexed by integers and the non integer key (" + expressionIndex + ") for \"graphIndex\" was provided.");
 		} catch (IndexOutOfBoundsException e) {
-			response = new MarvinResponse(RequestOutcome.FAILED, "Graph " + expressionIndex + "doesn't exist.");
-			response.setFailException(e);
+			throw new IndexOutOfBoundsException("Graph " + expressionIndex + "doesn't exist.");
 		}
 		
-		response.setResource(buildGraphicalCalculatorResource());
-
-		return response;
+		return buildGraphicalCalculatorResource();
 	}
 
-	@CommandMatch("^remove all (?:expressions|graphs)$")
-	public MarvinResponse removeAllAlgebraicExpressions(Map<String, String> arguments) {
+	@CommandMatch("remove all (?:expressions|graphs)")
+	public MarvinResource removeAllAlgebraicExpressions(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 
 		graphicalCalculator.removeAllExpressions();
 
-		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
-		response.setResource(buildGraphicalCalculatorResource());
-
-		return response;
+		return buildGraphicalCalculatorResource();
 	}
 
 	@CommandMatch("^replace (?:expression|graph) (?<graphIndex>.+?) with (?<newExpression>.+?)$")
@@ -118,13 +102,13 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		return response;
 	}
 	
-	private Resource buildGraphicalCalculatorResource() {
+	private MarvinResource buildGraphicalCalculatorResource() {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
 		int previousStateId = graphicalCalculator.getPreviousStateId();
 		int currentStateId = graphicalCalculator.getCurrentStateId();
 
-		Resource graphicalCalculatorResource = new Resource(getApplicationName(), currentStateId, previousStateId);
+		MarvinResource graphicalCalculatorResource = new MarvinResource(getApplicationName(), currentStateId, previousStateId);
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, graphicalCalculator.getHtmlRepresentation());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, graphicalCalculator.getHtmlStateInstantiationScript());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, graphicalCalculator.getHtmlStateUpdateScriptFromPreviousStateId());

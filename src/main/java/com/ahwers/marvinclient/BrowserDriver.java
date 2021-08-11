@@ -7,7 +7,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.ahwers.marvin.response.resource.Resource;
+import com.ahwers.marvin.response.resource.MarvinResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class BrowserDriver {
@@ -34,7 +34,7 @@ public class BrowserDriver {
 		this.browserDriver = new FirefoxDriver();
 	}
 	
-	public void loadRepresentationTypeFromResource(ResourceRepresentationType type, Resource resource) {
+	public void loadRepresentationTypeFromResource(ResourceRepresentationType type, MarvinResource resource) {
 		activeApplicationName = resource.getApplicationName();
 		activeApplicationStateId = resource.getCurrentStateId();
 		
