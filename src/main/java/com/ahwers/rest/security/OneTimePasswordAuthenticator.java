@@ -20,13 +20,11 @@ import javax.ws.rs.ext.Provider;
 
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 
+// TODO: This class is throwing webapplicationexceptions!
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class OneTimePasswordAuthenticator implements ContainerRequestFilter {
 
-	// TODO: Move this to the OTP class
-	private final boolean testing = true;
-	
 	private Map<String, String> userSecretMap;
 	
 	public OneTimePasswordAuthenticator() {
@@ -63,7 +61,7 @@ public class OneTimePasswordAuthenticator implements ContainerRequestFilter {
 		if (secret == null) throw new WebApplicationException("OTP", Response.Status.UNAUTHORIZED);
 	
 		OTP otpGenerator = OTP.getInstance();
-		String regen = otpGenerator.generateToken(secret, testing);
+		String regen = otpGenerator.generateToken(secret);
 		if (!regen.equals(otp)) throw new WebApplicationException("OTP", Response.Status.UNAUTHORIZED);
 		
 		final SecurityContext securityContext = requestContext.getSecurityContext();

@@ -96,7 +96,7 @@ public class MarvinResponseFactory {
 	}
 	
 	private MarvinResponse buildActionSelectionResponse(List<ApplicationAction> actionOptions) {
-		MarvinResponse response = new MarvinResponse(RequestOutcome.UNMATCHED, "Please be more specific.");
+		MarvinResponse response = new MarvinResponse(RequestOutcome.CONFLICTED, "Please be more specific.");
 		
 		String selectionContent = "";
 		for (ApplicationAction action : actionOptions) {

@@ -29,11 +29,8 @@ public class MarvinService {
 	}
 
 	@GET
-	@Produces("application/json")
 	public Response command() {
-		MarvinResponse marvinResponse = marvin.processCommand("test test test");
-		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
-		return serviceResponse;
+		return Response.ok().build();
 	}
 	
 	@POST
@@ -67,8 +64,11 @@ public class MarvinService {
 		else if (requestOutcome.equals(RequestOutcome.INVALID) || requestOutcome.equals(RequestOutcome.OUTDATED)) {
 			builder = Response.status(Response.Status.BAD_REQUEST);
 		}
-		else if (requestOutcome.equals(RequestOutcome.UNMATCHED)) {
+		else if (requestOutcome.equals(RequestOutcome.CONFLICTED)) {
 			builder = Response.status(Response.Status.CONFLICT);
+		}
+		else if (requestOutcome.equals(RequestOutcome.UNMATCHED)) {
+			builder = Response.status(Response.Status.NOT_FOUND);
 		}
 	
 		Response response = builder.entity(marvinResponse).build();

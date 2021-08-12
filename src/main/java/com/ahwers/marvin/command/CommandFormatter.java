@@ -14,11 +14,6 @@ import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
 
 public class CommandFormatter {
 	
-	public static void main(String[] args) {
-		CommandFormatter formatter = new CommandFormatter();
-		System.out.println(formatter.formatCommand("Remove expression one please Marvin."));
-	}
-	
 	private List<String> politeOpeners;
 	private List<String> politeClosers;
 	private Map<String, String> alphabeticToNumericNumbers;

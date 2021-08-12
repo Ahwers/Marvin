@@ -123,8 +123,7 @@ public class ApplicationsManager {
 		return new ArrayList<>();
 	}
 
-	// TODO: This should return a Resource object and throw all of these exceptions, then the MarvinResponseFactory can construct the MarvinResponse for the resource (and implement the try catch)
-	public MarvinResource executeApplicationAction(ApplicationAction applicationAction) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public MarvinResource executeApplicationAction(ApplicationAction applicationAction) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
 		String applicationName = applicationAction.getApplicationName();
 		String actionName = applicationAction.getActionName();
 		Map<String, String> actionArguments = applicationAction.getArguments();
@@ -132,23 +131,9 @@ public class ApplicationsManager {
 		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
 		actionApplicationAdaptor.setActionArguments(applicationAction.getArguments());
 
-//		MarvinResponse outcome = new MarvinResponse(RequestOutcome.SUCCESS, "worked");
-		
 		MarvinResource commandResource = null;
-//		try {
-			commandResource = (MarvinResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
-//		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-//			outcome = new MarvinResponse(RequestOutcome.FAILED, "There's something wrong.");
-//			outcome.setFailException(e);
-//		} catch (ClassCastException e) {
-//			outcome = new MarvinResponse(RequestOutcome.OUTDATED, ("The implementation of '" + applicationAction.getActionName() + "' needs updating because it is returning a MarvinResponse object."));
-//			outcome.setFailException(e);
-//		} catch (Exception e) {
-//			outcome = new MarvinResponse(RequestOutcome.INVALID, "The invocation of this command was erroneous for some reason.");
-//			outcome.setFailException(e);
-//		}
-//		outcome.setResource(commandResource);
-		
+		commandResource = (MarvinResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
+
 		return commandResource;
 	}
 	

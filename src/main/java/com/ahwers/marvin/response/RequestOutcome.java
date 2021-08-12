@@ -7,5 +7,6 @@ public enum RequestOutcome {
 	FAILED,
 	UNMATCHED,
 	OUTDATED,
+	CONFLICTED,
 
 }

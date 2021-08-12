@@ -1,12 +1,13 @@
 package com.ahwers.rest.security;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.picketbox.commons.cipher.Base64;
-
 public class OTP {
+	
+	private final boolean testing = false;
 	
 	private static OTP otp;
 	private OTP() {}
@@ -22,9 +23,9 @@ public class OTP {
 	private long commandCountForCurrentMinute;
 
 	// TODO: Test this method's reliabliity when a request is sent at 59 seconds
-	public String generateToken(String secret, boolean test) {
+	public String generateToken(String secret) {
 		String token = null;
-		if (test) {
+		if (testing) {
 			token = generateTestToken();
 		}
 		else {
@@ -54,7 +55,18 @@ public class OTP {
 			throw new IllegalArgumentException(e);
 		}
 		byte[] hash = digest.digest(concat.getBytes(Charset.forName("UTF-8")));
-		return Base64.encodeBytes(hash);
+		
+		// Convert byte array into signum representation
+        BigInteger no = new BigInteger(1, hash);
+
+        // Convert message digest into hex value
+        String hashtext = no.toString(16);
+        while (hashtext.length() < 32) {
+            hashtext = "0" + hashtext;
+        }
+        return hashtext;
+		
+//		return Base64.encodeBytes(hash);
 	}
 	
 	private String generateTestToken() {
