@@ -11,6 +11,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.After;
@@ -22,7 +23,9 @@ import com.ahwers.rest.security.OTP;
 
 public class MarvinServiceTest {
 
-	private final String MARVIN_ENDPOINT = "http://localhost:8080/services/command";
+	private final String SERVER_ADDRESS = "http://127.0.0.1:8080/";
+	private final String MARVIN_ENDPOINT = (SERVER_ADDRESS + "RestfulMarvin/");
+	private final String MARVIN_COMMAND_ENDPOINT = (MARVIN_ENDPOINT + "services/command");
 	
 	private Client client = null;
 	private String userSecret = null;
@@ -56,23 +59,36 @@ public class MarvinServiceTest {
 	}
 
 	// TODO: Security tests
+	// TODO: Other MarvinResponse tests
+	//		 Exception returning with application error messages
+	//		 Resources
+
+	@Test
+	public void serverConnectionTest() {
+		WebTarget target = client.target(SERVER_ADDRESS);
+		
+		Response response = target.request().get();
+		
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	
+		response.close();
+	}
+
 	@Test
 	public void successfulCommandTest() {
-		WebTarget target = client.target(MARVIN_ENDPOINT);
-		
-//		String otp = OTP.getInstance().generateToken(userSecret);
+		WebTarget target = client.target(MARVIN_COMMAND_ENDPOINT); 
+	
+		String otp = OTP.getInstance().generateToken(userSecret);
 		Response response = target.request()
-				.get();
+				.header("Authorization", (username + " " + otp))
+				.accept("application/json")
+				.post(Entity.text("successful marvin request test"));;
 		
-//		Response response = target.request()
-//			.header("Authorization", (username + " " + otp))
-//			.accept("application/json")
-//			.post(Entity.entity("successful marvin request test", "text/plain"));
-////			.post(Entity.text("successful marvin request test"));
-		
-		assertEquals(Response.Status.OK, response.getStatus());
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+	
+		response.close();
 	}
+	
 	
 //	@Test
 //	public void failedCommandTest() {

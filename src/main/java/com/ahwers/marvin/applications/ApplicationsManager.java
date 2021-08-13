@@ -22,6 +22,10 @@ import com.ahwers.marvin.response.resource.MarvinResource;
 
 // TODO: This entire class's code is (quite understandably) a mess.
 // TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
+// TODO: Need more framework instantiation error handling. 
+//		  - Attempted integration of an application adaptor that does not have an IntegratesApplication annotation.
+//			Maybe we should only be searching for application adaptors that have been annotated with this annotation rather than children of ApplicationAdaptor anyway!
+// 		  - Other such error handling for uses of my custom annotations such as making sure they are provided values.
 public class ApplicationsManager {
 
 	private final String MARVIN_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin";

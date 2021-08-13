@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class OTP {
 	
-	private final boolean testing = false;
+	private final boolean testing = true;
 	
 	private static OTP otp;
 	private OTP() {}
