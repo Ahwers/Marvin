@@ -1,7 +1,5 @@
 package com.ahwers.marvin.applications;
 
-import java.util.Map;
-
 public abstract class ApplicationAdaptor {
 	
 	private Application application;

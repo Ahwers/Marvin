@@ -1,6 +1,5 @@
 package com.ahwers.marvin.applications.graphicalcalculator;
 
-import java.io.IOException;
 import java.util.Map;
 
 import com.ahwers.marvin.applications.Application;

@@ -20,7 +20,6 @@ public class MarvinApplicationResource {
 	public MarvinApplicationResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content, String message) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;
-		this.previousStateId = previousStateId;
 		resourceRepresentations.put(type, content);
 		resourceRepresentationMessages.put(type, message);
 	}
@@ -28,7 +27,6 @@ public class MarvinApplicationResource {
 	public MarvinApplicationResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;
-		this.previousStateId = previousStateId;
 		resourceRepresentations.put(type, content);
 	}
 	

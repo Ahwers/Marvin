@@ -1,8 +1,5 @@
 package com.ahwers.marvin.response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 
 public class MarvinResponse {

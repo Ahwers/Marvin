@@ -5,13 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
-import com.ahwers.marvin.applications.FuzzyMatcher;
 import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
@@ -80,18 +76,21 @@ public class MarvinResponseFactory {
 		MarvinApplicationResource resource = null;
 		try {
 			resource = appManager.executeApplicationAction(action);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
 			response = new MarvinResponse(RequestOutcome.FAILED, "There's something wrong.");
 			response.setFailException(e);
 		} catch (ClassCastException e) {
 			response = new MarvinResponse(RequestOutcome.OUTDATED, ("The implementation of '" + action.getActionName() + "' needs updating because it is returning a MarvinResponse object."));
 			response.setFailException(e);
+		} catch (InvocationTargetException e) {
+			response = new MarvinResponse(RequestOutcome.INVALID, "The invocation of this command was erroneous for some reason. The exception message should contain more details.");
+			response.setFailException(e);
 		} catch (Exception e) {
-			response = new MarvinResponse(RequestOutcome.INVALID, "The invocation of this command was erroneous for some reason.");
+			response = new MarvinResponse(RequestOutcome.FAILED, "There's something wrong.");{}
 			response.setFailException(e);
 		}
 		response.setResource(resource);
-		
+
 		return response;
 	}
 	

@@ -16,8 +16,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import com.ahwers.marvin.response.MarvinResponse;
-import com.ahwers.marvin.response.RequestOutcome;
 import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 
 // TODO: This entire class's code is (quite understandably) a mess.
