@@ -9,7 +9,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
-import com.ahwers.rest.security.OneTimePasswordAuthenticator;
 
 @ApplicationPath("/services") // TODO: Rename this?
 public class MarvinApplication extends Application {
@@ -22,7 +21,6 @@ public class MarvinApplication extends Application {
 		Set<Object> set = new HashSet<>();
 	
 		set.add(new MarvinService());
-		set.add(new OneTimePasswordAuthenticator());
 		
 		return set;
 	}

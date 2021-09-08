@@ -1,16 +1,10 @@
 package com.ahwers.rest.services;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -38,16 +32,15 @@ public class MarvinService {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response command(Command command) {	
-		MarvinResponse marvinResponse = marvin.processCommand(command.getCommand());
-		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
-		return serviceResponse;
+	public Response command(Command command) {
+		String commandText = command.getCommand();
+		return command(commandText);
 	}
 	
 	@POST
 	@Consumes("text/plain")
 	@Produces("application/json")
-	public Response command(String command) {		
+	public Response command(String command) {
 		MarvinResponse marvinResponse = marvin.processCommand(command);
 		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
 		return serviceResponse;

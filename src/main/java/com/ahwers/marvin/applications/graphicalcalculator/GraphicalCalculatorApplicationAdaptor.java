@@ -9,7 +9,7 @@ import com.ahwers.marvin.applications.CommandMatch;
 import com.ahwers.marvin.applications.IntegratesApplication;
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.MarvinResource;
+import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 @IntegratesApplication("Graphical Calculator")
@@ -27,12 +27,12 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	}
 
 	@CommandMatch("open graphical calculator")
-	public MarvinResource openGraphicalCalculator(Map<String, String> arguments) {
+	public MarvinApplicationResource openGraphicalCalculator(Map<String, String> arguments) {
 		return buildGraphicalCalculatorResource();
 	}
 	
 	@CommandMatch("plot (?<expression>.+)")
-	public MarvinResource addNewAlgebraicExpression(Map<String, String> arguments) {
+	public MarvinApplicationResource addNewAlgebraicExpression(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 	
 		String processedExpression = expressionProcessor.processExpressionIntoAlgebraicExpression(arguments.get("expression"));
@@ -42,7 +42,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	}
 	
 	@CommandMatch("remove (?:graph|expression) (?<graphIndex>.+)")
-	public MarvinResource removeAlgebraicExpression(Map<String, String> arguments) {
+	public MarvinApplicationResource removeAlgebraicExpression(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
 		String expressionIndex = arguments.get("graphIndex");
@@ -59,7 +59,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	}
 
 	@CommandMatch("remove all (?:expressions|graphs)")
-	public MarvinResource removeAllAlgebraicExpressions(Map<String, String> arguments) {
+	public MarvinApplicationResource removeAllAlgebraicExpressions(Map<String, String> arguments) {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 
 		graphicalCalculator.removeAllExpressions();
@@ -102,13 +102,13 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 		return response;
 	}
 	
-	private MarvinResource buildGraphicalCalculatorResource() {
+	private MarvinApplicationResource buildGraphicalCalculatorResource() {
 		DesmosGraphicalCalculator graphicalCalculator = (DesmosGraphicalCalculator) getApplication();
 		
 		int previousStateId = graphicalCalculator.getPreviousStateId();
 		int currentStateId = graphicalCalculator.getCurrentStateId();
 
-		MarvinResource graphicalCalculatorResource = new MarvinResource(getApplicationName(), currentStateId, previousStateId);
+		MarvinApplicationResource graphicalCalculatorResource = new MarvinApplicationResource(getApplicationName(), currentStateId, previousStateId);
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML, graphicalCalculator.getHtmlRepresentation());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_INSTANTIATION_SCRIPT, graphicalCalculator.getHtmlStateInstantiationScript());
 		graphicalCalculatorResource.addRepresentation(ResourceRepresentationType.HTML_STATE_UPDATE_SCRIPT, graphicalCalculator.getHtmlStateUpdateScriptFromPreviousStateId());

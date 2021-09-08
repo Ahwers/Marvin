@@ -18,7 +18,7 @@ import org.reflections.util.FilterBuilder;
 
 import com.ahwers.marvin.response.MarvinResponse;
 import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.MarvinResource;
+import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 
 // TODO: This entire class's code is (quite understandably) a mess.
 // TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
@@ -127,16 +127,15 @@ public class ApplicationsManager {
 		return new ArrayList<>();
 	}
 
-	public MarvinResource executeApplicationAction(ApplicationAction applicationAction) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
+	public MarvinApplicationResource executeApplicationAction(ApplicationAction applicationAction) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
 		String applicationName = applicationAction.getApplicationName();
 		String actionName = applicationAction.getActionName();
 		Map<String, String> actionArguments = applicationAction.getArguments();
 		
 		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
-		actionApplicationAdaptor.setActionArguments(applicationAction.getArguments());
 
-		MarvinResource commandResource = null;
-		commandResource = (MarvinResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
+		MarvinApplicationResource commandResource = null;
+		commandResource = (MarvinApplicationResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
 
 		return commandResource;
 	}

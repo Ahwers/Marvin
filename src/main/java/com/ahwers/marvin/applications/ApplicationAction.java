@@ -1,6 +1,5 @@
 package com.ahwers.marvin.applications;
 
-import java.util.List;
 import java.util.Map;
 
 public class ApplicationAction {

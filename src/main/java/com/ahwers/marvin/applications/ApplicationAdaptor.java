@@ -1,19 +1,10 @@
 package com.ahwers.marvin.applications;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.ahwers.marvin.response.MarvinResponse;
 
 public abstract class ApplicationAdaptor {
 	
 	private Application application;
-	private Map<String, String> actionArguments;
 	
 	protected abstract Application instantiateApplication();
 	
@@ -24,15 +15,7 @@ public abstract class ApplicationAdaptor {
 		
 		return this.application;
 	}
-	
-	public void setActionArguments(Map<String, String> actionArguments) {
-		this.actionArguments = actionArguments;
-	}
-	
-	public String getActionArgument(String argumentName) {
-		return this.actionArguments.get(argumentName);
-	}
-	
+
 	public String getApplicationName() {
 		IntegratesApplication integrationAnnotation = getClass().getDeclaredAnnotation(IntegratesApplication.class);
 		return integrationAnnotation.value();

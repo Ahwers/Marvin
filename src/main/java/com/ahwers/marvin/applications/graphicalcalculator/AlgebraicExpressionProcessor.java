@@ -73,7 +73,7 @@ public class AlgebraicExpressionProcessor {
 			wolframAppId = txtReader.nextLine();
 			txtReader.close();
 		} catch (FileNotFoundException e) {
-			throw new Error("The resource file wolfram_app_id does not exist.");
+			throw new Error("The resource file wolfram_app_id does not exist."); // This should not be throwing this, the resource path repo should.
 		}
 		
 		return wolframAppId;

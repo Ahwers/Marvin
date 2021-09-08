@@ -3,7 +3,7 @@ package com.ahwers.marvin.response.resource;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MarvinResource {
+public class MarvinApplicationResource {
 	
 	private String applicationName;
 	private int currentStateId;
@@ -11,13 +11,13 @@ public class MarvinResource {
 	private Map<ResourceRepresentationType, String> resourceRepresentations = new HashMap<>();
 	private Map<ResourceRepresentationType, String> resourceRepresentationMessages = new HashMap<>();
 	
-	public MarvinResource(String applicationName, int currentStateId, int previousStateId) {
+	public MarvinApplicationResource(String applicationName, int currentStateId, int previousStateId) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;
 		this.previousStateId = previousStateId;
 	}
 	
-	public MarvinResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content, String message) {
+	public MarvinApplicationResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content, String message) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;
 		this.previousStateId = previousStateId;
@@ -25,20 +25,20 @@ public class MarvinResource {
 		resourceRepresentationMessages.put(type, message);
 	}
 	
-	public MarvinResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content) {
+	public MarvinApplicationResource(String applicationName, int currentStateId, ResourceRepresentationType type, String content) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;
 		this.previousStateId = previousStateId;
 		resourceRepresentations.put(type, content);
 	}
 	
-	public MarvinResource(ResourceRepresentationType type, String content, String message) {
+	public MarvinApplicationResource(ResourceRepresentationType type, String content, String message) {
 		this.applicationName = "Marvin";
 		resourceRepresentations.put(type, content);
 		resourceRepresentationMessages.put(type, message);
 	}
 
-	public MarvinResource(ResourceRepresentationType type, String content) {
+	public MarvinApplicationResource(ResourceRepresentationType type, String content) {
 		this.applicationName = "Marvin";
 		resourceRepresentations.put(type, content);
 	}

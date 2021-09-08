@@ -53,10 +53,10 @@ public class CommandFormatter {
 
 	private String stripPleasentriesFromCommand(String command) {
 		for (String politeOpener : politeOpeners) {
-			command = command.replaceFirst(("(?i)^" + politeOpener + "\s+"), "");
+			command = command.replaceFirst(("(?i)^" + politeOpener + "\\s+"), "");
 		}
 		for (String politeCloser : politeClosers) {
-			command = command.replaceFirst(("(?i)\s+" + politeCloser + "$"), "");
+			command = command.replaceFirst(("(?i)\\s+" + politeCloser + "$"), "");
 		}
 		
 		return command;

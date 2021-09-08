@@ -1,4 +1,4 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.After;
@@ -19,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
-import com.ahwers.rest.security.OTP;
 
 public class MarvinServiceTest {
 
@@ -63,31 +61,31 @@ public class MarvinServiceTest {
 	//		 Exception returning with application error messages
 	//		 Resources
 
-	@Test
-	public void serverConnectionTest() {
-		WebTarget target = client.target(SERVER_ADDRESS);
+	// @Test
+	// public void serverConnectionTest() {
+	// 	WebTarget target = client.target(SERVER_ADDRESS);
 		
-		Response response = target.request().get();
+	// 	Response response = target.request().get();
 		
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+	// 	assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	
-		response.close();
-	}
+	// 	response.close();
+	// }
 
-	@Test
-	public void successfulCommandTest() {
-		WebTarget target = client.target(MARVIN_COMMAND_ENDPOINT); 
+	// @Test
+	// public void successfulCommandTest() {
+	// 	WebTarget target = client.target(MARVIN_COMMAND_ENDPOINT); 
 	
-		String otp = OTP.getInstance().generateToken(userSecret);
-		Response response = target.request()
-				.header("Authorization", (username + " " + otp))
-				.accept("application/json")
-				.post(Entity.text("successful marvin request test"));;
+	// 	String otp = OTP.getInstance().generateToken(userSecret);
+	// 	Response response = target.request()
+	// 			.header("Authorization", (username + " " + otp))
+	// 			.accept("application/json")
+	// 			.post(Entity.text("successful marvin request test"));;
 		
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+	// 	assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	
-		response.close();
-	}
+	// 	response.close();
+	// }
 	
 	
 //	@Test

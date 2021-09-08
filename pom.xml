@@ -90,6 +90,19 @@
 		  <artifactId>microsoft-graph</artifactId>
 		  <version>3.2.0</version>
 		</dependency>
+        <dependency>
+            <groupId>org.wildfly.bom</groupId>
+            <artifactId>wildfly</artifactId>
+            <version>24.0.1.Final</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -153,6 +166,25 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- <plugin> TODO: Integrate this testing thing so failed deployments and tests don't keep the server up. It's well annoying.
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin> -->
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
@@ -163,24 +195,25 @@
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>start</goal>
+                            <goal>deploy</goal>
                         </goals>
                         <configuration>
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <daemon>true</daemon>
                         </configuration>
                     </execution>
-                    <execution>
+                    <!-- <execution>
                     	<id>integration-test</id>
                     	<phase>integration-test</phase>
                     	<goals>
                     		<goal>deploy</goal>
                     	</goals>
-                    </execution>
+                    </execution> -->
                     <execution>
                         <id>stop-wildfly</id>
                         <phase>post-integration-test</phase>
                         <goals>
-                        	<goal>undeploy</goal>
+                            <goal>undeploy</goal>
                             <goal>shutdown</goal>
                         </goals>
                     </execution>

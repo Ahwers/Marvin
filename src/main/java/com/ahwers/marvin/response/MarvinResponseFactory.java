@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import com.ahwers.marvin.applications.ApplicationAction;
 import com.ahwers.marvin.applications.ApplicationsManager;
 import com.ahwers.marvin.applications.FuzzyMatcher;
-import com.ahwers.marvin.response.resource.MarvinResource;
+import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 import com.ahwers.marvin.response.resource.ResourceRepresentationType;
 
 public class MarvinResponseFactory {
@@ -77,7 +77,7 @@ public class MarvinResponseFactory {
 	private MarvinResponse buildActionExecutionResponse(ApplicationAction action) {
 		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 	
-		MarvinResource resource = null;
+		MarvinApplicationResource resource = null;
 		try {
 			resource = appManager.executeApplicationAction(action);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -102,7 +102,7 @@ public class MarvinResponseFactory {
 		for (ApplicationAction action : actionOptions) {
 			selectionContent += (stringifyApplicationAction(action) + "\n");
 		}
-		response.setResource(new MarvinResource(ResourceRepresentationType.COMMAND_OPTION_LIST, selectionContent));
+		response.setResource(new MarvinApplicationResource(ResourceRepresentationType.COMMAND_OPTION_LIST, selectionContent));
 		
 		return response;
 	}

@@ -3,7 +3,7 @@ package com.ahwers.marvin.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ahwers.marvin.response.resource.MarvinResource;
+import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 
 public class MarvinResponse {
 
@@ -13,7 +13,7 @@ public class MarvinResponse {
 	//		 Fail resources could take their message values from the exception message that caused them.
 	
 	private String message;
-	private MarvinResource resource;
+	private MarvinApplicationResource resource;
 	private RequestOutcome status;
 	private Throwable failException;
 	
@@ -28,11 +28,11 @@ public class MarvinResponse {
 	
 	public MarvinResponse() {}
 	
-	public void setResource(MarvinResource resource) {
+	public void setResource(MarvinApplicationResource resource) {
 		this.resource = resource;
 	}
 	
-	public MarvinResource getResource() {
+	public MarvinApplicationResource getResource() {
 		return this.resource;
 	}
 	
