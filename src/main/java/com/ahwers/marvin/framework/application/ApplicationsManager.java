@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications;
+package com.ahwers.marvin.framework.application;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,13 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-
-import com.ahwers.marvin.response.resource.MarvinApplicationResource;
 
 // TODO: This entire class's code is (quite understandably) a mess.
 // TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
@@ -106,7 +106,7 @@ public class ApplicationsManager {
 			for (String matchRegex : actionMatchRegexes) {
 				Pattern pattern = Pattern.compile(matchRegex, Pattern.CASE_INSENSITIVE);
 			    FuzzyMatcher matcher = new FuzzyMatcher(pattern.matcher(command));
-			    if (matcher.find()) {
+			    if (matcher.find()) { // TODO: This can be cleaned the heck up.
 			    	Map<String, String> arguments = new HashMap<>();
 			    	for (int i = 1; i < matcher.groupCount() + 1; i++) {
 			    		arguments.put(matcher.groupName(i), matcher.group(i));

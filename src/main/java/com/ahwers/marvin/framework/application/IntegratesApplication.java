@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications;
+package com.ahwers.marvin.framework.application;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

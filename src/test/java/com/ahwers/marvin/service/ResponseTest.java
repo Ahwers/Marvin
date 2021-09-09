@@ -2,7 +2,6 @@ package com.ahwers.marvin.service;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.ahwers.marvin.TestClient;

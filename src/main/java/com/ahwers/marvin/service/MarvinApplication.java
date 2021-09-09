@@ -1,4 +1,4 @@
-package com.ahwers.rest.services;
+package com.ahwers.marvin.service;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +8,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 
-import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
 
 @ApplicationPath("/services") // TODO: Rename this?
 public class MarvinApplication extends Application {

@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ahwers.marvin.applications.Application;
-import com.ahwers.marvin.applications.ApplicationAdaptor;
-import com.ahwers.marvin.applications.CommandMatch;
-import com.ahwers.marvin.applications.IntegratesApplication;
-import com.ahwers.marvin.response.MarvinResponse;
-import com.ahwers.marvin.response.RequestOutcome;
-import com.ahwers.marvin.response.resource.MarvinApplicationResource;
-import com.ahwers.marvin.response.resource.ResourceRepresentationType;
+import com.ahwers.marvin.framework.application.Application;
+import com.ahwers.marvin.framework.application.ApplicationAdaptor;
+import com.ahwers.marvin.framework.application.CommandMatch;
+import com.ahwers.marvin.framework.application.IntegratesApplication;
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
+import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
+import com.ahwers.marvin.framework.response.MarvinResponse;
+import com.ahwers.marvin.framework.response.RequestOutcome;
 
 // TODO: Better application name? Pantry is cool, but it's not obvious what it does based off of it's name.
 @IntegratesApplication("Pantry")

@@ -1,4 +1,4 @@
-package com.ahwers.marvin.response.resource;
+package com.ahwers.marvin.framework.resource;
 
 import java.util.HashMap;
 import java.util.Map;

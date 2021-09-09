@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications;
+package com.ahwers.marvin.framework.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // Doesn't yet support stuff like this: regex of "(6)+" matching "666" produces groups {6, 6, 6}
+// TODO: Looks like the ^$ regex position things aren't working! Need to write a test suite for this to make sure it works as desired.
 public class FuzzyMatcher {
 	
 	public static void main(String args[]) {

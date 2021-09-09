@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications;
+package com.ahwers.marvin.framework.application;
 
 import java.util.HashMap;
 import java.util.Map;

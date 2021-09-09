@@ -1,11 +1,11 @@
-package com.ahwers.marvin.response.resource;
+package com.ahwers.marvin.framework.resource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
 
 public class ResourceTemplate {
 	

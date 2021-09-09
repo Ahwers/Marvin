@@ -1,4 +1,4 @@
-package com.ahwers.marvin.response.resource;
+package com.ahwers.marvin.framework.resource;
 
 public enum ResourceRepresentationType {
 	

@@ -11,7 +11,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
 
 // TODO: Adapt most of this to be a wolfram-alpha communication class that AlgebraicExpressionProcessor just uses.
 public class AlgebraicExpressionProcessor {

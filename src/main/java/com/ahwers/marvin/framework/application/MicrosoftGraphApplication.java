@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications;
+package com.ahwers.marvin.framework.application;
 
 public abstract class MicrosoftGraphApplication extends Application {
 

@@ -1,4 +1,4 @@
-package com.ahwers.marvin.command;
+package com.ahwers.marvin.framework.command;
 
 public class Command {
 	

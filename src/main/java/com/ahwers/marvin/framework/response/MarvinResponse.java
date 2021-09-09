@@ -1,6 +1,6 @@
-package com.ahwers.marvin.response;
+package com.ahwers.marvin.framework.response;
 
-import com.ahwers.marvin.response.resource.MarvinApplicationResource;
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public class MarvinResponse {
 

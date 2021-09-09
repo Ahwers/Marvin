@@ -1,4 +1,4 @@
-package com.ahwers.rest.services;
+package com.ahwers.marvin.service;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,10 +9,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import com.ahwers.marvin.Marvin;
-import com.ahwers.marvin.command.Command;
-import com.ahwers.marvin.response.MarvinResponse;
-import com.ahwers.marvin.response.RequestOutcome;
+import com.ahwers.marvin.framework.Marvin;
+import com.ahwers.marvin.framework.command.Command;
+import com.ahwers.marvin.framework.response.MarvinResponse;
+import com.ahwers.marvin.framework.response.RequestOutcome;
 
 @Path("/command")
 public class MarvinService {

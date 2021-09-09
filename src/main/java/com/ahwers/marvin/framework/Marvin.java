@@ -1,9 +1,9 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.framework;
 
-import com.ahwers.marvin.applications.ApplicationsManager;
-import com.ahwers.marvin.command.CommandFormatter;
-import com.ahwers.marvin.response.MarvinResponse;
-import com.ahwers.marvin.response.MarvinResponseFactory;
+import com.ahwers.marvin.framework.application.ApplicationsManager;
+import com.ahwers.marvin.framework.command.CommandFormatter;
+import com.ahwers.marvin.framework.response.MarvinResponse;
+import com.ahwers.marvin.framework.response.MarvinResponseFactory;
 
 public class Marvin {
 	

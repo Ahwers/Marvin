@@ -1,4 +1,4 @@
-package com.ahwers.marvin.command;
+package com.ahwers.marvin.framework.command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ahwers.marvin.applications.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
 
 public class CommandFormatter {
 	
