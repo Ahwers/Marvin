@@ -7,7 +7,23 @@ public class ApplicationAction {
 	private String applicationName;
 	private String actionName;
 	private Map<String, String> actionArguments;
-	
+
+	public ApplicationAction(String applicationName, String actionName, Map<String, String> arguments) {
+		this.applicationName = applicationName;
+		this.actionName = actionName;
+		this.actionArguments = arguments;
+	}
+
+	public ApplicationAction() {}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
 	public ApplicationAction(String applicationName, String actionName) {
 		this.applicationName = applicationName;
 		this.actionName = actionName;
@@ -28,7 +44,7 @@ public class ApplicationAction {
 		return this.actionName;
 	}
 	
-	public void setArguments(Map<String, String> arguments) {
+	public void setActionArguments(Map<String, String> arguments) {
 		this.actionArguments = arguments;
 	}
 	

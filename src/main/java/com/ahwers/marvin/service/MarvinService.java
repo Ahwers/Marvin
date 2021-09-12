@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.ahwers.marvin.framework.Marvin;
+import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.RequestOutcome;
@@ -42,6 +43,16 @@ public class MarvinService {
 	@Produces("application/json")
 	public Response command(String command) {
 		MarvinResponse marvinResponse = marvin.processCommand(command);
+		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
+		return serviceResponse;
+	}
+
+	@POST
+	@Path("/execute")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response executeApplicationAction(ApplicationAction action) {
+		MarvinResponse marvinResponse = marvin.processApplicationAction(action);
 		Response serviceResponse = constructServiceResponseFromMarvinResponse(marvinResponse);
 		return serviceResponse;
 	}

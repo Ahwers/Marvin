@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,7 +112,7 @@ public class ApplicationsManager {
 			    	for (int i = 1; i < matcher.groupCount() + 1; i++) {
 			    		arguments.put(matcher.groupName(i), matcher.group(i));
 			    	}
-			    	possibleAppAction.setArguments(arguments);
+			    	possibleAppAction.setActionArguments(arguments);
 					matchingActions.add(possibleAppAction);
 				}	
 			}

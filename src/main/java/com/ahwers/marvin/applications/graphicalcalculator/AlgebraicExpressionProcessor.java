@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
 
+// TODO: Doesn't need to be a singleton anymore
 // TODO: Adapt most of this to be a wolfram-alpha communication class that AlgebraicExpressionProcessor just uses.
 public class AlgebraicExpressionProcessor {
 	

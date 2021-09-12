@@ -3,6 +3,7 @@ package com.ahwers.marvin.framework.response;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ public class MarvinResponseFactory {
 	
 	private ApplicationsManager appManager;
 	
-	private String command;
 	private List<ApplicationAction> directCommandActionMatches = new ArrayList<>();
 	private List<ApplicationAction> phoneticCommandActionMatches = new ArrayList<>();
 	
@@ -27,16 +27,11 @@ public class MarvinResponseFactory {
 		this.appManager = appManager;
 	}
 	
-	public MarvinResponse getResponseForAppAction(String stringifiedAppAction) {
-		ApplicationAction action = constructApplicationActionFromString(stringifiedAppAction);
-//		MarvinResource resource = appManager.executeApplicationAction(action);
-		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
-//		response.setResource(resource);
-		return response;
+	public MarvinResponse getResponseForAppAction(ApplicationAction appAction) {
+		return buildActionExecutionResponse(appAction);
 	}
 	
 	public MarvinResponse getResponseForCommand(String command) {
-		this.command = command;
 		this.directCommandActionMatches = appManager.getApplicationActionsThatDirectlyMatchCommand(command);
 		this.phoneticCommandActionMatches = appManager.getApplicationActionsThatPhoneticallyMatchCommand(command);
 		
@@ -105,6 +100,10 @@ public class MarvinResponseFactory {
 		
 		return response;
 	}
+
+	private MarvinResponse buildUnmatchedCommandResponse() {
+		return new MarvinResponse(RequestOutcome.UNMATCHED, "Sorry, I have not been programmed to process that command.");
+	}
 	
 	private String stringifyApplicationAction(ApplicationAction action) {
 		String stringifiedAction = "";
@@ -142,13 +141,9 @@ public class MarvinResponseFactory {
 		}
 		
 		ApplicationAction appAction = new ApplicationAction(applicationName, actionName);
-		appAction.setArguments(actionArguments);
+		appAction.setActionArguments(actionArguments);
 		
 		return appAction;
-	}
-	
-	private MarvinResponse buildUnmatchedCommandResponse() {
-		return new MarvinResponse(RequestOutcome.UNMATCHED, "Sorry, I have not been programmed to process that command.");
 	}
 	
 }
