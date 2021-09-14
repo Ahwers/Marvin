@@ -4,6 +4,7 @@ import com.ahwers.marvin.framework.application.ApplicationsManager;
 import com.ahwers.marvin.framework.command.CommandFormatter;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.MarvinResponseFactory;
+import com.ahwers.marvin.framework.application.ActionInvocation;
 import com.ahwers.marvin.framework.application.ApplicationAction;
 
 public class Marvin {
@@ -28,9 +29,8 @@ public class Marvin {
 	}
 
 	// TODO: Maybe it should be MarvinResponseBuilder rather than factory
-	public MarvinResponse processApplicationAction(ApplicationAction appAction) {
-		System.out.println(appAction.getActionName());
-		return responseFactory.getResponseForAppAction(appAction);
+	public MarvinResponse processActionInvocation(ActionInvocation actionInvocation) {
+		return responseFactory.getResponseForActionInvocation(actionInvocation);
 	}
 	
 }

@@ -7,6 +7,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.ahwers.marvin.framework.application.ActionInvocation;
 import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
 import com.azure.core.http.ContentType;
@@ -56,13 +57,13 @@ public class TestClient {
         return postCommandRequest(command.getCommand());
     }
 
-    public Response postApplicationActionExecutionRequest(ApplicationAction appAction) {
+    public Response postActionInvocationExecutionRequest(ActionInvocation actionInvocation) {
         WebTarget target = client.target(MARVIN_APPLICATION_ACTION_EXECUTION_ENDPOINT);
 
         Response response = target.request()
             .header(HttpHeaders.AUTHORIZATION, getAuthToken())
             .accept(ContentType.APPLICATION_JSON)
-            .post(Entity.json(appAction));
+            .post(Entity.json(actionInvocation));
 
         response.close();
 

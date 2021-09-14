@@ -205,6 +205,8 @@
                         <configuration>
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <daemon>true</daemon>
+                            <timeout>120</timeout>
+                            <startupTimeout>120</startupTimeout>
                         </configuration>
                     </execution>
                     <!-- <execution>

@@ -5,6 +5,7 @@ import com.ahwers.marvin.TestClient;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -13,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ahwers.marvin.framework.application.ActionInvocation;
 import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -46,10 +48,8 @@ public class EndpointsTest {
 
     @Test
     public void applicationActionObjectRequest() {
-        ApplicationAction appAction = new ApplicationAction("Service Tester", "successfulMarvinRequestTest", null); 
-        System.out.println(Entity.json(appAction));
-
-        Response response = client.postApplicationActionExecutionRequest(appAction);
+        ActionInvocation invocation = new ActionInvocation("Service Tester", "successfulMarvinRequestTest", new HashMap<String, String>());
+        Response response = client.postActionInvocationExecutionRequest(invocation);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 

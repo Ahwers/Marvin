@@ -1,15 +1,12 @@
 package com.ahwers.marvin.framework.application;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
@@ -30,11 +27,11 @@ public class ApplicationsManager {
 	private final String MARVIN_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin";
 
 	private Map<String, ApplicationAdaptor> applicationAdaptors = new HashMap<>();
-	private Map<ApplicationAction, List<String>> applicationActions = new HashMap<>();
+	private List<ActionDefinition> actionDefinitions = new ArrayList<>();
 	
 	public ApplicationsManager() {
 		populateApplicationAdaptorsMap();
-		populateApplicationActionsMap();
+		populateActionDefinitionsList();
 	}
 	
 	private void populateApplicationAdaptorsMap() {
@@ -57,7 +54,7 @@ public class ApplicationsManager {
 		}
 	}
 	
-	private void populateApplicationActionsMap() {
+	private void populateActionDefinitionsList() {
 		Reflections annotatedMethodsScanner = new Reflections(new ConfigurationBuilder()
 			     .setUrls(ClasspathHelper.forPackage(MARVIN_APPLICATION_PACKAGE_PREFIX))
 			     .setScanners(new MethodAnnotationsScanner())
@@ -82,8 +79,8 @@ public class ApplicationsManager {
 				commandMatchRegexes.add(actionMethod.getDeclaredAnnotation(CommandMatch.class).value());
 			}
 			
-			ApplicationAction action = new ApplicationAction(applicationName, actionName);
-			this.applicationActions.put(action, commandMatchRegexes);
+			ActionDefinition action = new ActionDefinition(applicationName, actionName, commandMatchRegexes);
+			this.actionDefinitions.add(action);
 		}
 	}
 	
@@ -97,39 +94,24 @@ public class ApplicationsManager {
 		
 		return hasMultipleMatches;
 	}
-	
-	public List<ApplicationAction> getApplicationActionsThatDirectlyMatchCommand(String command) {
-		List<ApplicationAction> matchingActions = new ArrayList<>();
-		
-		for (ApplicationAction possibleAppAction : this.applicationActions.keySet()) {
-			List<String> actionMatchRegexes = this.applicationActions.get(possibleAppAction);
-			
-			for (String matchRegex : actionMatchRegexes) {
-				Pattern pattern = Pattern.compile(matchRegex, Pattern.CASE_INSENSITIVE);
-			    FuzzyMatcher matcher = new FuzzyMatcher(pattern.matcher(command));
-			    if (matcher.find()) { // TODO: This can be cleaned the heck up.
-			    	Map<String, String> arguments = new HashMap<>();
-			    	for (int i = 1; i < matcher.groupCount() + 1; i++) {
-			    		arguments.put(matcher.groupName(i), matcher.group(i));
-			    	}
-			    	possibleAppAction.setActionArguments(arguments);
-					matchingActions.add(possibleAppAction);
-				}	
+
+	public List<ActionInvocation> getApplicationInvocationsThatDirectlyMatchCommand(String command) {
+		List<ActionInvocation> matchingActions = new ArrayList<>();
+
+		for (ActionDefinition potentialAction : this.actionDefinitions) {
+			if (potentialAction.matchesCommandRequest(command)) {
+				ActionInvocation appInvocation = potentialAction.buildActionInvocationForCommandRequest(command);
+				matchingActions.add(appInvocation);
 			}
 		}
-		
+
 		return matchingActions;
 	}
 	
-	public List<ApplicationAction> getApplicationActionsThatPhoneticallyMatchCommand(String command) {
-		// TODO: Implement
-		return new ArrayList<>();
-	}
-
-	public MarvinApplicationResource executeApplicationAction(ApplicationAction applicationAction) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
-		String applicationName = applicationAction.getApplicationName();
-		String actionName = applicationAction.getActionName();
-		Map<String, String> actionArguments = applicationAction.getArguments();
+	public MarvinApplicationResource executeActionInvocation(ActionInvocation actionInvocation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
+		String applicationName = actionInvocation.getApplicationName();
+		String actionName = actionInvocation.getActionName();
+		Map<String, String> actionArguments = actionInvocation.getArguments();
 		
 		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
 

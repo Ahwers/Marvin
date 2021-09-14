@@ -7,20 +7,9 @@ import java.util.regex.Pattern;
 
 // Doesn't yet support stuff like this: regex of "(6)+" matching "666" produces groups {6, 6, 6}
 // TODO: Looks like the ^$ regex position things aren't working! Need to write a test suite for this to make sure it works as desired.
+// TODO: Rename to something better like CommandRequestMatcher.
+// TODO: Refactor to make the interface more intuative.
 public class FuzzyMatcher {
-	
-	public static void main(String args[]) {
-		Pattern pattern = Pattern.compile("(6)+$", Pattern.CASE_INSENSITIVE);
-	    FuzzyMatcher matcher = new FuzzyMatcher(pattern.matcher("666"));
-	    if (matcher.find()) {
-	    	for (int i = 1; i < matcher.groupCount() + 1; i++) {
-	    		System.out.println(matcher.groupName(i) + " : " + matcher.group(i));
-	    	}
-	    }
-	    else {
-	    	System.out.println("cry");
-	    }
-	}
 	
 	private Matcher matcher;
 	private List<String> groupNames = new ArrayList<>();
