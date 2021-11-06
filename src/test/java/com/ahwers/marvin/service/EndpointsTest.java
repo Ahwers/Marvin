@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.ahwers.marvin.framework.application.ActionInvocation;
 import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
+import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 public class EndpointsTest {

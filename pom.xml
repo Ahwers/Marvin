@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    TODO:
+     - Remove dependency management stuff, that is for parent POMs to easily set the versions of children dependencies
+     - Set up build lifecyle to "build->unit_test->integration_test"
+     - Set up environments, DEV and PROD. Can we optionally disable security in DEV to avoid having to log in to anything?
+ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -70,16 +76,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-          	<dependency>
-		<groupId>org.seleniumhq.selenium</groupId>
-	 		<artifactId>selenium-firefox-driver</artifactId>
-	 		<version>3.141.59</version>
-	  	</dependency>
-        <dependency>
-			<groupId>com.microsoft.cognitiveservices.speech</groupId>
-			<artifactId>client-sdk</artifactId>
-			<version>1.12.1</version>
-		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
