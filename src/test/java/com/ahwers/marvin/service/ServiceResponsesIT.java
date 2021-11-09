@@ -4,15 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import javax.ws.rs.core.Response;
 
-import com.ahwers.marvin.TestClient;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ResponseTest {
+public class ServiceResponsesIT {
 
     // TODO: How can i mock this application adaptor????
+	// 		 Maybe it's in the definition of what packages reflections searches in, or maybe i should inject custom actions into the class that deals with them
 
     private TestClient client = null;
 

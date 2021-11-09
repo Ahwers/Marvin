@@ -1,5 +1,8 @@
 package com.ahwers.marvin.framework.application;
 
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
+import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
+
 public abstract class ApplicationAdaptor {
 	
 	private Application application;
@@ -19,4 +22,9 @@ public abstract class ApplicationAdaptor {
 		return integrationAnnotation.value();
 	}
 	
+	protected MarvinApplicationResource buildResource(String message) {
+		MarvinApplicationResource resource = new MarvinApplicationResource(ResourceRepresentationType.PLAIN_TEXT, message);
+		return resource;
+	}
+
 }

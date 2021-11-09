@@ -21,4 +21,14 @@ public class ActionInvocation extends ApplicationAction {
         return Map.copyOf(arguments);
     }
 
+    public boolean isLike(ActionInvocation invocation) {
+        boolean isLike = super.isLike(invocation);
+
+        if (!arguments.equals(invocation.getArguments())) {
+            isLike = false;
+        }
+
+        return isLike;
+    }
+
 }

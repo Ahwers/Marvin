@@ -99,7 +99,7 @@ public class ApplicationsManager {
 		List<ActionInvocation> matchingActions = new ArrayList<>();
 
 		for (ActionDefinition potentialAction : this.actionDefinitions) {
-			if (potentialAction.matchesCommandRequest(command)) {
+			if (potentialAction.canServiceCommandRequest(command)) {
 				ActionInvocation appInvocation = potentialAction.buildActionInvocationForCommandRequest(command);
 				matchingActions.add(appInvocation);
 			}

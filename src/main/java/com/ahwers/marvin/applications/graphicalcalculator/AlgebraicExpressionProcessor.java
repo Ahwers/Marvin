@@ -11,9 +11,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ResourceRepository;
 
-// TODO: Doesn't need to be a singleton anymore
 // TODO: Adapt most of this to be a wolfram-alpha communication class that AlgebraicExpressionProcessor just uses.
 public class AlgebraicExpressionProcessor {
 	
@@ -66,7 +65,7 @@ public class AlgebraicExpressionProcessor {
 	}
 
 	private String loadWolframAppId() {
-		String wolframAppIdResourceFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("wolfram_app_id");
+		String wolframAppIdResourceFilePath = ResourceRepository.getInstance().getResourcePath("wolfram_app_id.txt");
 		
 		String wolframAppId = null;
 		try {

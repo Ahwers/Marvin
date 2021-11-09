@@ -17,14 +17,14 @@ public class CalendarApplicationAdaptor extends ApplicationAdaptor {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@CommandMatch("^remind me to (?<action>.+)(?: on (?<date>.+))?(?: at (?<time>.+))$")
+
+	@CommandMatch("remind me to (?<action>.+)(?: on (?<date>.+))?(?: at (?<time>.+))")
 	public MarvinResponse reminderAtDateTime(Map<String, String> arguments) {
 		return null;
 	}
 	
-	@CommandMatch("^in (?<timerLength>.+?) (?<timerUnit>minutes?|hours?|seconds?) remind me to (?<action>.+)$")
-	@CommandMatch("^remind me to (?<action>.+) in (?<timerLength>.+) (?<timerUnit>minutes?|hours?|seconds?)$")
+	@CommandMatch("in (?<timerLength>.+?) (?<timerUnit>minutes?|hours?|seconds?) remind me to (?<action>.+)")
+	@CommandMatch("remind me to (?<action>.+) in (?<timerLength>.+) (?<timerUnit>minutes?|hours?|seconds?)")
 	public MarvinResponse reminderOnTimer(Map<String, String> arguments) {
 		return new MarvinResponse(RequestOutcome.SUCCESS, "Works");
 	}

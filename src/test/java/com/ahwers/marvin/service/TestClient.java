@@ -1,4 +1,4 @@
-package com.ahwers.marvin;
+package com.ahwers.marvin.service;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -8,7 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import com.ahwers.marvin.framework.application.ActionInvocation;
-import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
 import com.azure.core.http.ContentType;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;

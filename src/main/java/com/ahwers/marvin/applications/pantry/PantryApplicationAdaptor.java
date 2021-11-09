@@ -26,7 +26,7 @@ public class PantryApplicationAdaptor extends ApplicationAdaptor {
 		return null;
 	}
 	
-	@CommandMatch("^(?:Whats my meal plan this week|Generate a meal plan for this week)$")
+	@CommandMatch("(?:Whats my meal plan this week|Generate a meal plan for this week)")
 	public MarvinResponse getMealPlanForThisWeek(Map<String, String> arguments) {
 		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 		

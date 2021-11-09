@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.ahwers.marvin.framework.Marvin;
 import com.ahwers.marvin.framework.application.ActionInvocation;
-import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.command.Command;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.RequestOutcome;

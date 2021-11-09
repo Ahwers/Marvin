@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!-- 
+        TODO:
+         - Set up build lifecycle to "build->unit_test->integration_test"
+         - Set up environments, DEV and PROD. Can and should we optionally disable security in DEV in order to avoid having to log in to anything during testing?
+         - Do the resource property thing that section 4.3.1 talks about to centralise configuration properties and safely omit them from the git repository without straight up ignoring the existen of required resource files.
+     -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ahwers.marvin</groupId>
     <artifactId>RestfulMarvin</artifactId>
@@ -10,40 +16,30 @@
     <name>RestfulMarvin</name>
     <description/>
 
-    <dependencyManagement>
-        <dependencies>
+    <properties>
+        <resteasy.ver>4.5.6.Final</resteasy.ver>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-bom</artifactId>
-                <version>${resteasy.ver}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <scope>test</scope>
-                <version>${junit.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-core</artifactId>
-                <version>${resteasy.ver}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-client</artifactId>
-                <version>${resteasy.ver}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-servlet-initializer</artifactId>
-                <version>${resteasy.ver}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+    <repositories>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+   		<repository>
+		    <id>maven-cognitiveservices-speech</id>
+	    	<name>Microsoft Cognitive Services Speech Maven Repository</name>
+	    	<url>https://csspeechstorage.blob.core.windows.net/maven/</url>
+	  	</repository>
+    </repositories>
+    
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -53,28 +49,27 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
+            <version>${resteasy.ver}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.ver}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-servlet-initializer</artifactId>
+            <version>${resteasy.ver}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
-          	<dependency>
-		<groupId>org.seleniumhq.selenium</groupId>
-	 		<artifactId>selenium-firefox-driver</artifactId>
-	 		<version>3.141.59</version>
-	  	</dependency>
         <dependency>
 			<groupId>com.microsoft.cognitiveservices.speech</groupId>
 			<artifactId>client-sdk</artifactId>
@@ -109,45 +104,14 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-   		<repository>
-		    <id>maven-cognitiveservices-speech</id>
-	    	<name>Microsoft Cognitive Services Speech Maven Repository</name>
-	    	<url>https://csspeechstorage.blob.core.windows.net/maven/</url>
-	  	</repository>
-    </repositories>
-    <properties>
-        <resteasy.ver>4.5.6.Final</resteasy.ver>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <version.org.eclipse.jetty>9.4.17.v20190418</version.org.eclipse.jetty>
-        <junit.version>4.13.1</junit.version>
-    </properties>
+
     <build>
         <finalName>RestfulMarvin</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-maven-plugin</artifactId>
-                    <version>${version.org.eclipse.jetty}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -155,41 +119,29 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>surefire-it</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </execution>
-                </executions>
+                <version>3.0.0-M5</version>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <executions>
                     <execution>
                         <id>integration-test</id>
+                        <!-- <phase>integration-test</phase> -->
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>verify</id>
+                        <!-- <phase>verify</phase> -->
                         <goals>
                             <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
@@ -199,28 +151,20 @@
                         <id>start-wildfly</id>
                         <phase>pre-integration-test</phase>
                         <goals>
+                            <!-- <goal>shutdown</goal> -->
                             <goal>start</goal>
-                            <goal>deploy</goal>
                         </goals>
                         <configuration>
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <daemon>true</daemon>
-                            <timeout>120</timeout>
-                            <startupTimeout>120</startupTimeout>
+                            <timeout>300</timeout>
+                            <startupTimeout>300</startupTimeout>
                         </configuration>
                     </execution>
-                    <!-- <execution>
-                    	<id>integration-test</id>
-                    	<phase>integration-test</phase>
-                    	<goals>
-                    		<goal>deploy</goal>
-                    	</goals>
-                    </execution> -->
                     <execution>
                         <id>stop-wildfly</id>
                         <phase>post-integration-test</phase>
                         <goals>
-                            <goal>undeploy</goal>
                             <goal>shutdown</goal>
                         </goals>
                     </execution>

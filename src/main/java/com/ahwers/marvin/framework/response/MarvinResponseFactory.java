@@ -2,13 +2,9 @@ package com.ahwers.marvin.framework.response;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.ahwers.marvin.framework.application.ActionInvocation;
-import com.ahwers.marvin.framework.application.ApplicationAction;
 import com.ahwers.marvin.framework.application.ApplicationsManager;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 import com.ahwers.marvin.framework.resource.ResourceRepresentationType;

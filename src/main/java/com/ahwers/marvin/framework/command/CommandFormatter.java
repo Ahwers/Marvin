@@ -10,14 +10,15 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
+import com.ahwers.marvin.framework.application.ResourceRepository;
 
+// TODO: Make this a singleton
 public class CommandFormatter {
 	
 	private List<String> politeOpeners;
 	private List<String> politeClosers;
 	private Map<String, String> alphabeticToNumericNumbers;
-	
+
 	public CommandFormatter() {
 		this.alphabeticToNumericNumbers = loadAlphabeticToNumericNumbersMap();
 		
@@ -30,6 +31,43 @@ public class CommandFormatter {
 			this.politeOpeners = new ArrayList<>();
 			this.politeClosers = new ArrayList<>();
 		}
+	}
+		
+	private List<String> loadPoliteOpeners() throws FileNotFoundException {
+		String openerLookupFilePath = ResourceRepository.getInstance().getResourcePath("command_opening_pleasentries.txt");
+		return loadLinesFromFile(openerLookupFilePath);
+	}
+	
+	private List<String> loadPoliteClosers() throws FileNotFoundException {
+		String closerLookupFilePath = ResourceRepository.getInstance().getResourcePath("command_closing_pleasentries.txt");
+		return loadLinesFromFile(closerLookupFilePath); 
+	}
+	
+	private List<String> loadLinesFromFile(String filePath) throws FileNotFoundException {
+		List<String> lines = new ArrayList<>();
+		Scanner lookupReader = new Scanner(new File(filePath));
+		while (lookupReader.hasNext()) {
+			lines.add(lookupReader.nextLine());
+		}
+		
+		return lines;
+	}
+	
+	private Map<String, String> loadAlphabeticToNumericNumbersMap() {
+		Map<String, String> alphabeticToNumericNumbers = new HashMap<>();
+		
+		alphabeticToNumericNumbers.put("zero", "0");
+		alphabeticToNumericNumbers.put("one", "1");
+		alphabeticToNumericNumbers.put("two", "2");
+		alphabeticToNumericNumbers.put("three", "3");
+		alphabeticToNumericNumbers.put("four", "4");
+		alphabeticToNumericNumbers.put("five", "5");
+		alphabeticToNumericNumbers.put("six", "6");
+		alphabeticToNumericNumbers.put("seven", "7");
+		alphabeticToNumericNumbers.put("eight", "8");
+		alphabeticToNumericNumbers.put("nine", "9");
+		
+		return alphabeticToNumericNumbers;
 	}
 	
 	public String formatCommand(String targetCommand) {
@@ -44,9 +82,10 @@ public class CommandFormatter {
 	}
 	
 	private String removeGrammaticalPunctuationFromCommand(String command) {
-		String punctuation = "?,.!";
+		String punctuation = "?,.!;";
 		
-		command = command.replaceAll("(?<=[\\d\\w])[" + punctuation +"](?=\\s|$)", "");
+		// command = command.replaceAll("(?<=[\\d\\w])[" + punctuation +"](?=\\s|$)", "");
+		command = command.replaceAll(("[" + punctuation + "]"), "");
 		
 		return command;
 	}
@@ -91,42 +130,5 @@ public class CommandFormatter {
 	private String convertAlphabeticNumberToNumeric(String alphabeticNumber) {
 		return this.alphabeticToNumericNumbers.get(alphabeticNumber.toLowerCase());
 	}
-	
-	private List<String> loadPoliteOpeners() throws FileNotFoundException {
-		String openerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("command_opening_pleasentries");
-		return loadLinesFromFile(openerLookupFilePath);
-	}
-	
-	private List<String> loadPoliteClosers() throws FileNotFoundException {
-		String closerLookupFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey("command_closing_pleasentries");
-		return loadLinesFromFile(closerLookupFilePath); 
-	}
-	
-	private List<String> loadLinesFromFile(String filePath) throws FileNotFoundException {
-		List<String> lines = new ArrayList<>();
-		Scanner lookupReader = new Scanner(new File(filePath));
-		while (lookupReader.hasNext()) {
-			lines.add(lookupReader.nextLine());
-		}
-		
-		return lines;
-	}
-	
-	private Map<String, String> loadAlphabeticToNumericNumbersMap() {
-		Map<String, String> alphabeticToNumericNumbers = new HashMap<>();
-		
-		alphabeticToNumericNumbers.put("zero", "0");
-		alphabeticToNumericNumbers.put("one", "1");
-		alphabeticToNumericNumbers.put("two", "2");
-		alphabeticToNumericNumbers.put("three", "3");
-		alphabeticToNumericNumbers.put("four", "4");
-		alphabeticToNumericNumbers.put("five", "5");
-		alphabeticToNumericNumbers.put("six", "6");
-		alphabeticToNumericNumbers.put("seven", "7");
-		alphabeticToNumericNumbers.put("eight", "8");
-		alphabeticToNumericNumbers.put("nine", "9");
-		
-		return alphabeticToNumericNumbers;
-	}
-	
+
 }

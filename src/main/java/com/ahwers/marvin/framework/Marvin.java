@@ -5,7 +5,6 @@ import com.ahwers.marvin.framework.command.CommandFormatter;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.MarvinResponseFactory;
 import com.ahwers.marvin.framework.application.ActionInvocation;
-import com.ahwers.marvin.framework.application.ApplicationAction;
 
 public class Marvin {
 	

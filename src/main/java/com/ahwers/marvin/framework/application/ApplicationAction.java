@@ -22,4 +22,17 @@ public abstract class ApplicationAction {
 		return this.actionName;
 	}
 
+	public boolean isLike(ApplicationAction action) {
+		boolean isLike = true;
+
+		if (!this.applicationName.equals(action.getApplicationName())) {
+			isLike = false;
+		}
+		else if (!this.actionName.equals(action.getActionName())) {
+			isLike = false;
+		}
+
+		return isLike;
+	}
+
 }

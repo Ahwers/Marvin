@@ -67,7 +67,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	// 	return buildGraphicalCalculatorResource();
 	// }
 
-	// @CommandMatch("^replace (?:expression|graph) (?<graphIndex>.+?) with (?<newExpression>.+?)$")
+	// @CommandMatch("replace (?:expression|graph) (?<graphIndex>.+?) with (?<newExpression>.+?)")
 	// public MarvinResponse replaceExpressionOfIndexWithNewExpression(Map<String, String> arguments) {
 	// 	GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
 		
@@ -83,7 +83,7 @@ public class GraphicalCalculatorApplicationAdaptor extends ApplicationAdaptor {
 	// 	return response;
 	// }
 
-	// @CommandMatch("^replace (?<targetExpression>.+?) in (?:expression|graph) (?<graphIndex>.+?) with (?<replacementExpression>.+?)$")
+	// @CommandMatch("replace (?<targetExpression>.+?) in (?:expression|graph) (?<graphIndex>.+?) with (?<replacementExpression>.+?)")
 	// public MarvinResponse replaceSubstringInAlgebraicExpressionWith(Map<String, String> arguments) {
 	// 	GraphicalCalculatorState graphicalCalculator = (GraphicalCalculatorState) getApplication();
 
