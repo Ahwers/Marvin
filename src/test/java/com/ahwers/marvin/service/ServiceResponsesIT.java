@@ -1,12 +1,12 @@
 package com.ahwers.marvin.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ServiceResponsesIT {
 
@@ -15,12 +15,12 @@ public class ServiceResponsesIT {
 
     private TestClient client = null;
 
-    @Before
+    @BeforeAll
     public void setUp() {
         client = new TestClient();
     }
 
-    @After
+    @AfterAll
     public void tearDown() {
         client.close();
     }

@@ -7,7 +7,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import com.ahwers.marvin.framework.application.ActionInvocation;
+import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.command.Command;
 import com.azure.core.http.ContentType;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;

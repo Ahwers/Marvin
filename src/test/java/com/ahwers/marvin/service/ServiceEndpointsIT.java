@@ -1,30 +1,30 @@
 package com.ahwers.marvin.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.ahwers.marvin.framework.application.ActionInvocation;
+import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.command.Command;
 import com.ahwers.marvin.framework.response.RequestOutcome;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ServiceEndpointsIT {
     
     private TestClient client = null;
 
-    @Before
+    @BeforeAll
     public void setUp() {
         client = new TestClient();
     }
 
-    @After
+    @AfterAll
     public void tearDown() {
         client.close();
     }

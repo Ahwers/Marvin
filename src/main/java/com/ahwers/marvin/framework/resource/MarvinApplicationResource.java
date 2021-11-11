@@ -11,6 +11,7 @@ public class MarvinApplicationResource {
 	private Map<ResourceRepresentationType, String> resourceRepresentations = new HashMap<>();
 	private Map<ResourceRepresentationType, String> resourceRepresentationMessages = new HashMap<>();
 	
+	// TODO: Implement builder methods rather than thousands of public constructors
 	public MarvinApplicationResource(String applicationName, int currentStateId, int previousStateId) {
 		this.applicationName = applicationName;
 		this.currentStateId = currentStateId;

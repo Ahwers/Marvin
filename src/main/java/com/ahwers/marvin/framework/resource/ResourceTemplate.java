@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.ahwers.marvin.framework.application.ResourceRepository;
+import com.ahwers.marvin.tools.ResourceRepository;
 
 public class ResourceTemplate {
 	

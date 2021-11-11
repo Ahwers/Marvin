@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!-- 
         TODO:
-         - Set up build lifecycle to "build->unit_test->integration_test"
          - Set up environments, DEV and PROD. Can and should we optionally disable security in DEV in order to avoid having to log in to anything during testing?
          - Do the resource property thing that section 4.3.1 talks about to centralise configuration properties and safely omit them from the git repository without straight up ignoring the existen of required resource files.
      -->
@@ -47,6 +46,11 @@
             <version>2.12.4</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
             <version>${resteasy.ver}</version>
@@ -65,9 +69,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -128,14 +132,12 @@
                 <executions>
                     <execution>
                         <id>integration-test</id>
-                        <!-- <phase>integration-test</phase> -->
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>verify</id>
-                        <!-- <phase>verify</phase> -->
                         <goals>
                             <goal>verify</goal>
                         </goals>
@@ -151,7 +153,6 @@
                         <id>start-wildfly</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <!-- <goal>shutdown</goal> -->
                             <goal>start</goal>
                         </goals>
                         <configuration>

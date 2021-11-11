@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ahwers.marvin.framework.application.ResourceRepository;
+import com.ahwers.marvin.tools.ResourceRepository;
 
 // TODO: Make this a singleton
 public class CommandFormatter {
