@@ -2,6 +2,8 @@ package com.ahwers.marvin.framework.application;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
@@ -50,6 +52,8 @@ public abstract class Application {
 				actionDefinitions.add(action);
 			}
 		}
+
+		Collections.sort(actionDefinitions, new ArbitrarySort());
 
 		return actionDefinitions;
 	}
@@ -114,7 +118,16 @@ public abstract class Application {
 	}
 
 	public List<ActionDefinition> getActions() {
-		return this.actions;
+		return List.copyOf(this.actions);
+	}
+
+	private class ArbitrarySort implements Comparator<ActionDefinition> {
+
+		@Override
+		public int compare(ActionDefinition o1, ActionDefinition o2) {
+			return o1.toString().compareTo(o2.toString());
+		}
+
 	}
 
 }

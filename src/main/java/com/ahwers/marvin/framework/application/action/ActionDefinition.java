@@ -1,5 +1,6 @@
 package com.ahwers.marvin.framework.application.action;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,9 @@ public class ActionDefinition extends ApplicationAction {
             throw new IllegalArgumentException("At least one command match regex must be provided.");
         }
 
-        this.commandMatchRegexes = List.copyOf(commandMatchRegexes);
+        ArrayList<String> regexes = new ArrayList<>(commandMatchRegexes);
+        Collections.sort(regexes);
+        this.commandMatchRegexes = List.copyOf(regexes);
     }
  
 	public List<String> getCommandMatchRegexes() {
@@ -97,6 +100,11 @@ public class ActionDefinition extends ApplicationAction {
         }
 
         return isSameAs;
+    }
+
+    @Override
+    public String toString() {
+        return (getApplicationName() + ":" + getActionName() + ":" + this.commandMatchRegexes.toString());
     }
 
 }

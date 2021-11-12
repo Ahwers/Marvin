@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
@@ -15,18 +14,8 @@ import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurati
 
 import org.junit.jupiter.api.Test;
 
-// TODO: Make sure we're returning copies of mutable objects
 public class ApplicationTest {
     
-    /**
-     * Test Cases:
-     *  - getState
-     *  - getStateClass
-     *  - setState
-     *  - getName
-     *  - getActions
-     **/    
-
     @IntegratesApplication("Test")
     private class StandardApplication extends Application {
 
@@ -56,6 +45,10 @@ public class ApplicationTest {
 
         public String getTest() {
             return this.test;
+        }
+
+        public void setTest(String test) {
+            this.test = test;
         }
 
     }
@@ -131,33 +124,64 @@ public class ApplicationTest {
         assertEquals(app.getName(), "Test");
     }
 
-    // TODO: Maybe this test case should be split up
     @Test
-    public void actionDetectionAndConstruction() {
-        List<ActionDefinition> expectedActions = new ArrayList<>();
-        String appName = "Test";
-        String actionOneName = "actionOne";
-        List<String> actionOneCommandRegexes = new ArrayList<>();
-        actionOneCommandRegexes.add("one match");
-        String actionTwoName = "actionTwo";
-        List<String> actionTwoCommandRegexes = new ArrayList<>();
-        actionTwoCommandRegexes.add("one match");
-        actionTwoCommandRegexes.add("two match");
-        expectedActions.add(new ActionDefinition(appName, actionOneName, actionOneCommandRegexes));
-        expectedActions.add(new ActionDefinition(appName, actionTwoName, actionTwoCommandRegexes));
-
+    public void actionDetection() {
         Application app = new StandardApplication();
-        List<ActionDefinition> actualActions = app.getActions();
-
-        // TODO: This sometimes fails!!!!!!!!!!!!
         assertAll(
-            () -> assertEquals(expectedActions.size(), actualActions.size()),
-            () -> {
-                for (int i = 0; i < expectedActions.size(); i++) {
-                    assertTrue(actualActions.get(i).isSameAs(expectedActions.get(i)));
-                }
-            }
+            () -> assertTrue(app.getActions().size() == 2),
+            () -> assertTrue(app.getActions().get(0).getActionName().equals("actionOne")),
+            () -> assertTrue(app.getActions().get(1).getActionName().equals("actionTwo"))
         );
+    }
+
+    @Test
+    public void actionConstructionSingleCommandMatch() {
+        ActionDefinition expectedAction = new ActionDefinition("Test", "actionOne", List.of("one match"));
+        Application app = new StandardApplication();
+        assertTrue(app.getActions().get(0).isSameAs(expectedAction));
+    }
+    
+    @Test
+    public void actionConstructionMultiCommandMatch() {
+        ActionDefinition expectedAction = new ActionDefinition("Test", "actionTwo", List.of("one match", "two match"));
+        Application app = new StandardApplication();
+        assertTrue(app.getActions().get(1).isSameAs(expectedAction));
+    }
+
+    @Test
+    public void getState() {
+        ApplicationState expectedState = new TestApplicationState();
+        Application app = new StandardApplication();
+        assertTrue(app.getState().isSameAs(expectedState));
+    }
+
+    @Test
+    public void getStateClass() {
+        Class<? extends ApplicationState> expectedStateClass = TestApplicationState.class;
+        Application app = new StandardApplication();
+        assertTrue(app.getStateClass().equals(expectedStateClass));
+    }
+
+    @Test
+    public void setState() {
+        TestApplicationState expectedState = new TestApplicationState();
+        expectedState.setTest("works");
+        Application app = new StandardApplication();
+        app.setState(expectedState);;
+        assertTrue(app.getState().isSameAs(expectedState));
+    }
+
+    @Test
+    public void getName() {
+        Application app = new StandardApplication();
+        assertTrue(app.getName().equals("Test"));
+    }
+
+    @Test
+    public void getActionsImmutable() {
+        Application app = new StandardApplication();
+        List<ActionDefinition> actions = app.getActions();
+        assertThrows(UnsupportedOperationException.class, () -> actions.add(actions.get(0)));
     }
 
 }
