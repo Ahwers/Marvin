@@ -1,6 +1,6 @@
 package com.ahwers.marvin.framework.application.action;
 
-public abstract class ApplicationAction {
+public class ApplicationAction {
 	
 	private String applicationName;
 	private String actionName;

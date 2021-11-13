@@ -92,11 +92,17 @@ public class ActionDefinition extends ApplicationAction {
         return arguments;
     }
 
-    public boolean isSameAs(ActionDefinition actionDefinition) {
-        boolean isSameAs = super.isSameAs(actionDefinition);
-        
+    @Override
+    public boolean isSameAs(ApplicationAction appAction) {
+        if ((appAction instanceof ActionDefinition) == false) {
+            throw new IllegalArgumentException("Argument must be of type ActionDefinition");
+        }
+
+        ActionDefinition definition = (ActionDefinition) appAction;
+
+        boolean isSameAs = super.isSameAs(definition);
         if (isSameAs == true) {
-            isSameAs = actionDefinition.getCommandMatchRegexes().equals(this.getCommandMatchRegexes());
+            isSameAs = definition.getCommandMatchRegexes().equals(this.getCommandMatchRegexes());
         }
 
         return isSameAs;
