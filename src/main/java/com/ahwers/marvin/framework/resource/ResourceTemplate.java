@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.ahwers.marvin.framework.application.ApplicationResourcePathRepository;
+import com.ahwers.marvin.tools.ResourceRepository;
 
 public class ResourceTemplate {
 	
@@ -18,7 +18,7 @@ public class ResourceTemplate {
 	private String getContentFromResourceFile(String resourceKey) {
 		String resourceContent = "";
 		
-		String resourceFilePath = ApplicationResourcePathRepository.getInstance().getApplicationResourcePathForKey(resourceKey);
+		String resourceFilePath = ResourceRepository.getInstance().getResourcePath(resourceKey);
 		Scanner resourceScanner = null;
 		try {
 			resourceScanner = new Scanner(new File(resourceFilePath));

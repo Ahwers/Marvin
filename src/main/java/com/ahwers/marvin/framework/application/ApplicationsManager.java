@@ -1,107 +1,52 @@
 package com.ahwers.marvin.framework.application;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ahwers.marvin.framework.application.action.ActionDefinition;
+import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
-
-// TODO: This entire class's code is (quite understandably) a mess.
-// TODO: This will need to be a singleton if we implement concurrency due to the useful state it holds.
-// TODO: Need more framework instantiation error handling. 
-//		  - Attempted integration of an application adaptor that does not have an IntegratesApplication annotation.
-//			Maybe we should only be searching for application adaptors that have been annotated with this annotation rather than children of ApplicationAdaptor anyway!
-// 		  - Other such error handling for uses of my custom annotations such as making sure they are provided values.
 public class ApplicationsManager {
 
-	private final String MARVIN_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin";
+	private Map<String, Application> applications = new HashMap<>();
+	
+	public ApplicationsManager(Set<Application> applicationsSet) {
+		for (Application app : applicationsSet) {
+			String appName = app.getName();
+			if (this.applications.containsKey(appName)) {
+				// TODO: Throw configuration error
+				//		 This error will need to be caught by jaxrs in order to send a 5xx error message, we can't put web application exception in here bceause of the separated concerns
+			}
 
-	private Map<String, ApplicationAdaptor> applicationAdaptors = new HashMap<>();
-	private List<ActionDefinition> actionDefinitions = new ArrayList<>();
-	
-	public ApplicationsManager() {
-		populateApplicationAdaptorsMap();
-		populateActionDefinitionsList();
+			this.applications.put(appName, app);
+		}	
 	}
 	
-	private void populateApplicationAdaptorsMap() {
-		Set<Class<?>> applicationAdaptorClasses = new Reflections(MARVIN_APPLICATION_PACKAGE_PREFIX).getTypesAnnotatedWith(IntegratesApplication.class);
-		
-		for (Class<?> appAdaptorClass : applicationAdaptorClasses) {
-			String applicationName = appAdaptorClass.getDeclaredAnnotation(IntegratesApplication.class).value();
-			
-			ApplicationAdaptor applicationAdaptor = null;
-			try {
-				applicationAdaptor = (ApplicationAdaptor) appAdaptorClass.getDeclaredConstructor().newInstance();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
-			
-			if (applicationName != null && applicationAdaptor != null) {
-				this.applicationAdaptors.put(applicationName, applicationAdaptor);
-			}
+	public void updateApplicationState(ApplicationState requestAppState) {
+		String appName = requestAppState.getApplicationName();
+		ApplicationState serverAppState = this.applications.get(appName).getState();
+
+		if (requestAppState.isFresherThan(serverAppState)) {
+			requestAppState.incrementVersion();
+			this.applications.get(appName).setState(requestAppState);
 		}
-	}
-	
-	private void populateActionDefinitionsList() {
-		Reflections annotatedMethodsScanner = new Reflections(new ConfigurationBuilder()
-			     .setUrls(ClasspathHelper.forPackage(MARVIN_APPLICATION_PACKAGE_PREFIX))
-			     .setScanners(new MethodAnnotationsScanner())
-			     .filterInputsBy(new FilterBuilder().includePackage(MARVIN_APPLICATION_PACKAGE_PREFIX))
-		);
-		
-		Set<Method> applicationActionMethods = annotatedMethodsScanner.getMethodsAnnotatedWith(CommandMatch.class);
-		applicationActionMethods.addAll(annotatedMethodsScanner.getMethodsAnnotatedWith(CommandMatches.class));
-		
-		for (Method actionMethod : applicationActionMethods) {
-			String actionName = actionMethod.getName();
-			String applicationName = actionMethod.getDeclaringClass().getDeclaredAnnotation(IntegratesApplication.class).value();
-			
-			List<String> commandMatchRegexes = new ArrayList<>();
-			if (actionMethodHasMultipleCommandMatches(actionMethod)) {
-				CommandMatch[] matches = actionMethod.getDeclaredAnnotation(CommandMatches.class).value();
-				for (CommandMatch match : matches) {
-					commandMatchRegexes.add(match.value());
-				}
-			}
-			else {
-				commandMatchRegexes.add(actionMethod.getDeclaredAnnotation(CommandMatch.class).value());
-			}
-			
-			ActionDefinition action = new ActionDefinition(applicationName, actionName, commandMatchRegexes);
-			this.actionDefinitions.add(action);
-		}
-	}
-	
-	private boolean actionMethodHasMultipleCommandMatches(Method actionMethod) {
-		boolean hasMultipleMatches = false;
-		
-		CommandMatches multiMatchAnnotation = actionMethod.getDeclaredAnnotation(CommandMatches.class);
-		if (multiMatchAnnotation != null) {
-			hasMultipleMatches = true;
-		}
-		
-		return hasMultipleMatches;
 	}
 
 	public List<ActionInvocation> getApplicationInvocationsThatDirectlyMatchCommand(String command) {
 		List<ActionInvocation> matchingActions = new ArrayList<>();
 
-		for (ActionDefinition potentialAction : this.actionDefinitions) {
-			if (potentialAction.matchesCommandRequest(command)) {
-				ActionInvocation appInvocation = potentialAction.buildActionInvocationForCommandRequest(command);
-				matchingActions.add(appInvocation);
+		for (Application app : this.applications.values()) {
+			List<ActionDefinition> appActions = app.getActions();
+			for (ActionDefinition potentialAction : appActions) {
+				if (potentialAction.canServiceCommandRequest(command)) {
+					ActionInvocation appInvocation = potentialAction.buildActionInvocationForCommandRequest(command);
+					matchingActions.add(appInvocation);
+				}
 			}
 		}
 
@@ -113,10 +58,10 @@ public class ApplicationsManager {
 		String actionName = actionInvocation.getActionName();
 		Map<String, String> actionArguments = actionInvocation.getArguments();
 		
-		ApplicationAdaptor actionApplicationAdaptor = this.applicationAdaptors.get(applicationName);
+		Application actionApplication = this.applications.get(applicationName);
 
 		MarvinApplicationResource commandResource = null;
-		commandResource = (MarvinApplicationResource) actionApplicationAdaptor.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplicationAdaptor, actionArguments);
+		commandResource = (MarvinApplicationResource) actionApplication.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplication, actionArguments);
 
 		return commandResource;
 	}
