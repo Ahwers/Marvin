@@ -1,5 +1,6 @@
 package com.ahwers.marvin.framework.application.action;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,12 +9,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ahwers.marvin.framework.application.action.ActionDefinition;
-import com.ahwers.marvin.framework.application.action.ActionInvocation;
-
 import org.junit.jupiter.api.Test;
 
 public class ActionDefinitionTest {
+
+    @Test
+    public void toStringTest() {
+        ActionDefinition action = new ActionDefinition("Test", "test", List.of("match one"));
+        assertEquals("Test:test:[match one]", action.toString());
+    }
+
+    @Test
+    public void isSameAsValid() {
+        ActionDefinition actionOne = new ActionDefinition("Test", "test", List.of("match one"));
+        ActionDefinition actionTwo = new ActionDefinition("Test", "test", List.of("match one"));
+        assertTrue(actionOne.isSameAs(actionTwo));
+    }
+
+    @Test
+    public void isSameAsInvalid() {
+        ApplicationAction actionOne = new ApplicationAction("Test", "test");
+        ActionDefinition actionTwo = new ActionDefinition("Test", "test", List.of("match one"));
+        assertThrows(IllegalArgumentException.class, () -> actionTwo.isSameAs(actionOne));
+    }
 
     @Test
     public void successfulRequestMatchSingleTest() {

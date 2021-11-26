@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
+import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public class ApplicationsManager {
@@ -19,8 +20,8 @@ public class ApplicationsManager {
 		for (Application app : applicationsSet) {
 			String appName = app.getName();
 			if (this.applications.containsKey(appName)) {
-				// TODO: Throw configuration error
-				//		 This error will need to be caught by jaxrs in order to send a 5xx error message, we can't put web application exception in here bceause of the separated concerns
+				throw new ApplicationConfigurationError("Multiple applications of name '" + appName + "' have been configured. Application names must be unique.");
+				// TODO: This error will need to be caught by jaxrs in order to send a 5xx error message, we can't put web application exception in here bceause of the separated concerns
 			}
 
 			this.applications.put(appName, app);
@@ -60,6 +61,9 @@ public class ApplicationsManager {
 		
 		Application actionApplication = this.applications.get(applicationName);
 
+		// TODO: I think we make actions return CommandResponse objects.
+		//		 Maybe they can consist of just simple strings.
+		//		 These are added to MarvinResponse too
 		MarvinApplicationResource commandResource = null;
 		commandResource = (MarvinApplicationResource) actionApplication.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplication, actionArguments);
 
