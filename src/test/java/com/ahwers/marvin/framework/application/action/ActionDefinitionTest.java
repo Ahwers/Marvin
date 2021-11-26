@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,14 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class ActionDefinitionTest {
+
+    @Test
+    public void copyOfCommandsListStored() {
+        List<String> commands = new ArrayList<String>(List.of("match one"));
+        ActionDefinition action = new ActionDefinition("Test", "test", commands);
+        commands.add("another one");
+        assertFalse(action.getCommandMatchRegexes().equals(commands));
+    }
 
     @Test
     public void toStringTest() {

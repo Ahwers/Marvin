@@ -2,6 +2,7 @@ package com.ahwers.marvin.framework.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -153,6 +154,14 @@ public class ApplicationTest {
         ApplicationState expectedState = new TestApplicationState();
         Application app = new StandardApplication();
         assertTrue(app.getState().isSameAs(expectedState));
+    }
+
+    @Test
+    public void storesCopiesOfStates() {
+        Application app = new StandardApplication();
+        ApplicationState state = new TestApplicationState();
+        app.setState(state);
+        assertFalse(app.getState() == state);
     }
 
     @Test
