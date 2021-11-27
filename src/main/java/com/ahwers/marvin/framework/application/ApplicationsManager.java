@@ -21,7 +21,6 @@ public class ApplicationsManager {
 			String appName = app.getName();
 			if (this.applications.containsKey(appName)) {
 				throw new ApplicationConfigurationError("Multiple applications of name '" + appName + "' have been configured. Application names must be unique.");
-				// TODO: This error will need to be caught by jaxrs in order to send a 5xx error message, we can't put web application exception in here bceause of the separated concerns
 			}
 
 			this.applications.put(appName, app);
@@ -68,6 +67,11 @@ public class ApplicationsManager {
 		commandResource = (MarvinApplicationResource) actionApplication.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplication, actionArguments);
 
 		return commandResource;
+	}
+
+	// TODO: Return a copy
+	public Application getApplication(String appName) {
+		return null;
 	}
 	
 }

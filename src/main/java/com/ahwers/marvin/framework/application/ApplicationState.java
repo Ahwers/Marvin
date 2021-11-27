@@ -30,11 +30,13 @@ public abstract class ApplicationState {
         if (appState == null) {
             isFresherThan = true;
         }
-        if (this.version > appState.getVersion()) {
-            isFresherThan = true;
-        }
-        else if (this.version == appState.getVersion()) {
-            isFresherThan = (this.isSameAs(appState) == false);
+        else {
+            if (this.version > appState.getVersion()) {
+                isFresherThan = true;
+            }
+            else if (this.version == appState.getVersion()) {
+                isFresherThan = (this.isSameAs(appState) == false);
+            }
         }
 
         return isFresherThan;
