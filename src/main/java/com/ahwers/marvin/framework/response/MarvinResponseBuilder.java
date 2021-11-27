@@ -33,6 +33,7 @@ public class MarvinResponseBuilder {
 	private MarvinResponse buildActionExecutionResponse(ActionInvocation action, ApplicationsManager appManager) {
 		MarvinResponse response = new MarvinResponse(RequestOutcome.SUCCESS);
 	
+		// TODO: Can we get rid of most of these cases and just have success or failed?
 		MarvinApplicationResource resource = null;
 		try {
 			resource = appManager.executeActionInvocation(action);

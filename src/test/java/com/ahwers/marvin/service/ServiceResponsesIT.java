@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ServiceResponsesIT {
 
-    // TODO: How can i mock this application adaptor????
-	// 		 Maybe it's in the definition of what packages reflections searches in, or maybe i should inject custom actions into the class that deals with them
+	// TODO: Refactor responses and redo this test suite
 
     private TestClient client = null;
 

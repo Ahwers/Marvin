@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,11 +27,15 @@ public class ApplicationTest {
         }
 
         @CommandMatch("one match")
-        public void actionOne() {}
+        public MarvinApplicationResource actionOne(Map<String, String> arguments) {
+            return null;
+        }
 
         @CommandMatch("one match")
         @CommandMatch("two match")
-        public void actionTwo() {}
+        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
+            return null;
+        }
 
     }
 
@@ -104,7 +110,7 @@ public class ApplicationTest {
         assertTrue(new StatefulApplication() != null);
     }
 
-    private class IncorrectlyConfiguredApplication extends Application {
+    private class IncorrectlyConfiguredApplicationNoIntegrationAnnotation extends Application {
 
         @Override
         protected ApplicationState instantiateState() {
@@ -115,7 +121,145 @@ public class ApplicationTest {
     
     @Test
     public void invalidApplicationNoIntegrationAnnotation() {
-        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplication());
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationNoIntegrationAnnotation());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationInvalidReturnActionMethod extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public String invalidAction(Map<String, String> arguments) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionInvalidReturn() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationInvalidReturnActionMethod());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationVoidReturnActionMethod extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public void invalidAction(Map<String, String> arguments) { }
+
+    }
+
+    @Test
+    public void invalidApplicationActionVoidReturn() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationVoidReturnActionMethod());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationNoArguments extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public MarvinApplicationResource invalidAction() {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionNoArguments() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationNoArguments());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationInvalidMapArgument extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public MarvinApplicationResource invalidAction(Map<Integer, Double> arguments) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionInvalidMapArgument() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationInvalidMapArgument());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationWrongArguments extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public MarvinApplicationResource invalidAction(String argument) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionWrongArguments() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationWrongArguments());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationTooManyArguments extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        public MarvinApplicationResource invalidAction(Map<String, String> arguments, String argument) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionTooManyArguments() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationTooManyArguments());
+    }
+
+    @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationPrivateActionMethod extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("test command")
+        private MarvinApplicationResource invalidAction(Map<String, String> arguments) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationPrivateAction() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationPrivateActionMethod());
     }
 
     @Test

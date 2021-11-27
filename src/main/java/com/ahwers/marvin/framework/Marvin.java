@@ -22,17 +22,10 @@ public class Marvin {
 	private ApplicationsManager appManager;
 	private MarvinResponseBuilder responseBuilder;
 	
-	public Marvin() {
+	public Marvin(Set<Application> supportedApps) {
 		this.commandFormatter = new CommandFormatter();
-		this.appManager = instantiateStandardApplicationsManager();
+		this.appManager = new ApplicationsManager(supportedApps);
 		this.responseBuilder = new MarvinResponseBuilder();
-	}
-
-	private ApplicationsManager instantiateStandardApplicationsManager() {
-		ApplicationRepository appRepo = ApplicationRepository.getInstance();
-		Set<Application> apps = appRepo.getStandardApplications();
-		
-		return new ApplicationsManager(apps); 
 	}
 
 	public void updateApplicationStates(Map<String, ApplicationState> applicationStates) {

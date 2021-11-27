@@ -1,16 +1,20 @@
 package com.ahwers.marvin.framework.application;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatches;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public abstract class Application {
 	
@@ -32,7 +36,6 @@ public abstract class Application {
 	private String loadName() {
 		IntegratesApplication integrationAnnotation = this.getClass().getDeclaredAnnotation(IntegratesApplication.class);
 		if (integrationAnnotation == null) {
-			// TODO: The service will need to map this to a 5xx error response
 			throw new ApplicationConfigurationError("The application class " + this.getClass().getName() + " has not been annotated with IntegratesApplication.class");
 		}
 		String name = integrationAnnotation.value();
@@ -45,6 +48,8 @@ public abstract class Application {
 
 		for (Method classMethod : this.getClass().getDeclaredMethods()) {
 			if (methodIsAnAppAction(classMethod) == true) {
+				validateAppActionMethod(classMethod);
+
 				String actionName = classMethod.getName();
 				List<String> commandMatchRegexes = getCommandMatchRegexesFromActionMethod(classMethod);
 				
@@ -58,20 +63,22 @@ public abstract class Application {
 		return actionDefinitions;
 	}
 
-	private List<String> getCommandMatchRegexesFromActionMethod(Method actionMethod) {
-		List<String> commandMatchRegexes = new ArrayList<>();
-
-		if (actionMethodHasMultipleCommandMatches(actionMethod)) {
-			CommandMatch[] matches = actionMethod.getDeclaredAnnotation(CommandMatches.class).value();
-			for (CommandMatch match : matches) {
-				commandMatchRegexes.add(match.value());
-			}
+	private void validateAppActionMethod(Method appActionMethod) {
+		String baseErrorWording = ("Action method of application '" + getName() + "' named '" + appActionMethod.getName() + "' ");
+		if (appActionMethod.getReturnType() != MarvinApplicationResource.class) {
+			throw new ApplicationConfigurationError(baseErrorWording + "returns the wrong type of '" + appActionMethod.getReturnType().toString() + "'.");
+		}
+		else if ((appActionMethod.getParameterCount() != 1) || (appActionMethod.getParameterTypes()[0] != Map.class)) {
+			throw new ApplicationConfigurationError(baseErrorWording + "does not have the correct parameters.");
 		}
 		else {
-			commandMatchRegexes.add(actionMethod.getDeclaredAnnotation(CommandMatch.class).value());
+			Type[] methodParameterTypes = appActionMethod.getGenericParameterTypes();
+			ParameterizedType parameterizedType = (ParameterizedType) methodParameterTypes[0];
+			Type[] parameterizedTypeTypes = parameterizedType.getActualTypeArguments();
+			if (!(parameterizedTypeTypes[0] == String.class) || !(parameterizedTypeTypes[1] == String.class)) {
+				throw new ApplicationConfigurationError(baseErrorWording + "'s Map argument does not have the correct parameterized types");
+			}
 		}
-
-		return commandMatchRegexes;
 	}
 
 	private boolean methodIsAnAppAction(Method method) {
@@ -97,6 +104,22 @@ public abstract class Application {
 		}
 		
 		return hasMultipleMatches;
+	}
+
+	private List<String> getCommandMatchRegexesFromActionMethod(Method actionMethod) {
+		List<String> commandMatchRegexes = new ArrayList<>();
+
+		if (actionMethodHasMultipleCommandMatches(actionMethod)) {
+			CommandMatch[] matches = actionMethod.getDeclaredAnnotation(CommandMatches.class).value();
+			for (CommandMatch match : matches) {
+				commandMatchRegexes.add(match.value());
+			}
+		}
+		else {
+			commandMatchRegexes.add(actionMethod.getDeclaredAnnotation(CommandMatch.class).value());
+		}
+
+		return commandMatchRegexes;
 	}
 	
 	protected abstract ApplicationState instantiateState();

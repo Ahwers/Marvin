@@ -1,6 +1,5 @@
 package com.ahwers.marvin.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,11 +32,12 @@ public class MarvinService {
 	private Marvin marvin;
 	private ApplicationStatesHeaderUnmarshaller appStatesHeaderUnmarshaller;
 	
+	// TODO: This instantiates the standard LIVE applications into Marvin, can we (maybe with maven) detect when we are in a DEV environment and load test apps instead? This does mean though that if the test phase of a build always runs, the integration tests in a LIVE environment will fail because the test applications weren't loaded to Marvin.
 	public MarvinService() {
-		marvin = new Marvin();
-		
-		Set<Application> apps = ApplicationRepository.getInstance().getStandardApplications();
-		appStatesHeaderUnmarshaller = new ApplicationStatesHeaderUnmarshaller(apps);
+		Set<Application> standardApps = ApplicationRepository.getInstance().getStandardApplications();
+
+		marvin = new Marvin(standardApps);
+		appStatesHeaderUnmarshaller = new ApplicationStatesHeaderUnmarshaller(standardApps);
 	}
 
 	@GET
@@ -111,11 +111,8 @@ public class MarvinService {
 		else if (requestOutcome.equals(RequestOutcome.FAILED)) {
 			builder = Response.serverError();
 		}
-		else if (requestOutcome.equals(RequestOutcome.INVALID) || requestOutcome.equals(RequestOutcome.OUTDATED)) {
+		else if (requestOutcome.equals(RequestOutcome.INVALID)) {
 			builder = Response.status(Response.Status.BAD_REQUEST);
-		}
-		else if (requestOutcome.equals(RequestOutcome.CONFLICTED)) {
-			builder = Response.status(Response.Status.CONFLICT);
 		}
 		else if (requestOutcome.equals(RequestOutcome.UNMATCHED)) {
 			builder = Response.status(Response.Status.NOT_FOUND);
