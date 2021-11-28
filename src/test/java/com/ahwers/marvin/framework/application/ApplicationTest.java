@@ -184,6 +184,26 @@ public class ApplicationTest {
     }
 
     @IntegratesApplication("Test")
+    private class IncorrectlyConfiguredApplicationInvalidActionMatchRegex extends Application {
+
+        @Override
+        protected ApplicationState instantiateState() {
+            return null;
+        }
+
+        @CommandMatch("(?<invalid key>test) command")
+        public MarvinApplicationResource invalidAction(Map<String, String> arguments) {
+            return null;
+        }
+
+    }
+
+    @Test
+    public void invalidApplicationActionInvalidMatchRegex() {
+        assertThrows(ApplicationConfigurationError.class, () -> new IncorrectlyConfiguredApplicationInvalidActionMatchRegex());
+    }
+
+    @IntegratesApplication("Test")
     private class IncorrectlyConfiguredApplicationInvalidMapArgument extends Application {
 
         @Override
@@ -309,6 +329,12 @@ public class ApplicationTest {
     }
 
     @Test
+    public void returnsCopiesOfStates() {
+        Application app = new StandardApplication();
+        assertFalse(app.getState() == app.getState());
+    }
+
+    @Test
     public void getStateClass() {
         Class<? extends ApplicationState> expectedStateClass = TestApplicationState.class;
         Application app = new StandardApplication();
@@ -335,6 +361,14 @@ public class ApplicationTest {
         Application app = new StandardApplication();
         List<ActionDefinition> actions = app.getActions();
         assertThrows(UnsupportedOperationException.class, () -> actions.add(actions.get(0)));
+    }
+
+    @Test
+    public void returnsCopiesOfActions() {
+        Application app = new StandardApplication();
+        List<ActionDefinition> actions1 = app.getActions();
+        List<ActionDefinition> actions2 = app.getActions();
+        assertFalse(actions1.get(0) == actions2.get(0));
     }
 
 }

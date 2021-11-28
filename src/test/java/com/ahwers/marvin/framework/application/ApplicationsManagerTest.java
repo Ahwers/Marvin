@@ -1,19 +1,25 @@
 package com.ahwers.marvin.framework.application;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ahwers.marvin.framework.application.action.ActionDefinition;
+import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
+import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -21,19 +27,11 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 public class ApplicationsManagerTest {
 
-    /**
-     * Test Cases:
-     *  - Update application state
-     *  - Get apps multiple matches
-     *  - Get apps single match
-     *  - Execute action invocation
-     */
-
     private Set<Application> standardApplications;
     private Application app1;
     private Application app2;
 
-    @BeforeAll
+    @BeforeEach
     public void instantiateStandardApplications() {
         this.standardApplications = new HashSet<Application>();
 
@@ -47,6 +45,10 @@ public class ApplicationsManagerTest {
     private class TestApplicationState extends ApplicationState {
 
         private String test = "test";
+
+        public TestApplicationState(String appName, int version) {
+            super(appName, version);
+        }
 
         @Override
         public boolean isSameAs(ApplicationState appState) {
@@ -69,11 +71,16 @@ public class ApplicationsManagerTest {
 
         @Override
         protected ApplicationState instantiateState() {
-            return new TestApplicationState();
+            return new TestApplicationState(getName(), 0);
         }
 
         @CommandMatch("one match")
         public MarvinApplicationResource actionOne(Map<String, String> arguments) {
+            return new MarvinApplicationResource(ResourceRepresentationType.PLAIN_TEXT, "WORKS");
+        }
+
+        @CommandMatch("two match")
+        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
             return null;
         }
 
@@ -84,7 +91,12 @@ public class ApplicationsManagerTest {
 
         @Override
         protected ApplicationState instantiateState() {
-            return new TestApplicationState();
+            return new TestApplicationState(getName(), 0);
+        }
+
+        @CommandMatch("two match")
+        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
+            return null;
         }
 
     }
@@ -93,15 +105,6 @@ public class ApplicationsManagerTest {
     public void validInstantiation() {
         ApplicationsManager appManager = new ApplicationsManager(standardApplications);
         assertTrue(appManager != null);
-    }
-
-    @Test
-    public void applicationCopiesInstantiated() {
-        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
-        TestApplicationState state = (TestApplicationState) app1.getState();
-        state.setTest("SUPER NEW TEST");
-        TestApplicationState storedState = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
-        assertFalse(storedState.getTest().equals(state.getTest()));
     }
 
     @Test
@@ -120,27 +123,82 @@ public class ApplicationsManagerTest {
     }
 
     @Test
-    public void getApplication() {
-        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
-        assertTrue(appManager.getApplication(app1.getName()) != null);
-    }
-
-    public void getApplicationReturnsACopy() {
-        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
-        Application appCopy1 = appManager.getApplication(app1.getName());
-        Application appCopy2 = appManager.getApplication(app1.getName());
-
-        assertFalse(appCopy1 == appCopy2);
-    }
-
-    @Test
     public void updateApplicationStateNewVersion() {
-        // TODO: Implement
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
+        TestApplicationState storedState1 = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
+        storedState1.setTest("duplicate state ");
+        appManager.updateApplicationState(storedState1);
+        TestApplicationState storedState2 = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
+        assertTrue(storedState1.isSameAs(storedState2));
     }
 
     @Test
     public void updateApplicationStateOldVersion() {
-        // TODO: Implement
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
+        TestApplicationState storedState1 = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
+        TestApplicationState storedState2 = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
+        storedState1.setTest("duplicate state 2");
+        appManager.updateApplicationState(storedState1);
+        appManager.updateApplicationState(storedState2);
+        TestApplicationState finalStoredState = (TestApplicationState) appManager.getApplication(app1.getName()).getState();
+        assertTrue(finalStoredState.isSameAs(storedState1));
+    }
+
+    @Test
+    public void getActionsSingleMatch() {
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
+        
+        String commandRequest = "one match";
+        List<ActionInvocation> expectedInvocations = new ArrayList<>();
+        List<ActionDefinition> definitions = app1.getActions();
+        for (int i = 0; i < definitions.size(); i++) {
+            if (definitions.get(i).getActionName().equals("actionOne")) {
+                expectedInvocations.add(definitions.get(i).buildActionInvocationForCommandRequest(commandRequest));
+            }
+        }
+
+        List<ActionInvocation> matchingInvocations = appManager.getApplicationInvocationsThatDirectlyMatchCommand(commandRequest);
+        assertAll(
+            () -> assertTrue(expectedInvocations.size() == matchingInvocations.size()),
+            () -> {
+                for (int i = 0; i < expectedInvocations.size(); i++) {
+                    assertTrue(matchingInvocations.get(i).isSameAs(expectedInvocations.get(i)));
+                }
+            }
+        );
+    }
+    
+    @Test
+    public void getActionsMultipleMatches() {
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
+        
+        String commandRequest = "two match";
+        List<ActionInvocation> expectedInvocations = new ArrayList<>();
+        List<ActionDefinition> definitions = app1.getActions();
+        for (int i = 0; i < definitions.size(); i++) {
+            if (definitions.get(i).getActionName().equals("actionTwo")) {
+                expectedInvocations.add(definitions.get(i).buildActionInvocationForCommandRequest(commandRequest));
+            }
+        }
+        expectedInvocations.add(app2.getActions().get(0).buildActionInvocationForCommandRequest(commandRequest));
+
+        List<ActionInvocation> matchingInvocations = appManager.getApplicationInvocationsThatDirectlyMatchCommand(commandRequest);
+        assertAll(
+            () -> assertTrue(expectedInvocations.size() == matchingInvocations.size()),
+            () -> {
+                for (int i = 0; i < expectedInvocations.size(); i++) {
+                    assertTrue(matchingInvocations.get(i).isSameAs(expectedInvocations.get(i)));
+                }
+            }
+        );
+    }
+
+    @Test
+    public void executeActionInvocation() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
+        List<ActionInvocation> invocations = appManager.getApplicationInvocationsThatDirectlyMatchCommand("one match");
+        MarvinApplicationResource resource = appManager.executeActionInvocation(invocations.get(0));
+        assertTrue(resource.getResourceRepresentations().get(ResourceRepresentationType.PLAIN_TEXT).equals("WORKS"));
     }
 
 }

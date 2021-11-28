@@ -1,6 +1,7 @@
 package com.ahwers.marvin.framework.application;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
@@ -48,11 +51,11 @@ public abstract class Application {
 
 		for (Method classMethod : this.getClass().getDeclaredMethods()) {
 			if (methodIsAnAppAction(classMethod) == true) {
-				validateAppActionMethod(classMethod);
-
 				String actionName = classMethod.getName();
 				List<String> commandMatchRegexes = getCommandMatchRegexesFromActionMethod(classMethod);
 				
+				validateAppActionMethod(classMethod, commandMatchRegexes);
+
 				ActionDefinition action = new ActionDefinition(this.name, actionName, commandMatchRegexes);
 				actionDefinitions.add(action);
 			}
@@ -61,24 +64,6 @@ public abstract class Application {
 		Collections.sort(actionDefinitions, new ArbitrarySort());
 
 		return actionDefinitions;
-	}
-
-	private void validateAppActionMethod(Method appActionMethod) {
-		String baseErrorWording = ("Action method of application '" + getName() + "' named '" + appActionMethod.getName() + "' ");
-		if (appActionMethod.getReturnType() != MarvinApplicationResource.class) {
-			throw new ApplicationConfigurationError(baseErrorWording + "returns the wrong type of '" + appActionMethod.getReturnType().toString() + "'.");
-		}
-		else if ((appActionMethod.getParameterCount() != 1) || (appActionMethod.getParameterTypes()[0] != Map.class)) {
-			throw new ApplicationConfigurationError(baseErrorWording + "does not have the correct parameters.");
-		}
-		else {
-			Type[] methodParameterTypes = appActionMethod.getGenericParameterTypes();
-			ParameterizedType parameterizedType = (ParameterizedType) methodParameterTypes[0];
-			Type[] parameterizedTypeTypes = parameterizedType.getActualTypeArguments();
-			if (!(parameterizedTypeTypes[0] == String.class) || !(parameterizedTypeTypes[1] == String.class)) {
-				throw new ApplicationConfigurationError(baseErrorWording + "'s Map argument does not have the correct parameterized types");
-			}
-		}
 	}
 
 	private boolean methodIsAnAppAction(Method method) {
@@ -121,7 +106,46 @@ public abstract class Application {
 
 		return commandMatchRegexes;
 	}
-	
+
+	private void validateAppActionMethod(Method appActionMethod, List<String> regexes) {
+		String baseErrorWording = ("Action method of application '" + getName() + "' named '" + appActionMethod.getName() + "' ");
+
+		if (appActionMethod.getReturnType() != MarvinApplicationResource.class) {
+			throw new ApplicationConfigurationError(baseErrorWording + "returns the wrong type of '" + appActionMethod.getReturnType().toString() + "'.");
+		}
+		else if (!Modifier.toString(appActionMethod.getModifiers()).equals("public")) {
+			throw new ApplicationConfigurationError(baseErrorWording + "must be public");
+		}
+		else if (!regexesAreValid(regexes)) {
+			throw new ApplicationConfigurationError(baseErrorWording + "has erroneous match regexes.");
+		}
+		else if ((appActionMethod.getParameterCount() != 1) || (appActionMethod.getParameterTypes()[0] != Map.class)) {
+			throw new ApplicationConfigurationError(baseErrorWording + "does not have the correct parameters.");
+		}
+		else {
+			Type[] methodParameterTypes = appActionMethod.getGenericParameterTypes();
+			ParameterizedType parameterizedType = (ParameterizedType) methodParameterTypes[0];
+			Type[] parameterizedTypeTypes = parameterizedType.getActualTypeArguments();
+			if (!(parameterizedTypeTypes[0] == String.class) || !(parameterizedTypeTypes[1] == String.class)) {
+				throw new ApplicationConfigurationError(baseErrorWording + "'s Map argument does not have the correct parameterized types");
+			}
+		}
+	}
+
+	private boolean regexesAreValid(List<String> regexes) {
+		boolean areValid = true;
+		try {
+			for (String regex : regexes) {
+                Pattern.compile(regex);
+			}
+		}
+		catch (PatternSyntaxException e) {
+			areValid = false;
+		}
+
+		return areValid;
+	}
+
 	protected abstract ApplicationState instantiateState();
 	
 	public Class<? extends ApplicationState> getStateClass() {
@@ -129,11 +153,24 @@ public abstract class Application {
 	}
 
 	public ApplicationState getState() {
-		return this.state;
+		ApplicationState clonedState = null;
+		if (this.state != null) {
+			try {
+				clonedState = this.state.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new ApplicationConfigurationError("The class '" + getStateClass().getName() + "' does not implement Cloneable.");
+			}
+		}
+
+		return clonedState;
 	}
 
 	public void setState(ApplicationState newAppState) {
-		this.state = newAppState;
+		try {
+			this.state = newAppState.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new ApplicationConfigurationError("The class '" + getStateClass().getName() + "' does not implement Cloneable.");
+		}
 	}
 
 	public String getName() {
@@ -141,7 +178,12 @@ public abstract class Application {
 	}
 
 	public List<ActionDefinition> getActions() {
-		return List.copyOf(this.actions);
+		List<ActionDefinition> definitionsCopy = new ArrayList<>();
+		for (ActionDefinition definition : this.actions) {
+			definitionsCopy.add(definition.clone());
+		}
+
+		return List.copyOf(definitionsCopy);
 	}
 
 	private class ArbitrarySort implements Comparator<ActionDefinition> {

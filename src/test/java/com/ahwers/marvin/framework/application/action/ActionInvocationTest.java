@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -20,11 +21,6 @@ public class ActionInvocationTest {
     @Test
     public void invalidConstruction() {
         assertThrows(IllegalArgumentException.class, () -> new ActionInvocation("Test", "test", null));
-    }
-
-    @Test
-    public void invalidConstructionInvalidArgumentKey() {
-        assertThrows(IllegalArgumentException.class, () -> new ActionInvocation("Test", "test", Map.of("illegal argument key", "value")));
     }
 
     @Test
@@ -58,8 +54,8 @@ public class ActionInvocationTest {
     @Test
     public void isSameAsInvalid() {
         ActionInvocation invocation = new ActionInvocation("Test", "test", Map.of("first_argument", "has a value"));
-        ApplicationAction action = new ApplicationAction("Test", "test");
-        assertThrows(IllegalArgumentException.class, () -> invocation.isSameAs(action));
+        ActionDefinition definition = new ActionDefinition("Test", "test", List.of("words"));
+        assertThrows(IllegalArgumentException.class, () -> invocation.isSameAs(definition));
     }
 
 }

@@ -7,8 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class ApplicationActionTest {
+
+    private class ApplicationActionImplementation extends ApplicationAction {
+
+        public ApplicationActionImplementation(String appName, String actionName) {
+            super(appName, actionName);
+        }
+        
+    }
     
-    private ApplicationAction testValidAction = new ApplicationAction("Test", "test");
+    private ApplicationAction testValidAction = new ApplicationActionImplementation("Test", "test");
 
     @Test
     public void validConstruction() {
@@ -27,18 +35,18 @@ public class ApplicationActionTest {
 
     @Test
     public void isSameAs() {
-        ApplicationAction expectedAction = new ApplicationAction("Test", "test");
+        ApplicationAction expectedAction = new ApplicationActionImplementation("Test", "test");
         assertTrue(testValidAction.isSameAs(expectedAction));
     }
 
     @Test
     public void invalidConstructionNoAppName() {
-        assertThrows(IllegalArgumentException.class, () -> new ApplicationAction(null, "test"));
+        assertThrows(IllegalArgumentException.class, () -> new ApplicationActionImplementation(null, "test"));
     }
 
     @Test
     public void invalidConstructionNoActionName() {
-        assertThrows(IllegalArgumentException.class, () -> new ApplicationAction("Test", null));
+        assertThrows(IllegalArgumentException.class, () -> new ApplicationActionImplementation("Test", null));
     }
 
 }

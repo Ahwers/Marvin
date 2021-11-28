@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.command.Command;
-import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.azure.core.http.ContentType;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 

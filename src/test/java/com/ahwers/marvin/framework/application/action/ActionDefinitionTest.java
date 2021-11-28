@@ -1,5 +1,6 @@
 package com.ahwers.marvin.framework.application.action;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +38,7 @@ public class ActionDefinitionTest {
 
     @Test
     public void isSameAsInvalid() {
-        ApplicationAction actionOne = new ApplicationAction("Test", "test");
+        ActionInvocation actionOne = new ActionInvocation("Test", "test", Map.of("one", "one"));
         ActionDefinition actionTwo = new ActionDefinition("Test", "test", List.of("match one"));
         assertThrows(IllegalArgumentException.class, () -> actionTwo.isSameAs(actionOne));
     }
@@ -95,6 +96,16 @@ public class ActionDefinitionTest {
         ActionDefinition action = new ActionDefinition("Test", "test", List.of("not to match"));
         String request = "to match";
         assertThrows(IllegalArgumentException.class, () -> action.buildActionInvocationForCommandRequest(request));
+    }
+
+    @Test
+    public void cloneWorks() {
+        ActionDefinition action = new ActionDefinition("Test", "test", List.of("to match"));
+        ActionDefinition actionClone = action.clone();
+        assertAll(
+            () -> assertTrue(action != actionClone),
+            () -> assertTrue(action.isSameAs(actionClone))
+        );
     }
 
 }

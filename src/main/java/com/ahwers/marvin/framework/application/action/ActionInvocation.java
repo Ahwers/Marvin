@@ -2,8 +2,6 @@ package com.ahwers.marvin.framework.application.action;
 
 import java.util.Map;
 
-import javassist.expr.Instanceof;
-
 // TODO: Should this and ActionDefintion be renamed to be pre-fixed with Application?
 public class ActionInvocation extends ApplicationAction {
     

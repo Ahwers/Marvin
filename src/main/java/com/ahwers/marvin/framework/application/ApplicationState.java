@@ -1,6 +1,6 @@
 package com.ahwers.marvin.framework.application;
 
-public abstract class ApplicationState {
+public abstract class ApplicationState implements Cloneable {
 
     private String applicationName;
     private int version;
@@ -43,5 +43,11 @@ public abstract class ApplicationState {
     }
 
     public abstract boolean isSameAs(ApplicationState appState);
+
+    @Override
+    public ApplicationState clone() throws CloneNotSupportedException {
+        ApplicationState clonedState = (ApplicationState) super.clone();
+        return clonedState;
+    }
 
 }

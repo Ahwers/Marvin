@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.ahwers.marvin.tools.NamedGroupMatcher;
 
-public class ActionDefinition extends ApplicationAction {
+public class ActionDefinition extends ApplicationAction implements Cloneable {
 
     private List<String> commandMatchRegexes;
 
@@ -111,6 +111,11 @@ public class ActionDefinition extends ApplicationAction {
     @Override
     public String toString() {
         return (getApplicationName() + ":" + getActionName() + ":" + this.commandMatchRegexes.toString());
+    }
+
+    public ActionDefinition clone() {
+        ActionDefinition clonedDefinition = new ActionDefinition(this.getApplicationName(), this.getActionName(), this.commandMatchRegexes);
+        return clonedDefinition;
     }
 
 }

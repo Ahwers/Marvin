@@ -17,6 +17,13 @@ public class ApplicationsManager {
 	private Map<String, Application> applications = new HashMap<>();
 	
 	public ApplicationsManager(Set<Application> applicationsSet) {
+		if (applicationsSet == null) {
+			throw new IllegalArgumentException("Cannot be null");
+		}
+		else if (applicationsSet.size() == 0) {
+			throw new IllegalArgumentException("More than one Application must be supplied.");
+		}
+
 		for (Application app : applicationsSet) {
 			String appName = app.getName();
 			if (this.applications.containsKey(appName)) {
@@ -69,9 +76,8 @@ public class ApplicationsManager {
 		return commandResource;
 	}
 
-	// TODO: Return a copy
 	public Application getApplication(String appName) {
-		return null;
+		return this.applications.get(appName);
 	}
 	
 }

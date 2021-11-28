@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
-import com.ahwers.marvin.framework.application.ApplicationRepository;
 import com.ahwers.marvin.framework.application.ApplicationState;
 
 public class Marvin {
