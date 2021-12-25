@@ -1,4 +1,4 @@
-package com.ahwers.marvin.applications.testing;
+package com.ahwers.marvin.applications.test;
 
 import java.util.Map;
 
@@ -33,11 +33,6 @@ public class ServiceTestApplication extends Application {
 	@CommandMatch("invalid marvin request test")
 	public MarvinApplicationResource invalidMarvinRequestTest(Map<String, String> arguments) {
 		throw new RuntimeException();
-	}
-
-	@CommandMatch("outdated marvin request test")
-	public MarvinResponse outdatedMarvinRequestTest(Map<String, String> arguments) {
-		return new MarvinResponse(RequestOutcome.SUCCESS);
 	}
 
 	@CommandMatch("conflicted marvin request test")
