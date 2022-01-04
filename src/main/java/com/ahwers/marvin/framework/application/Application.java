@@ -1,5 +1,6 @@
 package com.ahwers.marvin.framework.application;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -20,6 +21,7 @@ import com.ahwers.marvin.framework.application.annotations.IntegratesApplication
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public abstract class Application {
 	
@@ -213,7 +215,12 @@ public abstract class Application {
 
 	private void saveState() {
 		ApplicationStateRepository appStateRepo = getAppStateRepository();
-		appStateRepo.saveState(this.name, this.state.encode());
+		try {
+			appStateRepo.saveState(this.name, this.state.encode());
+		} catch (JsonProcessingException | UnsupportedEncodingException e) {
+			// TODO: Log could not encode state
+			e.printStackTrace();
+		}
 	}
 
 	public String getName() {

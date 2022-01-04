@@ -28,9 +28,4 @@ public class TestApplicationState extends ApplicationState {
         this.test = test;
     }
 
-    @Override
-    public String encode() {
-        return null;
-    }
-
 }

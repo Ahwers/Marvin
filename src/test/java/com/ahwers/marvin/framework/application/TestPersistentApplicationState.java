@@ -29,10 +29,4 @@ public class TestPersistentApplicationState extends ApplicationState {
         return false;
     }
 
-    @Override
-    public String encode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
