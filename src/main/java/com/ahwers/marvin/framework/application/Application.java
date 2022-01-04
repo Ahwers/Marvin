@@ -1,5 +1,7 @@
 package com.ahwers.marvin.framework.application;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -12,10 +14,13 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javax.naming.ConfigurationException;
+
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatches;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
+import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
@@ -23,16 +28,16 @@ public abstract class Application {
 	
 	private String name;
 	private List<ActionDefinition> actions;
-	private ApplicationState state;
 	private Class<? extends ApplicationState> stateClass = null;
+	private ApplicationState state;
 
 	public Application() {
 		this.name = loadName();
 		this.actions = loadActions();
-		this.state = instantiateState();
+		this.stateClass = loadStateClass();
 
-		if (this.state != null) {
-			this.stateClass = this.state.getClass();
+		if (this.stateClass != null) {
+			this.state = instantiateState();
 		}
 	}
 
@@ -146,8 +151,51 @@ public abstract class Application {
 		return areValid;
 	}
 
-	protected abstract ApplicationState instantiateState();
-	
+	private Class<? extends ApplicationState> loadStateClass() {
+		Class<? extends ApplicationState> stateClass = null;
+
+		Stateful statefulAnnotation = this.getClass().getDeclaredAnnotation(Stateful.class);
+		if (statefulAnnotation != null) {
+			stateClass = statefulAnnotation.value();
+		}
+
+		return stateClass;
+	}
+
+	private ApplicationState instantiateState() {
+		ApplicationState state = null;
+
+		ApplicationStateRepository appStateRepo = getAppStateRepository();
+		String encodedAppState = appStateRepo.getEncodedStateOfApp(this.name);
+		Class[] parameterTypes = null;
+		try {
+			if (encodedAppState != null) {
+				parameterTypes = new Class[1];
+				parameterTypes[0] = String.class;
+
+				state = this.stateClass.getConstructor(parameterTypes).newInstance(encodedAppState);
+			}
+			else {
+				parameterTypes = new Class[2];
+				parameterTypes[0] = String.class;
+				parameterTypes[1] = Integer.class;
+
+				state = this.stateClass.getConstructor(parameterTypes).newInstance(this.name, 0);
+			}
+		}
+		catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			// e.printStackTrace();
+			throw new ApplicationConfigurationError("The app state class '" + this.stateClass.getName() + "' has been configured incorrectly.");
+		}
+
+		return state;
+	}
+
+	protected ApplicationStateRepository getAppStateRepository() {
+		return ApplicationStateRepository.getInstance();
+	}
+
 	public Class<? extends ApplicationState> getStateClass() {
 		return this.stateClass;
 	}
@@ -171,6 +219,13 @@ public abstract class Application {
 		} catch (CloneNotSupportedException e) {
 			throw new ApplicationConfigurationError("The class '" + getStateClass().getName() + "' does not implement Cloneable.");
 		}
+
+		saveState();
+	}
+
+	private void saveState() {
+		ApplicationStateRepository appStateRepo = getAppStateRepository();
+		appStateRepo.saveState(this.name, this.state.encode());
 	}
 
 	public String getName() {

@@ -11,7 +11,9 @@ import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
 import com.ahwers.marvin.framework.application.ApplicationState;
+import com.ahwers.marvin.framework.application.TestApplicationState;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
+import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,36 +26,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 public class ApplicationStatesHeaderUnmarshallerTest {
     
     @IntegratesApplication("Test")
+    @Stateful(TestApplicationState.class)
     private static class TestApplication extends Application {
-
-        @Override
-        protected ApplicationState instantiateState() {
-            return new TestApplicationState(getName(), 0);
-        }
-
-    }
-
-    private static class TestApplicationState extends ApplicationState {
-
-        private String test = "test";
-
-        public TestApplicationState() {
-            super();
-        }
-
-        public TestApplicationState(String applicationName, int version) {
-            super(applicationName, version);
-        }
-
-        @Override
-        public boolean isSameAs(ApplicationState appState) {
-            TestApplicationState testAppState = (TestApplicationState) appState;
-            return this.test.equals(testAppState.getTest());
-        }
-       
-        public String getTest() {
-            return this.test;
-        }
 
     }
 

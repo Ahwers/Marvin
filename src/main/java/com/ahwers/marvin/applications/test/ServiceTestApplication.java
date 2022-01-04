@@ -15,19 +15,9 @@ import com.ahwers.marvin.framework.response.RequestOutcome;
 @IntegratesApplication("Service Tester")
 public class ServiceTestApplication extends Application {
 
-	@Override
-	protected ApplicationState instantiateState() {
-		return null;
-	}
-
 	@CommandMatch("successful marvin request test")
 	public MarvinApplicationResource successfulMarvinRequestTest(Map<String, String> arguments) {
 		return new MarvinApplicationResource(ResourceRepresentationType.PLAIN_TEXT, "worked mate");
-	}
-
-	@CommandMatch("failed marvin request test")
-	private MarvinApplicationResource failedMarvinRequestTest(Map<String, String> arguments) {
-		return new MarvinApplicationResource(ResourceRepresentationType.PLAIN_TEXT, "failed mate");
 	}
 
 	@CommandMatch("invalid marvin request test")

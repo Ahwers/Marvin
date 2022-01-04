@@ -7,6 +7,8 @@ public abstract class ApplicationState implements Cloneable {
 
     public ApplicationState() {}
 
+    public ApplicationState(String encoded) {}
+
     public ApplicationState(String applicationName, int version) {
         this.applicationName = applicationName;
         this.version = version;
@@ -43,6 +45,8 @@ public abstract class ApplicationState implements Cloneable {
     }
 
     public abstract boolean isSameAs(ApplicationState appState);
+
+    public abstract String encode();
 
     @Override
     public ApplicationState clone() throws CloneNotSupportedException {

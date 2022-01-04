@@ -15,6 +15,7 @@ import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
+import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
@@ -42,37 +43,9 @@ public class ApplicationsManagerTest {
         this.standardApplications.add(app2);
     }
 
-    private class TestApplicationState extends ApplicationState {
-
-        private String test = "test";
-
-        public TestApplicationState(String appName, int version) {
-            super(appName, version);
-        }
-
-        @Override
-        public boolean isSameAs(ApplicationState appState) {
-            TestApplicationState castedApplicationState = (TestApplicationState) appState;
-            return castedApplicationState.getTest().equals(this.test);
-        }
-
-        public String getTest() {
-            return this.test;
-        }
-
-        public void setTest(String test) {
-            this.test = test;
-        }
-
-    }
-
     @IntegratesApplication("Test Application One")
+    @Stateful(TestApplicationState.class)
     private class StandardApplication extends Application {
-
-        @Override
-        protected ApplicationState instantiateState() {
-            return new TestApplicationState(getName(), 0);
-        }
 
         @CommandMatch("one match")
         public MarvinApplicationResource actionOne(Map<String, String> arguments) {
@@ -87,12 +60,8 @@ public class ApplicationsManagerTest {
     }
 
     @IntegratesApplication("Test Application Two")
+    @Stateful(TestApplicationState.class)
     private class AnotherStandardApplication extends Application {
-
-        @Override
-        protected ApplicationState instantiateState() {
-            return new TestApplicationState(getName(), 0);
-        }
 
         @CommandMatch("two match")
         public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
