@@ -1,6 +1,5 @@
 package com.ahwers.marvin.framework.application;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javax.naming.ConfigurationException;
 
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
@@ -167,26 +164,17 @@ public abstract class Application {
 
 		ApplicationStateRepository appStateRepo = getAppStateRepository();
 		String encodedAppState = appStateRepo.getEncodedStateOfApp(this.name);
-		Class[] parameterTypes = null;
 		try {
 			if (encodedAppState != null) {
-				parameterTypes = new Class[1];
-				parameterTypes[0] = String.class;
-
-				state = this.stateClass.getConstructor(parameterTypes).newInstance(encodedAppState);
+				state = this.stateClass.getConstructor(String.class).newInstance(encodedAppState);
 			}
 			else {
-				parameterTypes = new Class[2];
-				parameterTypes[0] = String.class;
-				parameterTypes[1] = Integer.class;
-
-				state = this.stateClass.getConstructor(parameterTypes).newInstance(this.name, 0);
+				state = this.stateClass.getConstructor(String.class, Integer.class).newInstance(this.name, 0);
 			}
 		}
 		catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			// e.printStackTrace();
-			throw new ApplicationConfigurationError("The app state class '" + this.stateClass.getName() + "' has been configured incorrectly.");
+			throw new ApplicationConfigurationError("The app state class '" + this.stateClass.getName() + "' has been configured incorrectly.\n" + e.getMessage());
 		}
 
 		return state;

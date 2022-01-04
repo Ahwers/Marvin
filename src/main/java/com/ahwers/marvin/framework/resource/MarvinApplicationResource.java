@@ -3,6 +3,7 @@ package com.ahwers.marvin.framework.resource;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Redesign this component
 public class MarvinApplicationResource {
 	
 	private String applicationName;

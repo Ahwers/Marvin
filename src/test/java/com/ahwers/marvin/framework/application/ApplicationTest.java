@@ -20,8 +20,6 @@ import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurati
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class ApplicationTest {
 
@@ -311,12 +309,10 @@ public class ApplicationTest {
         ApplicationStateRepository repo = mock(ApplicationStateRepository.class);
         when(repo.getEncodedStateOfApp("Test")).thenReturn(encodedState);
         doAnswer(
-            new Answer() {
-                public Object answer(InvocationOnMock invocation) {
-                    encodedState = "new_test_encoded_state";
-                    return null;
-                }
-        }).when(repo).saveState("Test", "new_test_encoded_state");
+            invocation -> {
+                encodedState = "new_test_encoded_state";
+                return null;
+            }).when(repo).saveState("Test", "new_test_encoded_state");
 
         return repo;
     }

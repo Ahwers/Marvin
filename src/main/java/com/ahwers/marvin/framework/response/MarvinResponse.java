@@ -2,6 +2,7 @@ package com.ahwers.marvin.framework.response;
 
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
+// TODO: Redesign this component
 public class MarvinResponse {
 
 	// TODO: Remove as much stuff that JAX-RS already does from this (status)

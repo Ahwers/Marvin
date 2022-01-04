@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// TODO: Rename to something better like CommandRequestMatcher.
 // TODO: Refactor to make the interface more intuative.
 public class NamedGroupMatcher {
 

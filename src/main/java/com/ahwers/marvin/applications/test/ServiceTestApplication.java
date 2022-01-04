@@ -3,13 +3,10 @@ package com.ahwers.marvin.applications.test;
 import java.util.Map;
 
 import com.ahwers.marvin.framework.application.Application;
-import com.ahwers.marvin.framework.application.ApplicationState;
 import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
-import com.ahwers.marvin.framework.response.MarvinResponse;
-import com.ahwers.marvin.framework.response.RequestOutcome;
 
 // TODO: FIND A WAY TO PUT THIS IN THE TEST PACKAGE SO IT DOESN'T GET DEPLOYED WITH THE LIVE SERVICE
 @IntegratesApplication("Service Tester")

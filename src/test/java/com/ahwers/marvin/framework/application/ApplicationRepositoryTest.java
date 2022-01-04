@@ -34,10 +34,8 @@ public class ApplicationRepositoryTest {
         assertAll(
             () -> assertTrue(expectedApplicationClasses.size() == actualApplications.size()),
             () -> {
-                int i = 0;
                 for (Application application : actualApplications) {
                     assertTrue(expectedApplicationClasses.contains(application.getClass()));
-                    i++;
                 }
             }
         );
@@ -53,10 +51,8 @@ public class ApplicationRepositoryTest {
         assertAll(
             () -> assertTrue(expectedApplicationClasses.size() == actualApplications.size()),
             () -> {
-                int i = 0;
                 for (Application application : actualApplications) {
                     assertTrue(expectedApplicationClasses.contains(application.getClass()));
-                    i++;
                 }
             }
         );
