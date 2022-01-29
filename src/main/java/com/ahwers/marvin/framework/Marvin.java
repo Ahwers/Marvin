@@ -2,6 +2,8 @@ package com.ahwers.marvin.framework;
 
 import com.ahwers.marvin.framework.application.ApplicationsManager;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
 import com.ahwers.marvin.framework.command.CommandFormatter;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.MarvinResponseBuilder;
@@ -11,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
-import com.ahwers.marvin.framework.application.ApplicationState;
 
 public class Marvin {
 	
@@ -20,11 +21,13 @@ public class Marvin {
 	private CommandFormatter commandFormatter;
 	private ApplicationsManager appManager;
 	private MarvinResponseBuilder responseBuilder;
+	private ApplicationStateFactory appStateFactory;
 	
 	public Marvin(Set<Application> supportedApps) {
 		this.commandFormatter = new CommandFormatter();
 		this.appManager = new ApplicationsManager(supportedApps);
 		this.responseBuilder = new MarvinResponseBuilder();
+		this.appStateFactory = new ApplicationStateFactory(supportedApps);
 	}
 
 	public void updateApplicationStates(Map<String, ApplicationState> applicationStates) {
@@ -48,4 +51,7 @@ public class Marvin {
 		return responseBuilder.buildResponseForActionInvocation(actionInvocation, appManager);
 	}
 	
+	public ApplicationStateFactory getApplicationStateFactory() {
+		return this.appStateFactory;
+	}
 }

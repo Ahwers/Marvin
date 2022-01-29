@@ -17,6 +17,10 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateRepository;
+import com.ahwers.marvin.framework.application.state.TestApplicationState;
+import com.ahwers.marvin.framework.application.state.TestPersistentApplicationState;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 import org.junit.jupiter.api.Test;
@@ -303,6 +307,18 @@ public class ApplicationTest {
         assertFalse(actions1.get(0) == actions2.get(0));
     }
 
+    //---------------------------------------------------------------------
+    @IntegratesApplication("Test")
+    @Stateful(TestPersistentApplicationState.class)
+    private class MockedStateRepoApplication extends Application {
+
+        @Override
+        protected ApplicationStateRepository getAppStateRepository() {
+            return getTestStateRepo();
+        }
+
+    }
+
     private static String encodedState = "test_encoded_state";
 
     public static ApplicationStateRepository getTestStateRepo() {
@@ -316,18 +332,11 @@ public class ApplicationTest {
 
         return repo;
     }
+    //---------------------------------------------------------------------
 
-    @IntegratesApplication("Test")
-    @Stateful(TestPersistentApplicationState.class)
-    private class MockedStateRepoApplication extends Application {
+    // The following two tests only test the logic of this algorithm. Actual implementations of Application will test the marshalling logic for those implementations.
 
-        @Override
-        protected ApplicationStateRepository getAppStateRepository() {
-            return getTestStateRepo();
-        }
-
-    }
-
+    // TODO: Test for exceptions that this algorithm can throw
     @Test
     public void statefulHasPersistentState() {
         encodedState = "test_encoded_state"; // If the test below is ran first, this test will fail without this line.
@@ -344,5 +353,5 @@ public class ApplicationTest {
         TestPersistentApplicationState state = (TestPersistentApplicationState) app.getState();
         assertTrue(state.getTest().equals("new_test"));
     }
-    
+
 }

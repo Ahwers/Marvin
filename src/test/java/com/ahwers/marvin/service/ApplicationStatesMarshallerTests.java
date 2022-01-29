@@ -5,40 +5,45 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
-import com.ahwers.marvin.framework.application.ApplicationState;
-import com.ahwers.marvin.framework.application.TestApplicationState;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
+import com.ahwers.marvin.framework.application.state.TestApplicationState;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public class ApplicationStatesHeaderUnmarshallerTest {
-    
+public class ApplicationStatesMarshallerTests {
+
     @IntegratesApplication("Test")
     @Stateful(TestApplicationState.class)
-    private static class TestApplication extends Application {
+    private class TestApplication extends Application {
 
     }
 
-    private ApplicationStatesHeaderUnmarshaller unmarshaller;
+    private Set<Application> supportedApps;
+    private ApplicationStateFactory appStateFactory;
 
     @BeforeAll
     public void setUp() {
-        Set<Application> testApps = new HashSet<>();
-        testApps.add(new TestApplication());
-
-        unmarshaller = new ApplicationStatesHeaderUnmarshaller(testApps);
+        this.supportedApps = Set.of(new TestApplication());
+        this.appStateFactory = new ApplicationStateFactory(supportedApps);
+    }
+    
+    @Test
+    public void validInstantitation() {
+        assertTrue(new ApplicationStatesMarshaller(this.appStateFactory) != null);
     }
 
     @Test
@@ -49,7 +54,8 @@ public class ApplicationStatesHeaderUnmarshallerTest {
         ObjectMapper jsonMapper = new ObjectMapper();
         String marshalledAppStates = jsonMapper.writeValueAsString(expectedAppStates);
 
-        Map<String, ApplicationState> unmarshalledAppStates = unmarshaller.unmarshall(marshalledAppStates);
+        ApplicationStatesMarshaller marshaller = new ApplicationStatesMarshaller(this.appStateFactory);
+        Map<String, ApplicationState> unmarshalledAppStates = marshaller.unmarshallJSONAppStates(marshalledAppStates);
         assertAll(
             () -> assertTrue(unmarshalledAppStates.size() == expectedAppStates.size()),
             () -> {
@@ -61,13 +67,15 @@ public class ApplicationStatesHeaderUnmarshallerTest {
     }
 
     @Test
-    public void unsuccessfulUnmarshallingTest() throws JsonProcessingException {
+    public void unsuccessfulUnmarshallingTestJsonIssue() throws JsonProcessingException {
         Map<String, String> erroneousAppState = new HashMap<String, String>();
-        erroneousAppState.put("test", "test");
+        erroneousAppState.put("Test", "test");
 
         ObjectMapper jsonMapper = new ObjectMapper();
         String marshalledErroneousAppState = jsonMapper.writeValueAsString(erroneousAppState);
 
-        assertThrows(JsonProcessingException.class, () -> unmarshaller.unmarshall(marshalledErroneousAppState));
+        ApplicationStatesMarshaller marshaller = new ApplicationStatesMarshaller(this.appStateFactory);
+        assertThrows(JSONException.class, () -> marshaller.unmarshallJSONAppStates(marshalledErroneousAppState));
     }
+    
 }

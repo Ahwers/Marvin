@@ -6,7 +6,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.ahwers.marvin.framework.application.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
 
 @Retention(RUNTIME)
 @Target(TYPE)

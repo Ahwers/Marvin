@@ -20,8 +20,12 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatches
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateRepository;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+// TODO: DECOUPLE APPLICATION STATE MANAGEMENT FROM THIS CLASS, LIKELY INTO APPLICATIONSMANAGER
 
 public abstract class Application {
 	
@@ -161,11 +165,12 @@ public abstract class Application {
 		return stateClass;
 	}
 
+	// TODO: How can we decouple this to make it more testable?
 	private ApplicationState instantiateState() {
 		ApplicationState state = null;
 
 		ApplicationStateRepository appStateRepo = getAppStateRepository();
-		String encodedAppState = appStateRepo.getEncodedStateOfApp(this.name);
+		String encodedAppState = appStateRepo.getEncodedStateOfApp(this.name); // TODO: Not encoded, marshalled
 		try {
 			if (encodedAppState != null) {
 				state = this.stateClass.getConstructor(String.class).newInstance(encodedAppState);

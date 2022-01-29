@@ -1,4 +1,4 @@
-package com.ahwers.marvin.framework.application;
+package com.ahwers.marvin.framework.application.state;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;

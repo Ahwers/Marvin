@@ -9,7 +9,6 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -17,12 +16,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import com.ahwers.marvin.framework.Marvin;
 import com.ahwers.marvin.framework.application.Application;
 import com.ahwers.marvin.framework.application.ApplicationRepository;
-import com.ahwers.marvin.framework.application.ApplicationState;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
 import com.ahwers.marvin.framework.command.Command;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.RequestOutcome;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Path("/command")
 public class MarvinService {
@@ -30,14 +29,17 @@ public class MarvinService {
 	private final String APPLICATION_STATES_HEADER_KEY = "application_states";
 
 	private Marvin marvin;
-	private ApplicationStatesHeaderUnmarshaller appStatesHeaderUnmarshaller;
 	
 	// TODO: This instantiates the standard LIVE applications into Marvin, can we (maybe with maven) detect when we are in a DEV environment and load test apps instead? This does mean though that if the test phase of a build always runs, the integration tests in a LIVE environment will fail because the test applications weren't loaded to Marvin.
 	public MarvinService() {
 		Set<Application> standardApps = ApplicationRepository.getInstance().getStandardApplications();
+		Set<Application> testApps = ApplicationRepository.getInstance().getTestApplications();
 
-		marvin = new Marvin(standardApps);
-		appStatesHeaderUnmarshaller = new ApplicationStatesHeaderUnmarshaller(standardApps);
+		marvin = new Marvin(standardApps); // TODO: Add test apps too when in DEV
+	}
+
+	public MarvinService(Marvin marvin) {
+		this.marvin = marvin;
 	}
 
 	@GET
@@ -64,7 +66,6 @@ public class MarvinService {
 		return handleRequest(command, marshalledAppStates);
 	}
 
-	// TODO: Im sure jaxrs has some way for me unmarshall and inject the map directly here
 	private Response handleRequest(String command, String marshalledAppStates) {
 		Map<String, ApplicationState> appStates = unmarshallAppStates(marshalledAppStates);
 
@@ -91,15 +92,12 @@ public class MarvinService {
 	}
 
 	private Map<String, ApplicationState> unmarshallAppStates(String marshalledAppStates) {
-		Map<String, ApplicationState> appStates = null;
-		try {
-			appStates = appStatesHeaderUnmarshaller.unmarshall(marshalledAppStates);
-		} catch (JsonProcessingException e) {
-			throw new WebApplicationException(Response.Status.BAD_REQUEST);
-		}
+		ApplicationStateFactory appStateFactory = this.marvin.getApplicationStateFactory();
+		ApplicationStatesMarshaller statesMarshaller = new ApplicationStatesMarshaller(appStateFactory);
 
-		return appStates;
+		return statesMarshaller.unmarshallJSONAppStates(marshalledAppStates);
 	}
+
 
 	private Response constructServiceResponseFromMarvinResponse(MarvinResponse marvinResponse) {
 		ResponseBuilder builder = null;

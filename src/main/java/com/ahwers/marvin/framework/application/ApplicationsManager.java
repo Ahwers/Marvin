@@ -10,6 +10,7 @@ import java.util.Set;
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.state.ApplicationState;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public class ApplicationsManager {

@@ -1,4 +1,4 @@
-package com.ahwers.marvin.framework.application;
+package com.ahwers.marvin.framework.application.state;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;

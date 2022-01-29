@@ -1,4 +1,4 @@
-package com.ahwers.marvin.framework.application;
+package com.ahwers.marvin.framework.application.state;
 
 public class ApplicationStateRepository {
 
