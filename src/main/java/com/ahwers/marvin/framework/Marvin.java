@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
+import com.ahwers.marvin.framework.application.ApplicationRepository;
 
 public class Marvin {
 	
@@ -23,14 +24,17 @@ public class Marvin {
 	private MarvinResponseBuilder responseBuilder;
 	private ApplicationStateFactory appStateFactory;
 	
-	public Marvin(Set<Application> supportedApps) {
+	public Marvin(String packageRoute) {
+		ApplicationRepository appRepo = new ApplicationRepository(packageRoute);
+		Set<Application> supportedApps = appRepo.getSupportedApplications();
+
 		this.commandFormatter = new CommandFormatter();
 		this.appManager = new ApplicationsManager(supportedApps);
 		this.responseBuilder = new MarvinResponseBuilder();
 		this.appStateFactory = new ApplicationStateFactory(supportedApps);
-	}
+    }
 
-	public void updateApplicationStates(Map<String, ApplicationState> applicationStates) {
+    public void updateApplicationStates(Map<String, ApplicationState> applicationStates) {
 		for (ApplicationState appState : applicationStates.values()) {
 			appManager.updateApplicationState(appState);
 		}

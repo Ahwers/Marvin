@@ -1,51 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-    <!-- 
-        TODO:
-         - Set up environments, DEV and PROD. Can and should we optionally disable security in DEV in order to avoid having to log in to anything during testing?
-         - Do the resource property thing that section 4.3.1 talks about to centralise configuration properties and safely omit them from the git repository without straight up ignoring the existen of required resource files.
-     -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.ahwers.marvin</groupId>
-    <artifactId>RestfulMarvin</artifactId>
+    <groupId>com.ahwers.marvin.framework</groupId>
+    <artifactId>MarvinFramework</artifactId>
     <version>0.1</version>
-    <packaging>war</packaging>
-    <name>RestfulMarvin</name>
+    <packaging>jar</packaging>
+    <name>MarvinFramework</name>
     <description/>
 
     <properties>
-        <resteasy.ver>4.5.6.Final</resteasy.ver>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-   		<repository>
-		    <id>maven-cognitiveservices-speech</id>
-	    	<name>Microsoft Cognitive Services Speech Maven Repository</name>
-	    	<url>https://csspeechstorage.blob.core.windows.net/maven/</url>
-	  	</repository>
-    </repositories>
-    
     <dependencies>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20211205</version>
+            <version>20210307</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -63,74 +38,25 @@
             <version>2.13.0</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-core</artifactId>
-            <version>${resteasy.ver}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${resteasy.ver}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-servlet-initializer</artifactId>
-            <version>${resteasy.ver}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-			<groupId>com.microsoft.cognitiveservices.speech</groupId>
-			<artifactId>client-sdk</artifactId>
-			<version>1.12.1</version>
-		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.9-RC1</version>
 		</dependency>
-		<dependency>
-	 	   <groupId>com.microsoft.azure</groupId>
-	 	   <artifactId>msal4j</artifactId>
-	 	   <version>1.9.1</version>
-		</dependency>
-		<dependency>
-		  <groupId>com.microsoft.graph</groupId>
-		  <artifactId>microsoft-graph</artifactId>
-		  <version>3.2.0</version>
-		</dependency>
-        <dependency>
-            <groupId>org.wildfly.bom</groupId>
-            <artifactId>wildfly</artifactId>
-            <version>24.0.1.Final</version>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
-        <finalName>RestfulMarvin</finalName>
+        <finalName>MarvinFramework</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -152,33 +78,6 @@
                         <id>verify</id>
                         <goals>
                             <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>2.1.0.Beta1</version>
-                <executions>
-                    <execution>
-                        <id>start-wildfly</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <configuration>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
-                            <daemon>true</daemon>
-                            <timeout>300</timeout>
-                            <startupTimeout>300</startupTimeout>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-wildfly</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>shutdown</goal>
                         </goals>
                     </execution>
                 </executions>

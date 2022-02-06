@@ -1,4 +1,4 @@
-package com.ahwers.marvin.tools;
+package com.ahwers.marvin.framework.tools;
 
 import java.util.ArrayList;
 import java.util.List;

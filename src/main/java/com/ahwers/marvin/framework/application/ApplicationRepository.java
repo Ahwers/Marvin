@@ -10,43 +10,16 @@ import org.reflections.Reflections;
 
 public class ApplicationRepository {
 
-    // TODO: Test suite, standard apps and test apps.
+    private Set<Application> loadedApps;
 
-    private static ApplicationRepository instance;
-
-    public static ApplicationRepository getInstance() {
-        if (instance == null) {
-            instance = new ApplicationRepository();
-        } 
-
-        return instance;
+    public ApplicationRepository(String packageRoute) {
+        this.loadedApps = getAppsInPackage(packageRoute);
     }
 
-    // TODO: Figure out how to store the test applications in the actual test packages
-	private final String MARVIN_STANDARD_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin.applications.standard";
-    private final String MARVIN_TEST_APPLICATION_PACKAGE_PREFIX = "com.ahwers.marvin.applications.test";
-
-    // TODO: I feel like storing test apps even in production environments could be a security risk. Rethink how to do this.
-    private Set<Application> standardApps;
-    private Set<Application> testApps;
-
-    private ApplicationRepository() {
-        this.standardApps = loadStandardApps();
-        this.testApps = loadTestApps();
-    }
-
-    private Set<Application> loadStandardApps() {
-        return getAppsInPackage(MARVIN_STANDARD_APPLICATION_PACKAGE_PREFIX);
-    }
-
-    private Set<Application> loadTestApps() {
-        return getAppsInPackage(MARVIN_TEST_APPLICATION_PACKAGE_PREFIX);
-    }
-
-    private Set<Application> getAppsInPackage(String packagePrefix) {
+    private Set<Application> getAppsInPackage(String packageRoute) {
         Set<Application> apps = new HashSet<>();
 
-        Set<Class<?>> applicationClasses = new Reflections(packagePrefix).getTypesAnnotatedWith(IntegratesApplication.class);
+        Set<Class<?>> applicationClasses = new Reflections(packageRoute).getTypesAnnotatedWith(IntegratesApplication.class);
 		for (Class<?> appClass : applicationClasses) {
 			Application application = null;
 			try {
@@ -63,12 +36,8 @@ public class ApplicationRepository {
         return apps;
     }
 
-    public Set<Application> getStandardApplications() {
-        return standardApps;
-    }
-
-    public Set<Application> getTestApplications() {
-        return testApps;
+    public Set<Application> getSupportedApplications() {
+        return loadedApps;
     }
 
 }

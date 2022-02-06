@@ -5,8 +5,9 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.ahwers.marvin.tools.ResourceRepository;
+import com.ahwers.marvin.framework.tools.ResourceRepository;
 
+// TODO: Use an existing templating solution
 public class ResourceTemplate {
 	
 	private String content;

@@ -3,50 +3,20 @@ package com.ahwers.marvin.framework.application;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import com.ahwers.marvin.applications.standard.todo.task_creation.TaskCreationApplication;
-import com.ahwers.marvin.applications.test.ServiceTestApplication;
+import com.ahwers.marvin.testapplications.TestApplication;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-@TestInstance(Lifecycle.PER_CLASS)
 public class ApplicationRepositoryTest {
     
-    private ApplicationRepository appRepo;
-
-    @BeforeAll
-    public void instantiateAppRepo() {
-        appRepo = ApplicationRepository.getInstance();
-    }
-
     @Test
-    public void getStandardApplications() {
-        Set<Class<?>> expectedApplicationClasses = new HashSet<>();
-        expectedApplicationClasses.add(TaskCreationApplication.class);
+    public void getApplications() {
+        Set<Class<?>> expectedApplicationClasses = Set.of(TestApplication.class);
 
-        Set<Application> actualApplications = appRepo.getStandardApplications();
-        
-        assertAll(
-            () -> assertTrue(expectedApplicationClasses.size() == actualApplications.size()),
-            () -> {
-                for (Application application : actualApplications) {
-                    assertTrue(expectedApplicationClasses.contains(application.getClass()));
-                }
-            }
-        );
-    }
-
-    @Test
-    public void getTestApplications() {
-        Set<Class<?>> expectedApplicationClasses = new HashSet<>();
-        expectedApplicationClasses.add(ServiceTestApplication.class);
-
-        Set<Application> actualApplications = appRepo.getTestApplications();
+        ApplicationRepository appRepo = new ApplicationRepository("com.ahwers.marvin.testapplications");
+        Set<Application> actualApplications = appRepo.getSupportedApplications();
         
         assertAll(
             () -> assertTrue(expectedApplicationClasses.size() == actualApplications.size()),

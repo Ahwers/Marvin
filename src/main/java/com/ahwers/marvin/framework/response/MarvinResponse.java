@@ -12,15 +12,15 @@ public class MarvinResponse {
 	
 	private String message;
 	private MarvinApplicationResource resource;
-	private RequestOutcome status;
+	private InvocationOutcome status;
 	private Throwable failException;
 	
-	public MarvinResponse(RequestOutcome status, String responseMessage) {
+	public MarvinResponse(InvocationOutcome status, String responseMessage) {
 		this.status = status;
 		this.message = responseMessage;
 	}
 	
-	public MarvinResponse(RequestOutcome status) {
+	public MarvinResponse(InvocationOutcome status) {
 		this.status = status;
 	}
 	
@@ -34,11 +34,11 @@ public class MarvinResponse {
 		return this.resource;
 	}
 	
-	public RequestOutcome getCommandStatus() {
+	public InvocationOutcome getCommandStatus() {
 		return this.status;
 	}
 	
-	public void setCommandStatus(RequestOutcome status) {
+	public void setCommandStatus(InvocationOutcome status) {
 		this.status = status;
 	}
 	

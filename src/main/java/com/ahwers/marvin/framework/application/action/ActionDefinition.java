@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ahwers.marvin.tools.NamedGroupMatcher;
+import com.ahwers.marvin.framework.tools.NamedGroupMatcher;
 
 public class ActionDefinition extends ApplicationAction implements Cloneable {
 
