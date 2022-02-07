@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
@@ -18,9 +15,7 @@ import com.ahwers.marvin.framework.application.annotations.IntegratesApplication
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
-import com.ahwers.marvin.framework.application.state.ApplicationStateRepository;
 import com.ahwers.marvin.framework.application.state.TestApplicationState;
-import com.ahwers.marvin.framework.application.state.TestPersistentApplicationState;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 import org.junit.jupiter.api.Test;
@@ -78,18 +73,6 @@ public class ApplicationTest {
     @Test
     public void validApplicationWithoutState() {
         assertTrue(new StatelessApplication() != null);
-    }
-
-
-    @IntegratesApplication("Test")
-    @Stateful(TestApplicationState.class)
-    private class StatefulApplication extends Application {
-
-    }
-
-    @Test
-    public void validApplicationWithState() {
-        assertTrue(new StatefulApplication() != null);
     }
 
     private class IncorrectlyConfiguredApplicationNoIntegrationAnnotation extends Application {
@@ -253,6 +236,7 @@ public class ApplicationTest {
     public void getState() {
         ApplicationState expectedState = new TestApplicationState("Test", 0);
         Application app = new StandardApplication();
+        app.setState(expectedState);
         assertTrue(app.getState().isSameAs(expectedState));
     }
 
@@ -267,6 +251,8 @@ public class ApplicationTest {
     @Test
     public void returnsCopiesOfStates() {
         Application app = new StandardApplication();
+        ApplicationState state = new TestApplicationState("Test", 0);
+        app.setState(state);
         assertFalse(app.getState() == app.getState());
     }
 
@@ -305,53 +291,6 @@ public class ApplicationTest {
         List<ActionDefinition> actions1 = app.getActions();
         List<ActionDefinition> actions2 = app.getActions();
         assertFalse(actions1.get(0) == actions2.get(0));
-    }
-
-    //---------------------------------------------------------------------
-    @IntegratesApplication("Test")
-    @Stateful(TestPersistentApplicationState.class)
-    private class MockedStateRepoApplication extends Application {
-
-        @Override
-        protected ApplicationStateRepository getAppStateRepository() {
-            return getTestStateRepo();
-        }
-
-    }
-
-    private static String encodedState = "test_encoded_state";
-
-    public static ApplicationStateRepository getTestStateRepo() {
-        ApplicationStateRepository repo = mock(ApplicationStateRepository.class);
-        when(repo.getEncodedStateOfApp("Test")).thenReturn(encodedState);
-        doAnswer(
-            invocation -> {
-                encodedState = "new_test_encoded_state";
-                return null;
-            }).when(repo).saveState("Test", "new_test_encoded_state");
-
-        return repo;
-    }
-    //---------------------------------------------------------------------
-
-    // The following two tests only test the logic of this algorithm. Actual implementations of Application will test the marshalling logic for those implementations.
-
-    // TODO: Test for exceptions that this algorithm can throw
-    @Test
-    public void statefulHasPersistentState() {
-        encodedState = "test_encoded_state"; // If the test below is ran first, this test will fail without this line.
-        Application app = new MockedStateRepoApplication();
-        TestPersistentApplicationState state = (TestPersistentApplicationState) app.getState();
-        assertTrue(state.getTest().equals("test"));
-    }
-
-    @Test
-    public void statefulSetsPersistentState() {
-        ApplicationStateRepository stateRepo = getTestStateRepo();
-        stateRepo.saveState("Test", "new_test_encoded_state");
-        Application app = new MockedStateRepoApplication();
-        TestPersistentApplicationState state = (TestPersistentApplicationState) app.getState();
-        assertTrue(state.getTest().equals("new_test"));
     }
 
 }

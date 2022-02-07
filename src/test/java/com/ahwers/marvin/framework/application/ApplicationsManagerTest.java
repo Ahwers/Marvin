@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,12 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.state.MarshalledApplicationStateRepository;
 import com.ahwers.marvin.framework.application.state.TestApplicationState;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,8 +77,7 @@ public class ApplicationsManagerTest {
 
     @Test
     public void validInstantiation() {
-        ApplicationsManager appManager = new ApplicationsManager(standardApplications);
-        assertTrue(appManager != null);
+        assertTrue(new ApplicationsManager(standardApplications) != null);
     }
 
     @Test
@@ -169,6 +172,45 @@ public class ApplicationsManagerTest {
         List<ActionInvocation> invocations = appManager.getApplicationInvocationsThatDirectlyMatchCommand("one match");
         MarvinApplicationResource resource = appManager.executeActionInvocation(invocations.get(0));
         assertTrue(resource.getResourceRepresentations().get(ResourceRepresentationType.PLAIN_TEXT).equals("WORKS"));
+    }
+
+    private class TestMarshalledAppStateRepository implements MarshalledApplicationStateRepository {
+
+        Map<String, String> states = new HashMap<>();
+
+        @Override
+        public String getMarshalledStateOfApp(String appName) {
+            return states.get(appName);
+        }
+
+        @Override
+        public void saveMarshalledStateUnderApplicationName(String marshalledState, String appName) {
+            states.put(appName, marshalledState);
+        }
+
+    }
+
+    @Test
+    public void applicationHasPersistedState() throws JsonProcessingException {
+        TestApplicationState appOnePersistedState = new TestApplicationState("Test Application One", 0);
+        appOnePersistedState.setTest("persisted_state_of_app_1");
+        String marshalledAppOneState = new ObjectMapper().writeValueAsString(appOnePersistedState);
+
+        TestMarshalledAppStateRepository testAppStateRepo = new TestMarshalledAppStateRepository();
+        testAppStateRepo.saveMarshalledStateUnderApplicationName(marshalledAppOneState, "Test Application One");
+
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications, testAppStateRepo);
+        assertTrue(appManager.getApplication("Test Application One").getState().isSameAs(appOnePersistedState));
+    }
+
+    @Test
+    public void applicationWithoutPersistedState() {
+        TestApplicationState expectedState = new TestApplicationState("Test Application Two", 0);
+
+        TestMarshalledAppStateRepository testAppStateRepo = new TestMarshalledAppStateRepository();
+
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications, testAppStateRepo);
+        assertTrue(appManager.getApplication("Test Application Two").getState().isSameAs(expectedState));
     }
 
 }

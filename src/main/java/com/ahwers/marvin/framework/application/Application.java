@@ -1,7 +1,5 @@
 package com.ahwers.marvin.framework.application;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -21,11 +19,7 @@ import com.ahwers.marvin.framework.application.annotations.IntegratesApplication
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
-import com.ahwers.marvin.framework.application.state.ApplicationStateRepository;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-// TODO: DECOUPLE APPLICATION STATE MANAGEMENT FROM THIS CLASS, LIKELY INTO APPLICATIONSMANAGER
 
 public abstract class Application {
 	
@@ -38,10 +32,6 @@ public abstract class Application {
 		this.name = loadName();
 		this.actions = loadActions();
 		this.stateClass = loadStateClass();
-
-		if (this.stateClass != null) {
-			this.state = instantiateState();
-		}
 	}
 
 	private String loadName() {
@@ -165,32 +155,6 @@ public abstract class Application {
 		return stateClass;
 	}
 
-	// TODO: How can we decouple this to make it more testable?
-	private ApplicationState instantiateState() {
-		ApplicationState state = null;
-
-		ApplicationStateRepository appStateRepo = getAppStateRepository();
-		String encodedAppState = appStateRepo.getEncodedStateOfApp(this.name); // TODO: Not encoded, marshalled
-		try {
-			if (encodedAppState != null) {
-				state = this.stateClass.getConstructor(String.class).newInstance(encodedAppState);
-			}
-			else {
-				state = this.stateClass.getConstructor(String.class, Integer.class).newInstance(this.name, 0);
-			}
-		}
-		catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new ApplicationConfigurationError("The app state class '" + this.stateClass.getName() + "' has been configured incorrectly.\n" + e.getMessage());
-		}
-
-		return state;
-	}
-
-	protected ApplicationStateRepository getAppStateRepository() {
-		return ApplicationStateRepository.getInstance();
-	}
-
 	public Class<? extends ApplicationState> getStateClass() {
 		return this.stateClass;
 	}
@@ -209,23 +173,16 @@ public abstract class Application {
 	}
 
 	public void setState(ApplicationState newAppState) {
-		try {
-			this.state = newAppState.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new ApplicationConfigurationError("The class '" + getStateClass().getName() + "' does not implement Cloneable.");
+		ApplicationState newClonedState = null;
+		if (newAppState != null) {
+			try {
+				newClonedState = newAppState.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new ApplicationConfigurationError("The class '" + getStateClass().getName() + "' does not implement Cloneable.");
+			}
 		}
 
-		saveState();
-	}
-
-	private void saveState() {
-		ApplicationStateRepository appStateRepo = getAppStateRepository();
-		try {
-			appStateRepo.saveState(this.name, this.state.encode());
-		} catch (JsonProcessingException | UnsupportedEncodingException e) {
-			// TODO: Log could not encode state
-			e.printStackTrace();
-		}
+		this.state = newClonedState;
 	}
 
 	public String getName() {

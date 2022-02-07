@@ -14,9 +14,7 @@ public abstract class ApplicationState implements Cloneable {
 
     public ApplicationState() {}
 
-    public ApplicationState(String encoded) {}
-
-    public ApplicationState(String applicationName, int version) {
+    public ApplicationState(String applicationName, Integer version) {
         this.applicationName = applicationName;
         this.version = version;
     }

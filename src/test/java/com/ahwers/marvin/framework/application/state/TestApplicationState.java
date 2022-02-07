@@ -1,7 +1,5 @@
 package com.ahwers.marvin.framework.application.state;
 
-import com.ahwers.marvin.framework.application.state.ApplicationState;
-
 public class TestApplicationState extends ApplicationState {
 
     private String test = "test";
@@ -10,10 +8,6 @@ public class TestApplicationState extends ApplicationState {
 
     public TestApplicationState(String appName, Integer stateVersion) {
         super(appName, stateVersion);
-    }
-
-    public TestApplicationState(String encodedState) {
-        super(encodedState);
     }
 
     @Override

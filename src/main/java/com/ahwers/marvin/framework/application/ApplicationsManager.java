@@ -11,13 +11,26 @@ import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
+import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
+import com.ahwers.marvin.framework.application.state.MemoryBasedMarshalledApplicationStateRepository;
+import com.ahwers.marvin.framework.application.state.MarshalledApplicationStateRepository;
 import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public class ApplicationsManager {
 
 	private Map<String, Application> applications = new HashMap<>();
+
+	public ApplicationsManager(Set<Application> applicationsSet, MarshalledApplicationStateRepository marshalledAppStateRepo) {
+		loadApplicationsFromSet(applicationsSet);
+		instantiateApplicationStates(marshalledAppStateRepo);
+	}
 	
 	public ApplicationsManager(Set<Application> applicationsSet) {
+		loadApplicationsFromSet(applicationsSet);
+		instantiateApplicationStates(MemoryBasedMarshalledApplicationStateRepository.getInstance());
+	}
+	
+	private void loadApplicationsFromSet(Set<Application> applicationsSet) {
 		if (applicationsSet == null) {
 			throw new IllegalArgumentException("Cannot be null");
 		}
@@ -34,7 +47,49 @@ public class ApplicationsManager {
 			this.applications.put(appName, app);
 		}	
 	}
-	
+
+	private void instantiateApplicationStates(MarshalledApplicationStateRepository appStateRepository) {
+		for (Application app : this.applications.values()) {
+			if (app.getStateClass() != null) {
+				instantiateAppStateWithRepo(app, appStateRepository);
+			}
+		}
+	}
+
+	private void instantiateAppStateWithRepo(Application app, MarshalledApplicationStateRepository appStateRepo) {
+		ApplicationState appState = null;
+
+		ApplicationState persistedAppState = getPersistedStateForAppWithRepo(app, appStateRepo);
+		if (persistedAppState != null) {
+			appState = persistedAppState;
+		}
+		else {
+			try {
+				appState = app.getStateClass().getDeclaredConstructor(String.class, Integer.class).newInstance(app.getName(), 0);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				// TODO: Are we already checking for this? Should this be moved to application if we're not? Yes.
+				throw new ApplicationConfigurationError("The app state class '" + app.getStateClass().toString() + "' does not have a constructor accepting String and int for app name and state id.");
+			}
+		}
+
+		app.setState(appState);
+	}
+
+	private ApplicationState getPersistedStateForAppWithRepo(Application app, MarshalledApplicationStateRepository appStateRepo) {
+		String appName = app.getName();
+
+		ApplicationStateFactory appStateFactory = new ApplicationStateFactory(Set.of(app));
+		String marshalledAppState = appStateRepo.getMarshalledStateOfApp(appName);
+
+		ApplicationState state = null;
+		if (marshalledAppState != null) {
+			state = appStateFactory.unmarshallApplicationStateForApplication(marshalledAppState, appName);
+		}
+
+		return state;
+	}
+
 	public void updateApplicationState(ApplicationState requestAppState) {
 		String appName = requestAppState.getApplicationName();
 		ApplicationState serverAppState = this.applications.get(appName).getState();
