@@ -18,10 +18,10 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.resource.ApplicationResource;
+import com.ahwers.marvin.framework.application.resource.enums.ResourceRepresentationType;
 import com.ahwers.marvin.framework.application.state.MarshalledApplicationStateRepository;
 import com.ahwers.marvin.framework.application.state.TestApplicationState;
-import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
-import com.ahwers.marvin.framework.resource.ResourceRepresentationType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,12 +53,12 @@ public class ApplicationsManagerTest {
     private class StandardApplication extends Application {
 
         @CommandMatch("one match")
-        public MarvinApplicationResource actionOne(Map<String, String> arguments) {
-            return new MarvinApplicationResource(ResourceRepresentationType.PLAIN_TEXT, "WORKS");
+        public ApplicationResource actionOne(Map<String, String> arguments) {
+            return new ApplicationResource(ResourceRepresentationType.PLAIN_TEXT, "WORKS");
         }
 
         @CommandMatch("two match")
-        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
+        public ApplicationResource actionTwo(Map<String, String> arguments) {
             return null;
         }
 
@@ -69,7 +69,7 @@ public class ApplicationsManagerTest {
     private class AnotherStandardApplication extends Application {
 
         @CommandMatch("two match")
-        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
+        public ApplicationResource actionTwo(Map<String, String> arguments) {
             return null;
         }
 
@@ -170,8 +170,8 @@ public class ApplicationsManagerTest {
     public void executeActionInvocation() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
         ApplicationsManager appManager = new ApplicationsManager(standardApplications);
         List<ActionInvocation> invocations = appManager.getApplicationInvocationsThatDirectlyMatchCommand("one match");
-        MarvinApplicationResource resource = appManager.executeActionInvocation(invocations.get(0));
-        assertTrue(resource.getResourceRepresentations().get(ResourceRepresentationType.PLAIN_TEXT).equals("WORKS"));
+        ApplicationResource resource = appManager.executeActionInvocation(invocations.get(0));
+        assertTrue(resource.getContent().equals("WORKS"));
     }
 
     private class TestMarshalledAppStateRepository implements MarshalledApplicationStateRepository {
@@ -211,6 +211,19 @@ public class ApplicationsManagerTest {
 
         ApplicationsManager appManager = new ApplicationsManager(standardApplications, testAppStateRepo);
         assertTrue(appManager.getApplication("Test Application Two").getState().isSameAs(expectedState));
+    }
+
+    @Test
+    public void applicationWithPreviouslyUpdatedState() {
+        TestMarshalledAppStateRepository testAppStateRepo = new TestMarshalledAppStateRepository();
+        ApplicationsManager appManager = new ApplicationsManager(standardApplications, testAppStateRepo);
+
+        TestApplicationState appOnePersistedState = new TestApplicationState("Test Application One", 0);
+        appOnePersistedState.setTest("persisted_state_of_app_1");
+        appManager.updateApplicationState(appOnePersistedState);
+
+        ApplicationsManager appManager2 = new ApplicationsManager(standardApplications, testAppStateRepo);
+        assertTrue(appManager2.getApplication(appOnePersistedState.getApplicationName()).getState().isSameAs(appOnePersistedState));
     }
 
 }

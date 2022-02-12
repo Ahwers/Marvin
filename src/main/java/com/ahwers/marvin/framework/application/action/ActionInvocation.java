@@ -38,4 +38,19 @@ public class ActionInvocation extends ApplicationAction {
         return isSameAs;
     }
 
+    @Override
+    public String toString() {
+        String stringified = "";
+        stringified += ("Application:" + this.getApplicationName() + ", ");
+        stringified += ("Action:" + this.getActionName() + ", ");
+        
+        stringified += ("Arguments:");
+        for (String key : this.arguments.keySet()) {
+            String value = this.arguments.get(key);
+            stringified += (key + "='" + value + "', ");
+        }
+
+        return stringified;
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
+import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 
 import org.reflections.Reflections;
 
@@ -26,8 +27,7 @@ public class ApplicationRepository {
 				application = (Application) appClass.getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                // TODO: Throw configuration error. OR can application's validation method catch this? Would be better to focus catching application configuration errors in a single place no? 
-				e.printStackTrace();
+                throw new ApplicationConfigurationError(e.getMessage());
 			}
 
             apps.add(application);

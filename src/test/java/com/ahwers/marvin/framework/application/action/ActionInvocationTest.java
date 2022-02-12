@@ -58,4 +58,11 @@ public class ActionInvocationTest {
         assertThrows(IllegalArgumentException.class, () -> invocation.isSameAs(definition));
     }
 
+    @Test
+    public void toStringTest() {
+        ActionInvocation invocation = new ActionInvocation("Test", "test", Map.of("first_argument", "has a value", "second_argument", "also has a value"));
+        String stringified = invocation.toString();
+        assertTrue(stringified.equals("Application:Test, Action:test, Arguments:first_argument='has a value', second_argument='also has a value', "));
+    }
+
 }

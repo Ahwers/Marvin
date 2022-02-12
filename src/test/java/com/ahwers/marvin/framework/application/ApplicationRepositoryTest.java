@@ -10,6 +10,8 @@ import com.ahwers.marvin.testapplications.TestApplication;
 import org.junit.jupiter.api.Test;
 
 public class ApplicationRepositoryTest {
+
+    // TODO: Test case for loading erroneous application class
     
     @Test
     public void getApplications() {

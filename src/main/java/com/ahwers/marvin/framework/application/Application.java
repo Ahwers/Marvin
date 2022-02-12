@@ -18,8 +18,8 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatches
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
-import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public abstract class Application {
 	
@@ -108,7 +108,7 @@ public abstract class Application {
 	private void validateAppActionMethod(Method appActionMethod, List<String> regexes) {
 		String baseErrorWording = ("Action method of application '" + getName() + "' named '" + appActionMethod.getName() + "' ");
 
-		if (appActionMethod.getReturnType() != MarvinApplicationResource.class) {
+		if (appActionMethod.getReturnType() != ApplicationResource.class) {
 			throw new ApplicationConfigurationError(baseErrorWording + "returns the wrong type of '" + appActionMethod.getReturnType().toString() + "'.");
 		}
 		else if (!Modifier.toString(appActionMethod.getModifiers()).equals("public")) {

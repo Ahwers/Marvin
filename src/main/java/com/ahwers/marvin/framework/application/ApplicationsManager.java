@@ -10,24 +10,30 @@ import java.util.Set;
 import com.ahwers.marvin.framework.application.action.ActionDefinition;
 import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
 import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
+import com.ahwers.marvin.framework.application.state.ApplicationStateMarshaller;
 import com.ahwers.marvin.framework.application.state.MemoryBasedMarshalledApplicationStateRepository;
 import com.ahwers.marvin.framework.application.state.MarshalledApplicationStateRepository;
-import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 public class ApplicationsManager {
 
+	private MarshalledApplicationStateRepository appStateRepo;
 	private Map<String, Application> applications = new HashMap<>();
 
 	public ApplicationsManager(Set<Application> applicationsSet, MarshalledApplicationStateRepository marshalledAppStateRepo) {
+		this.appStateRepo = marshalledAppStateRepo;
+
 		loadApplicationsFromSet(applicationsSet);
-		instantiateApplicationStates(marshalledAppStateRepo);
+		instantiateApplicationStates();
 	}
 	
 	public ApplicationsManager(Set<Application> applicationsSet) {
+		this.appStateRepo = MemoryBasedMarshalledApplicationStateRepository.getInstance();
+
 		loadApplicationsFromSet(applicationsSet);
-		instantiateApplicationStates(MemoryBasedMarshalledApplicationStateRepository.getInstance());
+		instantiateApplicationStates();
 	}
 	
 	private void loadApplicationsFromSet(Set<Application> applicationsSet) {
@@ -48,15 +54,15 @@ public class ApplicationsManager {
 		}	
 	}
 
-	private void instantiateApplicationStates(MarshalledApplicationStateRepository appStateRepository) {
+	private void instantiateApplicationStates() {
 		for (Application app : this.applications.values()) {
 			if (app.getStateClass() != null) {
-				instantiateAppStateWithRepo(app, appStateRepository);
+				instantiateAppState(app);
 			}
 		}
 	}
 
-	private void instantiateAppStateWithRepo(Application app, MarshalledApplicationStateRepository appStateRepo) {
+	private void instantiateAppState(Application app) {
 		ApplicationState appState = null;
 
 		ApplicationState persistedAppState = getPersistedStateForAppWithRepo(app, appStateRepo);
@@ -97,6 +103,9 @@ public class ApplicationsManager {
 		if (requestAppState.isFresherThan(serverAppState)) {
 			requestAppState.incrementVersion();
 			this.applications.get(appName).setState(requestAppState);
+        
+			String marshalledAppState = ApplicationStateMarshaller.marshallApplicationStateToJson(requestAppState);
+			appStateRepo.saveMarshalledStateUnderApplicationName(marshalledAppState, appName);
 		}
 	}
 
@@ -116,18 +125,14 @@ public class ApplicationsManager {
 		return matchingActions;
 	}
 	
-	public MarvinApplicationResource executeActionInvocation(ActionInvocation actionInvocation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
+	public ApplicationResource executeActionInvocation(ActionInvocation actionInvocation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassCastException {
 		String applicationName = actionInvocation.getApplicationName();
 		String actionName = actionInvocation.getActionName();
 		Map<String, String> actionArguments = actionInvocation.getArguments();
 		
 		Application actionApplication = this.applications.get(applicationName);
 
-		// TODO: I think we make actions return CommandResponse objects.
-		//		 Maybe they can consist of just simple strings.
-		//		 These are added to MarvinResponse too
-		MarvinApplicationResource commandResource = null;
-		commandResource = (MarvinApplicationResource) actionApplication.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplication, actionArguments);
+		ApplicationResource commandResource = (ApplicationResource) actionApplication.getClass().getDeclaredMethod(actionName, Map.class).invoke(actionApplication, actionArguments);
 
 		return commandResource;
 	}

@@ -1,4 +1,4 @@
-package com.ahwers.marvin.framework.response;
+package com.ahwers.marvin.framework.response.enums;
 
 // TODO: Better class name
 // TODO: Make these more descriptive of what they mean, the failed ones are kind of all just synonymns.

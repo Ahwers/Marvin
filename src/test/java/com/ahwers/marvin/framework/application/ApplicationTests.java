@@ -14,13 +14,13 @@ import com.ahwers.marvin.framework.application.action.annotations.CommandMatch;
 import com.ahwers.marvin.framework.application.annotations.IntegratesApplication;
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
+import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
 import com.ahwers.marvin.framework.application.state.TestApplicationState;
-import com.ahwers.marvin.framework.resource.MarvinApplicationResource;
 
 import org.junit.jupiter.api.Test;
 
-public class ApplicationTest {
+public class ApplicationTests {
 
     /**
      * Tests:
@@ -32,13 +32,13 @@ public class ApplicationTest {
     private class StandardApplication extends Application {
 
         @CommandMatch("one match")
-        public MarvinApplicationResource actionOne(Map<String, String> arguments) {
+        public ApplicationResource actionOne(Map<String, String> arguments) {
             return null;
         }
 
         @CommandMatch("one match")
         @CommandMatch("two match")
-        public MarvinApplicationResource actionTwo(Map<String, String> arguments) {
+        public ApplicationResource actionTwo(Map<String, String> arguments) {
             return null;
         }
 
@@ -64,7 +64,7 @@ public class ApplicationTest {
     private class StatelessApplication extends Application {
 
         @CommandMatch("one match")
-        public MarvinApplicationResource actionOne(Map<String, String> arguments) {
+        public ApplicationResource actionOne(Map<String, String> arguments) {
             return null;
         }
 
@@ -116,7 +116,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationNoArguments extends Application {
 
         @CommandMatch("test command")
-        public MarvinApplicationResource invalidAction() {
+        public ApplicationResource invalidAction() {
             return null;
         }
 
@@ -131,7 +131,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationInvalidActionMatchRegex extends Application {
 
         @CommandMatch("(?<invalid key>test) command")
-        public MarvinApplicationResource invalidAction(Map<String, String> arguments) {
+        public ApplicationResource invalidAction(Map<String, String> arguments) {
             return null;
         }
 
@@ -146,7 +146,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationInvalidMapArgument extends Application {
 
         @CommandMatch("test command")
-        public MarvinApplicationResource invalidAction(Map<Integer, Double> arguments) {
+        public ApplicationResource invalidAction(Map<Integer, Double> arguments) {
             return null;
         }
 
@@ -161,7 +161,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationWrongArguments extends Application {
 
         @CommandMatch("test command")
-        public MarvinApplicationResource invalidAction(String argument) {
+        public ApplicationResource invalidAction(String argument) {
             return null;
         }
 
@@ -176,7 +176,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationTooManyArguments extends Application {
 
         @CommandMatch("test command")
-        public MarvinApplicationResource invalidAction(Map<String, String> arguments, String argument) {
+        public ApplicationResource invalidAction(Map<String, String> arguments, String argument) {
             return null;
         }
 
@@ -191,7 +191,7 @@ public class ApplicationTest {
     private class IncorrectlyConfiguredApplicationPrivateActionMethod extends Application {
 
         @CommandMatch("test command")
-        private MarvinApplicationResource invalidAction(Map<String, String> arguments) {
+        private ApplicationResource invalidAction(Map<String, String> arguments) {
             return null;
         }
 
