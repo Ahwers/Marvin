@@ -3,8 +3,6 @@ package com.ahwers.marvin.framework.application.state;
 import java.util.Set;
 
 import com.ahwers.marvin.framework.application.Application;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ApplicationStateFactory {
 
@@ -18,13 +16,7 @@ public class ApplicationStateFactory {
         Application app = getApplicationWithName(applicationName);
         Class<? extends ApplicationState> appStateClass = app.getStateClass();
 
-        ApplicationState appState = null;
-        try {
-            appState = new ObjectMapper().readValue(marshalledAppState, appStateClass);
-        } catch (JsonProcessingException e) {
-            // TODO: Throw a server exception somehow
-            e.printStackTrace();
-        }
+        ApplicationState appState = ApplicationStateMarshaller.unmarshallApplicationStateToClass(marshalledAppState, appStateClass);
 
         return appState;
     }

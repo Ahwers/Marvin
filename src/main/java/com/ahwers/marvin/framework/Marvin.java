@@ -9,6 +9,10 @@ import com.ahwers.marvin.framework.application.state.ApplicationStateMarshaller;
 import com.ahwers.marvin.framework.command.CommandFormatter;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.MarvinResponseBuilder;
+import com.ahwers.marvin.framework.response.enums.InvocationOutcome;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -18,10 +22,9 @@ import java.util.Set;
 import com.ahwers.marvin.framework.application.Application;
 import com.ahwers.marvin.framework.application.ApplicationRepository;
 
-// TODO: If this object handles the attachment of app states to response objects, unit test it
 public class Marvin {
-	
-	// TODO: Could implement response routing or something, so like issuing a command from my phone but getting the response sent to my desktop. This class could catch the "to my desktop" string or something and route the response that way.
+
+	private static Logger logger = LogManager.getLogger(Marvin.class);
 	
 	private CommandFormatter commandFormatter;
 	private ApplicationsManager appManager;
@@ -29,9 +32,7 @@ public class Marvin {
 	private ApplicationStateFactory appStateFactory;
 	
 	public Marvin(String packageRoute) {
-		// TODO: Just make the repo static
-		ApplicationRepository appRepo = new ApplicationRepository(packageRoute);
-		Set<Application> supportedApps = appRepo.getSupportedApplications();
+		Set<Application> supportedApps = ApplicationRepository.getMarvinApplicationsInPackage(packageRoute);
 
 		this.commandFormatter = new CommandFormatter();
 		this.appManager = new ApplicationsManager(supportedApps);
@@ -45,11 +46,10 @@ public class Marvin {
 		}
 	}
 
-	// TODO: Have marvin call manager.invoke and catch the exception, then pass either the resource or exception to the response builder.
 	public MarvinResponse processCommand(String originalCommand) {
+		logger.info("Command recieved: " + originalCommand);
 		String command = commandFormatter.formatCommand(originalCommand);
-		System.out.println(command);
-		// TODO: Log command recieved and formatted
+		logger.info("Command formatted: " + command);
 
 		MarvinResponse response = null;
 
@@ -64,19 +64,25 @@ public class Marvin {
 			response = this.responseBuilder.buildResponseForConflictingActions(matchingActions);
 		}
 
+		logResponse(response);
+
 		return response;
 	}
 
 	public MarvinResponse processActionInvocation(ActionInvocation actionInvocation) {
+		MarvinResponse response = invokeActionInvocation(actionInvocation);
+		logResponse(response);
+		
+		return response;
+	}
+
+	private MarvinResponse invokeActionInvocation(ActionInvocation actionInvocation) {
 		MarvinResponse response = null;
 
 		ApplicationResource appResource = null;
 		try {
 			appResource = this.appManager.executeActionInvocation(actionInvocation);
 			response = responseBuilder.buildResponseForApplicationResource(appResource);
-		} catch (NoSuchMethodException e) {
-			InvocationTargetException invocationException = new InvocationTargetException(e);
-			response = this.responseBuilder.buildResponseForInvocationException(invocationException);
 		} catch (Exception e) {
 			InvocationTargetException invocationException = null;
 			if (e.getClass() != InvocationTargetException.class) {
@@ -90,12 +96,30 @@ public class Marvin {
 		}
 
 		String appName = actionInvocation.getApplicationName();
-		ApplicationState appState = this.appManager.getApplication(appName).getState();
-		if (appState != null) {
-			response.setJsonAppState(ApplicationStateMarshaller.marshallApplicationStateToJson(appState));
+		Application app = this.appManager.getApplication(appName);
+		if (app != null) {
+			ApplicationState appState = app.getState();
+			if (appState != null) {
+				response.setJsonAppState(ApplicationStateMarshaller.marshallApplicationStateToJson(appState));
+			}
 		}
 
 		return response;
+	}
+
+	private void logResponse(MarvinResponse response) {
+		if (response.getFailException() != null) {
+			logger.error("Command execution failed with exception: " + response.getFailException().getClass() + ".\nMessage: " + response.getMessage());
+		}
+		else if (response.getStatus() == InvocationOutcome.SUCCESSFUL) {
+			logger.trace("Command execution successful.");
+		}
+		else if (response.getStatus() == InvocationOutcome.UNMATCHED) {
+			logger.error("Command unmatched.");
+		}
+		else if (response.getStatus() == InvocationOutcome.CONFLICTED) {
+			logger.error("Command matched conflicting application actions.");
+		}
 	}
 	
 	public ApplicationStateFactory getApplicationStateFactory() {

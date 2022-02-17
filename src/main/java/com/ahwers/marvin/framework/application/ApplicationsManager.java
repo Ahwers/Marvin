@@ -15,7 +15,7 @@ import com.ahwers.marvin.framework.application.state.ApplicationState;
 import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
 import com.ahwers.marvin.framework.application.state.ApplicationStateMarshaller;
 import com.ahwers.marvin.framework.application.state.MemoryBasedMarshalledApplicationStateRepository;
-import com.ahwers.marvin.framework.application.state.MarshalledApplicationStateRepository;
+import com.ahwers.marvin.framework.application.state.interfaces.MarshalledApplicationStateRepository;
 
 public class ApplicationsManager {
 
@@ -38,7 +38,7 @@ public class ApplicationsManager {
 	
 	private void loadApplicationsFromSet(Set<Application> applicationsSet) {
 		if (applicationsSet == null) {
-			throw new IllegalArgumentException("Cannot be null");
+			throw new IllegalArgumentException("applicationSet argument cannot be null");
 		}
 		else if (applicationsSet.size() == 0) {
 			throw new IllegalArgumentException("More than one Application must be supplied.");
@@ -74,8 +74,7 @@ public class ApplicationsManager {
 				appState = app.getStateClass().getDeclaredConstructor(String.class, Integer.class).newInstance(app.getName(), 0);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				// TODO: Are we already checking for this? Should this be moved to application if we're not? Yes.
-				throw new ApplicationConfigurationError("The app state class '" + app.getStateClass().toString() + "' does not have a constructor accepting String and int for app name and state id.");
+				throw new ApplicationConfigurationError(e);
 			}
 		}
 

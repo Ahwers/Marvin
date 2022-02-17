@@ -2,7 +2,6 @@ package com.ahwers.marvin.framework.application.action;
 
 import java.util.Map;
 
-// TODO: Should this and ActionDefintion be renamed to be pre-fixed with Application?
 public class ActionInvocation extends ApplicationAction {
     
     private Map<String, String> arguments;
@@ -24,7 +23,6 @@ public class ActionInvocation extends ApplicationAction {
     @Override
     public boolean isSameAs(ApplicationAction appAction) {
         if ((appAction instanceof ActionInvocation) == false) {
-            // TODO: Am i sure that these error checks should be throwing IllegalArgumentException?? The exception InvalidParameterException exists so maybe that or something else is better style?
             throw new IllegalArgumentException("Argument must be of type ActionInvocation");
         }
 

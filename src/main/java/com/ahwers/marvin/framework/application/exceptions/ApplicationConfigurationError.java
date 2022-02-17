@@ -1,10 +1,19 @@
 package com.ahwers.marvin.framework.application.exceptions;
 
-// TODO: I think this should extend from Exception instead. Read the whole exceptions chapter then refactor.
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ApplicationConfigurationError extends Error {
 
-    public ApplicationConfigurationError(String error) {
-        super(error);
+	private static Logger logger = LogManager.getLogger(ApplicationConfigurationError.class);
+
+    public ApplicationConfigurationError(String errorMessage) {
+        super(errorMessage);
+        logger.error(errorMessage);
+    }
+
+    public ApplicationConfigurationError(Throwable e) {
+        logger.error("Exception thrown: '" + e.getClass() + "'. Message: " + e.getMessage());
     }
 
 }

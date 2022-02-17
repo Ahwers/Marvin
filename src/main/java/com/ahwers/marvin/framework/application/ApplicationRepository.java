@@ -1,6 +1,5 @@
 package com.ahwers.marvin.framework.application;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,13 +10,11 @@ import org.reflections.Reflections;
 
 public class ApplicationRepository {
 
-    private Set<Application> loadedApps;
+    public static Set<Application> getMarvinApplicationsInPackage(String packageRoute) {
+        if (packageRoute == null) {
+            throw new IllegalArgumentException("packageRoute argument cannot be null.");
+        }
 
-    public ApplicationRepository(String packageRoute) {
-        this.loadedApps = getAppsInPackage(packageRoute);
-    }
-
-    private Set<Application> getAppsInPackage(String packageRoute) {
         Set<Application> apps = new HashSet<>();
 
         Set<Class<?>> applicationClasses = new Reflections(packageRoute).getTypesAnnotatedWith(IntegratesApplication.class);
@@ -25,19 +22,16 @@ public class ApplicationRepository {
 			Application application = null;
 			try {
 				application = (Application) appClass.getDeclaredConstructor().newInstance();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			} catch (Exception e) {
                 throw new ApplicationConfigurationError(e.getMessage());
 			}
 
-            apps.add(application);
+            if (application != null) {
+                apps.add(application);
+            }
 		}
         
         return apps;
-    }
-
-    public Set<Application> getSupportedApplications() {
-        return loadedApps;
     }
 
 }

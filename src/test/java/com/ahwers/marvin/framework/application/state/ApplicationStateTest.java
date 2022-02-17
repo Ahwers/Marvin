@@ -4,21 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.Test;
 
 public class ApplicationStateTest {
-
-   /**
-    * Test Cases:
-    *  - encode
-    */
 
    @Test
    public void getName() {
@@ -65,17 +53,6 @@ public class ApplicationStateTest {
       TestApplicationState testState1 = new TestApplicationState("Test", 0);
       TestApplicationState testState2 = new TestApplicationState("Test", 1);
       assertTrue(testState2.isFresherThan(testState1));
-   }
-
-   @Test
-   public void encode() throws JsonProcessingException, UnsupportedEncodingException {
-      TestApplicationState testState1 = new TestApplicationState("Test", 0);
-
-      ObjectMapper jsonMapper = new ObjectMapper();
-      String marshalledAppState = jsonMapper.writeValueAsString(testState1);
-      String expectedEncodedAppState = Base64.getEncoder().encodeToString(marshalledAppState.getBytes(StandardCharsets.UTF_8.toString()));  
-
-      assertTrue(testState1.encode().equals(expectedEncodedAppState));
    }
 
    @Test

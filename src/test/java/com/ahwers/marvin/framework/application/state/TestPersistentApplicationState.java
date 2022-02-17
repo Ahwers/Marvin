@@ -25,7 +25,6 @@ public class TestPersistentApplicationState extends ApplicationState {
 
     @Override
     public boolean isSameAs(ApplicationState appState) {
-        // TODO Auto-generated method stub
         return false;
     }
 

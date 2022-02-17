@@ -3,6 +3,8 @@ package com.ahwers.marvin.framework.application.state;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ahwers.marvin.framework.application.state.interfaces.MarshalledApplicationStateRepository;
+
 public class MemoryBasedMarshalledApplicationStateRepository implements MarshalledApplicationStateRepository {
 
     private static MemoryBasedMarshalledApplicationStateRepository instance;

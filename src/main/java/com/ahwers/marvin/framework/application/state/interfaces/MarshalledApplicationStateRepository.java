@@ -1,4 +1,4 @@
-package com.ahwers.marvin.framework.application.state;
+package com.ahwers.marvin.framework.application.state.interfaces;
 
 public interface MarshalledApplicationStateRepository {
 

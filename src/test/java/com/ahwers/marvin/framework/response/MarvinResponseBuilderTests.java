@@ -11,7 +11,7 @@ import com.ahwers.marvin.framework.application.action.ActionInvocation;
 import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.resource.enums.ResourceRepresentationType;
 import com.ahwers.marvin.framework.response.enums.InvocationOutcome;
-import com.ahwers.marvin.framework.response.exceptions.ApplicationInvocationException;
+import com.ahwers.marvin.framework.response.exceptions.ApplicationActionInvocationException;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +49,7 @@ public class MarvinResponseBuilderTests {
     @Test
     public void invalidInvocationWithProvidedErrorMessage() {
         MarvinResponseBuilder responseBuilder = new MarvinResponseBuilder();
-        ApplicationInvocationException expectedException = new ApplicationInvocationException("I could not process that command because this is a test for invalid application usage with a custom error message.");
+        ApplicationActionInvocationException expectedException = new ApplicationActionInvocationException("I could not process that command because this is a test for invalid application usage with a custom error message.");
         InvocationTargetException invocationException = new InvocationTargetException(expectedException);
         MarvinResponse response = responseBuilder.buildResponseForInvocationException(invocationException);
         assertAll(
@@ -61,11 +61,10 @@ public class MarvinResponseBuilderTests {
         );
     }
 
-    // TODO: Should rename ApplicationInvocationException because it is very similar to InvocationTargetException
     @Test
     public void invalidInvocationWithoutCustomErrorMessage() {
         MarvinResponseBuilder responseBuilder = new MarvinResponseBuilder();
-        ApplicationInvocationException expectedException = new ApplicationInvocationException();
+        ApplicationActionInvocationException expectedException = new ApplicationActionInvocationException();
         InvocationTargetException invocationException = new InvocationTargetException(expectedException);
         MarvinResponse response = responseBuilder.buildResponseForInvocationException(invocationException);
         assertAll(

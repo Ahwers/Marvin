@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test;
 
 public class ApplicationRepositoryTest {
 
-    // TODO: Test case for loading erroneous application class
+    // TODO: Test case for not loading erroneous application class
+    // TODO: Test case for null package route argument
     
     @Test
-    public void getApplications() {
+    public void getApplicationsValid() {
         Set<Class<?>> expectedApplicationClasses = Set.of(TestApplication.class);
-
-        ApplicationRepository appRepo = new ApplicationRepository("com.ahwers.marvin.testapplications");
-        Set<Application> actualApplications = appRepo.getSupportedApplications();
+        Set<Application> actualApplications = ApplicationRepository.getMarvinApplicationsInPackage("com.ahwers.marvin.testapplications");
         
         assertAll(
             () -> assertTrue(expectedApplicationClasses.size() == actualApplications.size()),

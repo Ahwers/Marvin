@@ -1,12 +1,5 @@
 package com.ahwers.marvin.framework.application.state;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public abstract class ApplicationState implements Cloneable {
 
     private String applicationName;
@@ -50,14 +43,6 @@ public abstract class ApplicationState implements Cloneable {
     }
 
     public abstract boolean isSameAs(ApplicationState appState);
-
-    public String encode() throws JsonProcessingException, UnsupportedEncodingException {
-        ObjectMapper jsonMapper = new ObjectMapper();
-        String marshalledAppState = jsonMapper.writeValueAsString(this);
-        String encodedAppState = Base64.getEncoder().encodeToString(marshalledAppState.getBytes(StandardCharsets.UTF_8.toString()));  
-
-        return encodedAppState;
-    }
 
     @Override
     public ApplicationState clone() throws CloneNotSupportedException {

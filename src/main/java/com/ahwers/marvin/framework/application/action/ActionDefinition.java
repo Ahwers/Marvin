@@ -33,8 +33,6 @@ public class ActionDefinition extends ApplicationAction implements Cloneable {
 		return List.copyOf(this.commandMatchRegexes);
 	}
 
-	// TODO: I like this wording of CommandRequest for user input and Command for the formal declaration of requests that the action can satisfy.
-	//		 Refactor this in.
 	public boolean canServiceCommandRequest(String commandRequest) {
 		if (commandRequest == null) {
 			throw new IllegalArgumentException("Cannot be null.");

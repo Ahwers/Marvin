@@ -12,8 +12,12 @@ import java.util.regex.Pattern;
 
 import com.ahwers.marvin.framework.tools.ResourceRepository;
 
-// TODO: Make this a singleton
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CommandFormatter {
+
+	private static Logger logger = LogManager.getLogger(CommandFormatter.class);
 	
 	private List<String> politeOpeners;
 	private List<String> politeClosers;
@@ -26,8 +30,7 @@ public class CommandFormatter {
 			this.politeOpeners = loadPoliteOpeners();
 			this.politeClosers = loadPoliteClosers();
 		} catch (FileNotFoundException e) {
-			// TODO: Log lookup load error
-			e.printStackTrace();
+			logger.warn(e.getClass().toString() + " thrown. Could not load the polite opener and closer lookups from their files. Exception Message: " + e.getMessage());
 			this.politeOpeners = new ArrayList<>();
 			this.politeClosers = new ArrayList<>();
 		}
@@ -84,7 +87,6 @@ public class CommandFormatter {
 	private String removeGrammaticalPunctuationFromCommand(String command) {
 		String punctuation = "?,.!;";
 		
-		// command = command.replaceAll("(?<=[\\d\\w])[" + punctuation +"](?=\\s|$)", "");
 		command = command.replaceAll(("[" + punctuation + "]"), "");
 		
 		return command;
@@ -126,7 +128,6 @@ public class CommandFormatter {
 		return words;
 	}
 	
-//	TODO: Implement properly if longer numbers do not automatically become numeric through azure
 	private String convertAlphabeticNumberToNumeric(String alphabeticNumber) {
 		return this.alphabeticToNumericNumbers.get(alphabeticNumber.toLowerCase());
 	}

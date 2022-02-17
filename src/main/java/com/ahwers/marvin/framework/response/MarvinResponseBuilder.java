@@ -49,7 +49,6 @@ public class MarvinResponseBuilder {
 		return response;
 	}
 
-	// TODO: Failed commands catch illegal argument exceptions so maybe we shouldn't be throwing it as often as we do. Seriously re look at the exceptions we throw.
 	private boolean exceptionIsForFailedCommand(Throwable exception) {
 		boolean isForFailedCommand = false;
 		if (exception.getClass() == IllegalAccessException.class) {
