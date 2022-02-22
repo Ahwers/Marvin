@@ -31,7 +31,13 @@ public abstract class Application {
 	public Application() {
 		this.name = loadName();
 		this.actions = loadActions();
-		this.stateClass = loadStateClass();
+
+		// try {
+			this.stateClass = loadStateClass();
+		// }
+		// // catch (Exception e) {
+
+		// // }
 	}
 
 	private String loadName() {

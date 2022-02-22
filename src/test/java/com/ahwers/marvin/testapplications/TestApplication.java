@@ -9,7 +9,6 @@ import com.ahwers.marvin.framework.application.annotations.IntegratesApplication
 import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.resource.enums.ResourceRepresentationType;
-import com.ahwers.marvin.framework.application.state.TestApplicationState;
 
 @IntegratesApplication("Test Application")
 @Stateful(TestApplicationState.class)

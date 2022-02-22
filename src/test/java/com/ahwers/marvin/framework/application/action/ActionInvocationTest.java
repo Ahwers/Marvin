@@ -58,12 +58,15 @@ public class ActionInvocationTest {
         assertThrows(IllegalArgumentException.class, () -> invocation.isSameAs(definition));
     }
 
-    // TODO: There is no sorting for argument order so this test will fail sometimes even when it works
     @Test
     public void toStringTest() {
         ActionInvocation invocation = new ActionInvocation("Test", "test", Map.of("first_argument", "has a value", "second_argument", "also has a value"));
         String stringified = invocation.toString();
-        assertTrue(stringified.equals("Application:Test, Action:test, Arguments:first_argument='has a value', second_argument='also has a value', "));
+        assertTrue(
+            stringified.equals("Application:Test, Action:test, Arguments:first_argument='has a value', second_argument='also has a value', ")
+            ||
+            stringified.equals("Application:Test, Action:test, Arguments:second_argument='also has a value', first_argument='has a value', ")
+        );
     }
 
 }

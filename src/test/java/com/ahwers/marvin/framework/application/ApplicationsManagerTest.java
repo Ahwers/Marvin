@@ -20,8 +20,8 @@ import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.resource.enums.ResourceRepresentationType;
-import com.ahwers.marvin.framework.application.state.TestApplicationState;
 import com.ahwers.marvin.framework.application.state.interfaces.MarshalledApplicationStateRepository;
+import com.ahwers.marvin.testapplications.TestApplicationState;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

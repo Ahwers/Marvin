@@ -16,8 +16,14 @@ import com.ahwers.marvin.framework.application.state.ApplicationStateFactory;
 import com.ahwers.marvin.framework.application.state.ApplicationStateMarshaller;
 import com.ahwers.marvin.framework.application.state.MemoryBasedMarshalledApplicationStateRepository;
 import com.ahwers.marvin.framework.application.state.interfaces.MarshalledApplicationStateRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ApplicationsManager {
+
+	private static Logger logger = LogManager.getLogger(ApplicationsManager.class);
 
 	private MarshalledApplicationStateRepository appStateRepo;
 	private Map<String, Application> applications = new HashMap<>();
@@ -103,8 +109,12 @@ public class ApplicationsManager {
 			requestAppState.incrementVersion();
 			this.applications.get(appName).setState(requestAppState);
         
-			String marshalledAppState = ApplicationStateMarshaller.marshallApplicationStateToJson(requestAppState);
-			appStateRepo.saveMarshalledStateUnderApplicationName(marshalledAppState, appName);
+			try {
+				String marshalledAppState = ApplicationStateMarshaller.marshallApplicationStateToJson(requestAppState);
+				appStateRepo.saveMarshalledStateUnderApplicationName(marshalledAppState, appName);
+			} catch (JsonProcessingException e) {
+				logger.error("Could not marshall app state to json in order to save state.\nException of class " + e.getClass().toString() + " thrown with message: " + e.getMessage());
+			}
 		}
 	}
 

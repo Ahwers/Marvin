@@ -1,4 +1,6 @@
-package com.ahwers.marvin.framework.application.state;
+package com.ahwers.marvin.testapplications;
+
+import com.ahwers.marvin.framework.application.state.ApplicationState;
 
 public class TestApplicationState extends ApplicationState {
 

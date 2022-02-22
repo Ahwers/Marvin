@@ -16,16 +16,11 @@ import com.ahwers.marvin.framework.application.annotations.Stateful;
 import com.ahwers.marvin.framework.application.exceptions.ApplicationConfigurationError;
 import com.ahwers.marvin.framework.application.resource.ApplicationResource;
 import com.ahwers.marvin.framework.application.state.ApplicationState;
-import com.ahwers.marvin.framework.application.state.TestApplicationState;
+import com.ahwers.marvin.testapplications.TestApplicationState;
 
 import org.junit.jupiter.api.Test;
 
 public class ApplicationTests {
-
-    /**
-     * Tests:
-     *  - Erroneous state configuration cases caught
-     */
 
     @IntegratesApplication("Test")
     @Stateful(TestApplicationState.class)

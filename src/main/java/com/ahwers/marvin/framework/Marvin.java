@@ -10,6 +10,7 @@ import com.ahwers.marvin.framework.command.CommandFormatter;
 import com.ahwers.marvin.framework.response.MarvinResponse;
 import com.ahwers.marvin.framework.response.MarvinResponseBuilder;
 import com.ahwers.marvin.framework.response.enums.InvocationOutcome;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,7 +101,12 @@ public class Marvin {
 		if (app != null) {
 			ApplicationState appState = app.getState();
 			if (appState != null) {
-				response.setJsonAppState(ApplicationStateMarshaller.marshallApplicationStateToJson(appState));
+				try {
+					String marshalledState = ApplicationStateMarshaller.marshallApplicationStateToJson(appState);
+					response.setJsonAppState(marshalledState);
+				} catch (JsonProcessingException e) {
+    		        logger.error("Could not marshall state to json in order to attach state to response.\nException of class " + e.getClass().toString() + " thrown with message: " + e.getMessage());
+				}
 			}
 		}
 

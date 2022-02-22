@@ -1,6 +1,7 @@
 package com.ahwers.marvin.framework.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
@@ -11,11 +12,13 @@ import org.junit.jupiter.api.Test;
 
 public class ApplicationRepositoryTest {
 
-    // TODO: Test case for not loading erroneous application class
-    // TODO: Test case for null package route argument
-    
     @Test
-    public void getApplicationsValid() {
+    public void nullPackageRouteArgument() {
+        assertThrows(IllegalArgumentException.class, () -> ApplicationRepository.getMarvinApplicationsInPackage(null));
+    } 
+
+    @Test
+    public void getValidApplications() {
         Set<Class<?>> expectedApplicationClasses = Set.of(TestApplication.class);
         Set<Application> actualApplications = ApplicationRepository.getMarvinApplicationsInPackage("com.ahwers.marvin.testapplications");
         
