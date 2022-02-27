@@ -5,6 +5,8 @@ public abstract class ApplicationAction {
 	private String applicationName;
 	private String actionName;
 
+	public ApplicationAction() {}
+
 	public ApplicationAction(String appName, String actionName) {
 		if (appName == null || actionName == null) {
 			throw new IllegalArgumentException("Arguments cannot be null.");

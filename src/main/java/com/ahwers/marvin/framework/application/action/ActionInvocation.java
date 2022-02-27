@@ -6,6 +6,8 @@ public class ActionInvocation extends ApplicationAction {
     
     private Map<String, String> arguments;
 
+    public ActionInvocation() {}
+
     public ActionInvocation(String applicationName, String actionName, Map<String, String> arguments) {
         super(applicationName, actionName);
 
